@@ -2,8 +2,9 @@
 %  ARCP Topology — Reference Document (Paper 1)
 %  Student: Vignesh | Supervisor: Prof. Mouli
 %  Source: De Doncker & Lyons, IEEE IAS 1990
-%  Figures stored in: ./figures/
+%  Figures stored in: figures/
 %  Naming convention: P1_Fig[N]_[description].png
+%  Current figures available: P1_Fig5, P1_Fig7a--g
 % ============================================================
 \documentclass[12pt, a4paper]{article}
 
@@ -16,7 +17,7 @@
 
 % ---- figures ----
 \usepackage{graphicx}
-\graphicspath{{./figures/}}          % all PNGs live here
+\graphicspath{{figures/}}           % all PNGs live here
 \usepackage{float}
 \usepackage{caption}
 \usepackage{subcaption}
@@ -127,7 +128,7 @@
 Each figure section follows this standard four-block structure:
 
 \begin{enumerate}
-    \item \textbf{Figure} — the extracted PNG from the literature
+    \item \textbf{Figure} — the extracted PNG from the paper
     \item \textbf{Circuit Description} (blue box) — what components are present
           and how they are connected
     \item \textbf{State Variables \& Parameters} (orange box) — every symbol
@@ -138,169 +139,21 @@ Each figure section follows this standard four-block structure:
           \emph{means}: energy flow, ZVS conditions, design trade-offs
 \end{enumerate}
 
-Figures are stored in \texttt{./figures/} using the naming convention:
-\begin{center}
-    \texttt{P1\_Fig[N]\_[description].png}
-\end{center}
-All figures in this document are from the primary source:
-De Doncker \& Lyons, \textit{The Auxiliary Resonant Commutated Pole Converter},
-IEEE IAS Annual Meeting, 1990. Extract each figure as a PNG and place it
-in \texttt{./figures/}, then uncomment the corresponding
-\texttt{\textbackslash includegraphics} line.
+All figures are from: De Doncker \& Lyons,
+\textit{The Auxiliary Resonant Commutated Pole Converter},
+IEEE IAS Annual Meeting, 1990.
 
 % ============================================================
-\section{Topology Evolution: From Hard-Switching to ARCP}
-% ============================================================
-
-\subsection{P1 Fig.\,1 — The Resonant Pole Inverter (RPI)}
-\label{sec:P1Fig1}
-
-% ---- PASTE FIGURE HERE after extracting PNG ----
-% \figentry{fig:P1Fig1}{P1_Fig1_resonant_pole_inverter.png}
-%          {The Resonant Pole Inverter (RPI). Source: De Doncker \& Lyons, IEEE IAS 1990, p.\,1.}{0.7}
-
-\begin{circuitbox}[Circuit Description — P1 Fig.\,1]
-The RPI is the starting point of the topology evolution. Each phase leg
-consists of:
-\begin{itemize}
-    \item Two main switches $S_1$ (upper) and $S_2$ (lower) with anti-parallel
-          diodes $D_1$, $D_2$
-    \item A resonant capacitor $\Cr$ placed across each switch (pole-node
-          snubber)
-    \item A resonant inductor $\Lr$ in series with the output, forming an LC
-          filter with output capacitor $C_f$
-    \item Output filter inductor $L_F$
-\end{itemize}
-The pole node (junction of $S_1$ and $S_2$) voltage is $\vf$.
-\end{circuitbox}
-
-\begin{statebox}
-\begin{tabular}{lll}
-\toprule
-Symbol & Quantity & Typical Value \\
-\midrule
-$\Vdc$ & DC bus voltage & $\SI{500}{V}$ \\
-$\vf$ & Pole-node voltage & $0 \leq \vf \leq \Vdc$ \\
-$\ir$ & Resonant inductor current & varies \\
-$I_0$ & Load/output current & $\IL$ (quasi-constant) \\
-$\Lr$ & Resonant inductor & $\SI{0.33}{\micro H}$ (typical) \\
-$\Cr$ & Resonant (snubber) capacitor & $\SI{1}{nF}$ (typical) \\
-\bottomrule
-\end{tabular}
-\end{statebox}
-
-\begin{eqnbox}
-Resonant frequency and characteristic impedance:
-\begin{align}
-    \omegar &= \frac{1}{\sqrt{\Lr\Cr}}
-    \label{eq:omega_r} \\[6pt]
-    \Zr &= \sqrt{\frac{\Lr}{\Cr}}
-    \label{eq:Z_r}
-\end{align}
-Natural commutation condition (load current charges $\Cr$ alone):
-\begin{equation}
-    \frac{d\vf}{dt} = \frac{\IL}{\Cr}
-    \label{eq:natural_comm}
-\end{equation}
-\end{eqnbox}
-
-\begin{physbox}
-In the RPI, the capacitor $\Cr$ slows the rate of voltage rise/fall across the
-switch, reducing turn-off losses. However, zero-voltage turn-\emph{on} is not
-guaranteed — $\Cr$ may still hold residual voltage when the switch fires.
-The ARCP solves this by forcing $\Cr$ to fully discharge before turn-on.
-\end{physbox}
-
-% ============================================================
-\subsection{P1 Fig.\,2 — Resonant Inverter Pole at the Load Side}
-\label{sec:P1Fig2}
-
-% \figentry{fig:P1Fig2}{P1_Fig2_resonant_pole_load_side.png}
-%          {Resonant Inverter Pole at Load Side.
-%           Source: De Doncker \& Lyons, IEEE IAS 1990, p.\,1.}{0.7}
-
-\begin{circuitbox}[Circuit Description — P1 Fig.\,2]
-A variant of the RPI where the resonant inductor $\Lr$ is placed on the
-\emph{load side} of the pole rather than between the DC rails.
-\begin{itemize}
-    \item The snubber capacitors $\Cr$ remain across each main switch
-    \item $\Lr$ is in series with the load path, so it carries full load
-          current continuously (unlike the ARCP auxiliary inductor)
-    \item This increases conduction losses at partial load
-\end{itemize}
-\end{circuitbox}
-
-\begin{physbox}
-Moving $\Lr$ to the load side avoids the DC-rail placement issue of Fig.\,1
-but keeps the inductor permanently in the current path.  This motivates the
-\emph{auxiliary branch} idea of the ARCP (Fig.\,5): put $\Lr$ in a branch
-that only conducts during commutation.
-\end{physbox}
-
-% ============================================================
-\subsection{P1 Fig.\,3 — Auxiliary Resonant Diode Pole Inverter (ARDPI)}
-\label{sec:P1Fig3}
-
-% \figentry{fig:P1Fig3}{P1_Fig3_ARDPI_topology.png}
-%          {Auxiliary Resonant Diode Pole Inverter (ARDPI).
-%           Source: De Doncker \& Lyons, IEEE IAS 1990, p.\,2.}{0.75}
-
-\begin{circuitbox}[Circuit Description — P1 Fig.\,3]
-The ARDPI introduces a dedicated \textbf{auxiliary branch} for commutation
-assist, but uses \emph{diodes} (not controlled switches) as auxiliary devices:
-\begin{itemize}
-    \item Auxiliary inductor $\Lr$ is connected via diodes to the DC rails
-    \item Diodes allow current to flow in one direction only, so the resonant
-          current cannot be actively controlled
-    \item Two circuit variants are shown side-by-side (the paper presents
-          both in the same figure)
-\end{itemize}
-\end{circuitbox}
-
-\begin{physbox}
-The limitation of the ARDPI is that the boost magnitude cannot be controlled
-— the diodes fire passively.  This means ZVS can fail at low load.
-The ARCP replaces the auxiliary diodes with controlled switches ($A_1$, $A_2$)
-so that the boost duration (and therefore $i_\text{boost}$) is precisely set
-by the controller.
-\end{physbox}
-
-% ============================================================
-\subsection{P1 Fig.\,4 — Auxiliary Resonant Pole Inverter (ARPI)}
-\label{sec:P1Fig4}
-
-% \figentry{fig:P1Fig4}{P1_Fig4_ARPI_topology.png}
-%          {Auxiliary Resonant Pole Inverter (ARPI).
-%           Source: De Doncker \& Lyons, IEEE IAS 1990, p.\,2.}{0.75}
-
-\begin{circuitbox}[Circuit Description — P1 Fig.\,4]
-The ARPI replaces the ARDPI auxiliary diodes with controlled switches,
-giving full control over the boost current:
-\begin{itemize}
-    \item Auxiliary switches (transistors) connected to DC rails via $\Lr$
-    \item Controller fires the auxiliary switch for a calibrated time to
-          pre-charge $\Lr$ to the required $i_\text{boost}$
-    \item Still uses separate snubber caps $\Cr$ across the main devices
-\end{itemize}
-\end{circuitbox}
-
-\begin{physbox}
-The ARPI is the direct predecessor of the ARCP.  The ARCP refines it by
-centering the auxiliary branch at the pole node (midpoint) rather than
-connecting it asymmetrically — this gives identical commutation behaviour
-for both the low-to-high and high-to-low transitions.
-\end{physbox}
-
-% ============================================================
-\subsection{P1 Fig.\,5 — The ARCP Pole Leg (Primary Circuit)}
+\section{The ARCP Pole Leg — P1 Fig.\,5}
 \label{sec:P1Fig5}
+% ============================================================
 
-% \figentry{fig:P1Fig5}{P1_Fig5_ARCP_pole_leg.png}
-%          {The Auxiliary Resonant Commutated Pole (ARCP) single phase leg.
-%           Source: De Doncker \& Lyons, IEEE IAS 1990, p.\,3.}{0.75}
+\figentry{fig:P1Fig5}{P1_Fig5_ARCP_pole_leg.png}
+         {The Auxiliary Resonant Commutated Pole (ARCP) single phase leg.
+          Source: De Doncker \& Lyons, IEEE IAS 1990, p.\,3.}{0.75}
 
 \begin{circuitbox}[Circuit Description — P1 Fig.\,5]
-The ARCP adds an \textbf{auxiliary resonant branch} to the RPI pole leg:
+The ARCP adds an \textbf{auxiliary resonant branch} to a standard inverter pole leg:
 \begin{itemize}
     \item \textbf{Main devices}: $S_1$, $S_2$ (IGBTs/MOSFETs) with anti-parallel
           diodes $D_1$, $D_2$
@@ -308,8 +161,8 @@ The ARCP adds an \textbf{auxiliary resonant branch} to the RPI pole leg:
           resonant capacitance at the pole node)
     \item \textbf{Auxiliary resonant inductor}: $\Lr$ — center leg, carries
           resonant current $\ir$
-    \item \textbf{Auxiliary switches}: $A_1$ (connected to $+V_{dc}/2$) and
-          $A_2$ (connected to $-V_{dc}/2$) — turn on briefly to initiate the
+    \item \textbf{Auxiliary switches}: $A_1$ (connected to $+\Vdc/2$) and
+          $A_2$ (connected to $-\Vdc/2$) — fire briefly to initiate the
           resonant swing
     \item \textbf{Pole node}: voltage $\vf$, the state variable that must
           swing rail-to-rail before the main switch fires
@@ -323,13 +176,13 @@ commutation}. At steady state it carries zero current.
 \toprule
 Symbol & Quantity & Role \\
 \midrule
-$\vf$ & Pole-node voltage & Primary state variable; must reach $\Vdc$ or 0 for ZVS \\
-$\ir$ & Auxiliary inductor current & Secondary state variable; drives $\Cr$ swing \\
-$\IL$ & Load current (quasi-static) & Disturbance input during commutation \\
-$\Vdc$ & DC bus voltage & Forcing potential \\
-$\Lr$ & Auxiliary inductance & Sets boost ramp rate and resonant frequency \\
-$\Cr$ & Snubber capacitance & Sets resonant frequency and commutation speed \\
-$A_1, A_2$ & Auxiliary switches & Gate-controlled; fire for $T_\text{boost}$ only \\
+$\vf$       & Pole-node voltage          & Primary state variable; must reach $\Vdc$ or 0 for ZVS \\
+$\ir$       & Auxiliary inductor current & Secondary state variable; drives $\Cr$ swing \\
+$\IL$       & Load current (quasi-static)& Disturbance input during commutation \\
+$\Vdc$      & DC bus voltage             & Forcing potential \\
+$\Lr$       & Auxiliary inductance       & Sets boost ramp rate and resonant frequency \\
+$\Cr$       & Snubber capacitance        & Sets resonant frequency and commutation speed \\
+$A_1, A_2$  & Auxiliary switches         & Gate-controlled; fire for $T_\text{boost}$ only \\
 \bottomrule
 \end{tabular}
 \end{statebox}
@@ -362,97 +215,62 @@ $(\Vdc/2,\, 0)$ and radius $R = \sqrt{j_0^2 + (\vf_0 - \Vdc/2)^2}$.
 
 \begin{physbox}
 \textbf{ZVS condition:} $\vf$ must reach $\Vdc$ (or 0 for the reverse
-transition) before the main switch $S_1$ (or $S_2$) fires.  This requires the
-circular trajectory to reach the upper rail — i.e., the radius $R$ must satisfy
-$R \geq \Vdc/2 - |\vf_0 - \Vdc/2|$.
+transition) before the main switch fires.  The circular trajectory must reach
+the upper rail, requiring radius $R \geq \Vdc/2$.
 
 \textbf{Role of the boost phase:} Before the resonant swing, $A_1$ is turned on
-and $\ir$ ramps up linearly.  This pre-charges the inductor to give the circle
-enough radius to reach the rail.  If $\IL$ is already large enough, no boost is
-needed (high-current case, see Section~\ref{sec:P1Fig9}).
+and $\ir$ ramps up linearly, pre-charging $\Lr$ to give the circle enough radius
+to reach the rail.  This is explained step-by-step in Section~\ref{sec:P1Fig7}.
 
-\textbf{Why $\Cr$ must be small:} A larger $\Cr$ stores more energy at the pole
-node, requiring a larger $\ir$ to swing it.  The trade-off is: smaller $\Cr$
-reduces commutation energy but increases $dv/dt$ on the main switch.
+\textbf{Why $\Cr$ must be small:} A larger $\Cr$ requires a larger $\ir$ to
+swing $\vf$ rail-to-rail.  Smaller $\Cr$ reduces commutation energy but
+increases $dv/dt$ on the main switch.
 \end{physbox}
 
 % ============================================================
-\subsection{P1 Fig.\,6 — ARCP ac-to-ac Converter (System View)}
-\label{sec:P1Fig6}
-
-% \figentry{fig:P1Fig6}{P1_Fig6_ARCP_ac_to_ac_system.png}
-%          {ARCP ac-to-ac Converter — full three-phase system.
-%           Source: De Doncker \& Lyons, IEEE IAS 1990, p.\,3.}{0.85}
-
-\begin{circuitbox}[Circuit Description — P1 Fig.\,6]
-The full ac-to-ac system built from ARCP pole legs:
-\begin{itemize}
-    \item Three pole legs (one per phase), each with the structure of Fig.\,5
-    \item Each leg has its own auxiliary branch ($A_{1x}$, $A_{2x}$, $\Lr_x$,
-          $\Cr_x$) — the auxiliary circuits do not interact across phases
-    \item The DC bus is shared; individual phase legs commutate independently
-    \item Load is a three-phase AC motor or filter
-\end{itemize}
-\end{circuitbox}
-
-\begin{physbox}
-This figure establishes the \textbf{scope of the ARCP}: it is a drop-in
-replacement for a hard-switched inverter pole.  The control hardware must
-generate one set of auxiliary gate signals per phase, fired before each
-main switch transition.  The outer PWM modulator operates exactly as in a
-hard-switched VSI — only the per-commutation timing sub-routine changes.
-\end{physbox}
-
-% ============================================================
-\section{Commutation Sequences}
-% ============================================================
-
-\subsection{P1 Fig.\,7 — Commutation from a Conducting Diode (States a–g)}
+\section{Commutation from a Conducting Diode — P1 Fig.\,7}
 \label{sec:P1Fig7}
+% ============================================================
 
-% Each sub-figure is a separate PNG. Uncomment as you extract each one.
-% They are arranged in a 2-column grid using subfigure.
-
-% ---- Overview grid (all 7 states together) ----
 \begin{figure}[H]
 \centering
 % Row 1
 \begin{subfigure}[b]{0.30\textwidth}
-  % \includegraphics[width=\textwidth]{P1_Fig7a_state1_D2_conducting}
+  \includegraphics[width=\textwidth]{P1_Fig7a_state1_D2_conducting}
   \caption*{\textbf{(a)} $D_2$ conducts\\$\vf=0,\ \ir=0$}
   \label{fig:P1Fig7a}
 \end{subfigure}\hfill
 \begin{subfigure}[b]{0.30\textwidth}
-  % \includegraphics[width=\textwidth]{P1_Fig7b_state2_A1_boost_start}
+  \includegraphics[width=\textwidth]{P1_Fig7b_state2_A1_boost_start}
   \caption*{\textbf{(b)} $A_1$ fires\\$\ir$ ramps up}
   \label{fig:P1Fig7b}
 \end{subfigure}\hfill
 \begin{subfigure}[b]{0.30\textwidth}
-  % \includegraphics[width=\textwidth]{P1_Fig7c_state3_boost_complete}
+  \includegraphics[width=\textwidth]{P1_Fig7c_state3_boost_complete}
   \caption*{\textbf{(c)} Boost complete\\swing begins}
   \label{fig:P1Fig7c}
 \end{subfigure}
 \\[0.8em]
 % Row 2
 \begin{subfigure}[b]{0.30\textwidth}
-  % \includegraphics[width=\textwidth]{P1_Fig7d_state4_resonant_swing}
+  \includegraphics[width=\textwidth]{P1_Fig7d_state4_resonant_swing}
   \caption*{\textbf{(d)} LC resonant\\swing ($\vf \to \Vdc$)}
   \label{fig:P1Fig7d}
 \end{subfigure}\hfill
 \begin{subfigure}[b]{0.30\textwidth}
-  % \includegraphics[width=\textwidth]{P1_Fig7e_state5_upper_diode_clamp}
+  \includegraphics[width=\textwidth]{P1_Fig7e_state5_upper_diode_clamp}
   \caption*{\textbf{(e)} $D_1$ clamps\\$\vf = \Vdc$, ZVS ready}
   \label{fig:P1Fig7e}
 \end{subfigure}\hfill
 \begin{subfigure}[b]{0.30\textwidth}
-  % \includegraphics[width=\textwidth]{P1_Fig7f_state6_ir_ramps_down}
+  \includegraphics[width=\textwidth]{P1_Fig7f_state6_ir_ramps_down}
   \caption*{\textbf{(f)} $\ir \to 0$\\$S_1$ fires at ZVS}
   \label{fig:P1Fig7f}
 \end{subfigure}
 \\[0.8em]
 % Row 3 (final state, centred)
 \begin{subfigure}[b]{0.30\textwidth}
-  % \includegraphics[width=\textwidth]{P1_Fig7g_state7_S1_steady}
+  \includegraphics[width=\textwidth]{P1_Fig7g_state7_S1_steady}
   \caption*{\textbf{(g)} $S_1$ conducts\\$\ir=0$, steady state}
   \label{fig:P1Fig7g}
 \end{subfigure}
@@ -461,21 +279,19 @@ hard-switched VSI — only the per-commutation timing sub-routine changes.
 \label{fig:P1Fig7_all}
 \end{figure}
 
-% ---- Per-state analysis table ----
-
 \begin{circuitbox}[State-by-State Circuit Description — P1 Fig.\,7a–g]
 \renewcommand{\arraystretch}{1.35}
 \begin{tabular}{p{0.6cm} p{2.8cm} p{3.5cm} p{5.0cm}}
 \toprule
 \textbf{State} & \textbf{Active devices} & \textbf{Pole voltage $\vf$} & \textbf{Inductor current $\ir$} \\
 \midrule
-(a) & $D_2$ conducts & $\vf = 0$ (clamped to lower rail) & $\ir = 0$; no current in aux. branch \\
-(b) & $A_1$ ON, $D_2$ & $\vf = 0$ (still clamped) & $\ir$ ramps up linearly: $\dot{\ir} = \Vdc/2\Lr$ \\
-(c) & $A_1$ ON, $D_2$ & $\vf = 0$ & $\ir = \IL + i_\text{boost}$; boost ends, $A_1$ off \\
-(d) & $\Lr$--$\Cr$ free & $\vf$ swings $0 \to \Vdc$ sinusoidally & $\ir$ follows LC circle trajectory \\
-(e) & $D_1$ clamps & $\vf = \Vdc$ (clamped to upper rail) & $\ir = I_\text{peak}$; ZVS condition satisfied \\
-(f) & $D_1$, $\Lr$ & $\vf = \Vdc$ (clamped) & $\ir$ ramps back down: $\dot{\ir} = -\Vdc/2\Lr$ \\
-(g) & $S_1$ ON & $\vf = \Vdc$ (steady) & $\ir = 0$; aux. branch fully off \\
+(a) & $D_2$ conducts        & $\vf = 0$ (clamped to lower rail)  & $\ir = 0$; no current in aux.\ branch \\
+(b) & $A_1$ ON, $D_2$       & $\vf = 0$ (still clamped)          & $\ir$ ramps up linearly: $\dot{\ir} = \Vdc/2\Lr$ \\
+(c) & $A_1$ ON, $D_2$       & $\vf = 0$                          & $\ir = \IL + i_\text{boost}$; boost ends, $A_1$ off \\
+(d) & $\Lr$--$\Cr$ free     & $\vf$ swings $0 \to \Vdc$ sinusoidally & $\ir$ follows LC circle trajectory \\
+(e) & $D_1$ clamps          & $\vf = \Vdc$ (clamped to upper rail) & $\ir = I_\text{peak}$; ZVS condition satisfied \\
+(f) & $D_1$, $\Lr$          & $\vf = \Vdc$ (clamped)             & $\ir$ ramps back down: $\dot{\ir} = -\Vdc/2\Lr$ \\
+(g) & $S_1$ ON              & $\vf = \Vdc$ (steady)              & $\ir = 0$; aux.\ branch fully off \\
 \bottomrule
 \end{tabular}
 \end{circuitbox}
@@ -485,11 +301,11 @@ hard-switched VSI — only the per-commutation timing sub-routine changes.
 \toprule
 Symbol & Meaning & Value at key instants \\
 \midrule
-$\vf$            & Pole-node voltage     & $0$ (states a--c) $\to \Vdc$ (states e--g) \\
-$\ir$            & Auxiliary current     & $0 \to I_\text{peak} \to 0$ \\
-$i_\text{boost}$ & Boost increment       & Control parameter; set by outer loop \\
+$\vf$            & Pole-node voltage      & $0$ (states a--c) $\to \Vdc$ (states e--g) \\
+$\ir$            & Auxiliary current      & $0 \to I_\text{peak} \to 0$ \\
+$i_\text{boost}$ & Boost increment        & Control parameter; set by outer loop \\
 $I_\text{peak}$  & Peak auxiliary current & Occurs at end of state (d) \\
-$T_\text{boost}$ & Boost phase duration  & States (b)--(c) \\
+$T_\text{boost}$ & Boost phase duration   & States (b)--(c) \\
 $T_\text{res}$   & Resonant swing duration & State (d) only \\
 \bottomrule
 \end{tabular}
@@ -520,7 +336,7 @@ Solution with initial conditions $\vf(0)=0$, $\ir(0)=\IL+i_\text{boost}$:
     \label{eq:ir_swing}
 \end{align}
 
-\textbf{Peak current} (at end of state d, i.e.\ when $\vf = \Vdc$):
+\textbf{Peak current} (at end of state d, when $\vf = \Vdc$):
 \begin{equation}
     I_\text{peak} = \IL + i_\text{boost} + \frac{\Vdc}{2\Zr}
     \label{eq:Ipeak_diode}
@@ -541,259 +357,29 @@ Solution with initial conditions $\vf(0)=0$, $\ir(0)=\IL+i_\text{boost}$:
 \end{eqnbox}
 
 \begin{physbox}
-\textbf{Why seven states?}  Each state corresponds to a distinct set of
-conducting devices, so the circuit topology — and therefore the governing
-equation — changes at each transition.
+\textbf{Why seven states?} Each state has a distinct set of conducting devices,
+so the governing equation changes at each transition.
 
 \textbf{States (a)--(c)} are purely inductive: $\vf$ is pinned to 0 by $D_2$,
-so all the DC bus voltage appears across $\Lr$ and drives a linear current ramp.
-This is \emph{energy storage}, not switching.
+so the full $\Vdc/2$ appears across $\Lr$ and drives a linear current ramp.
+This is energy storage, not switching.
 
 \textbf{State (d)} is the only state where the LC oscillator is active.
 The circular trajectory in the $(\vf,\, \ir-\IL)$ phase plane must reach
-$\vf = \Vdc$ for ZVS to be achieved.  Radius of the circle:
+$\vf = \Vdc$ for ZVS.  Circle radius:
 $R = \sqrt{i_\text{boost}^2 + (\Vdc/2\Zr)^2}$.
-ZVS requires $R \geq \Vdc/2$, which is automatically satisfied when
-$i_\text{boost} \geq 0$.
+ZVS is satisfied when $i_\text{boost} \geq 0$.
 
 \textbf{State (f)} recovers residual energy from $\Lr$ back into the DC bus
-through $D_1$; this is why the auxiliary circuit is lossless in the ideal case.
+through $D_1$ — this is why the auxiliary circuit is lossless in the ideal case.
 
-\textbf{State (g)} is the new idle state.  The sequence (a)$\to$(g) is the
+\textbf{State (g)} is the new idle state. The sequence (a)$\to$(g) is the
 complete low-to-high transition; the symmetric high-to-low uses $A_2$ instead
 of $A_1$ and is the mirror image.
 \end{physbox}
 
 % ============================================================
-\subsection{P1 Fig.\,8 — Commutation from Switch at Low Current}
-\label{sec:P1Fig8}
-
-% Each sub-figure is a separate PNG. Uncomment as you extract each one.
-% Five states in a 3+2 grid.
-
-\begin{figure}[H]
-\centering
-% Row 1
-\begin{subfigure}[b]{0.30\textwidth}
-  % \includegraphics[width=\textwidth]{P1_Fig8a_state1_S2_conducting}
-  \caption*{\textbf{(a)} $S_2$ on\\$\vf=0,\ \ir=0$}
-  \label{fig:P1Fig8a}
-\end{subfigure}\hfill
-\begin{subfigure}[b]{0.30\textwidth}
-  % \includegraphics[width=\textwidth]{P1_Fig8b_state2_A1_fires_S2_on}
-  \caption*{\textbf{(b)} $A_1$ fires\\$\ir$ ramps, $S_2$ on}
-  \label{fig:P1Fig8b}
-\end{subfigure}\hfill
-\begin{subfigure}[b]{0.30\textwidth}
-  % \includegraphics[width=\textwidth]{P1_Fig8c_state3_S2_commutates}
-  \caption*{\textbf{(c)} $S_2$ off, $D_2$ clamps\\boost continues}
-  \label{fig:P1Fig8c}
-\end{subfigure}
-\\[0.8em]
-% Row 2 (centred pair)
-\begin{subfigure}[b]{0.30\textwidth}
-  % \includegraphics[width=\textwidth]{P1_Fig8d_state4_resonant_swing}
-  \caption*{\textbf{(d)} LC resonant\\swing ($\vf \to \Vdc$)}
-  \label{fig:P1Fig8d}
-\end{subfigure}\hfill
-\begin{subfigure}[b]{0.30\textwidth}
-  % \includegraphics[width=\textwidth]{P1_Fig8e_state5_S1_ZVS_on}
-  \caption*{\textbf{(e)} $D_1$ clamps\\$S_1$ fires at ZVS}
-  \label{fig:P1Fig8e}
-\end{subfigure}
-\caption{P1 Fig.\,8 — Commutation from Switch at Low Current: five switching states (a)--(e).
-         Source: De Doncker \& Lyons, IEEE IAS 1990, p.\,5.}
-\label{fig:P1Fig8_all}
-\end{figure}
-
-% ---- Per-state analysis table ----
-
-\begin{circuitbox}[State-by-State Circuit Description — P1 Fig.\,8a–e]
-\renewcommand{\arraystretch}{1.35}
-\begin{tabular}{p{0.6cm} p{3.0cm} p{3.5cm} p{4.8cm}}
-\toprule
-\textbf{State} & \textbf{Active devices} & \textbf{Pole voltage $\vf$} & \textbf{Inductor current $\ir$} \\
-\midrule
-(a) & $S_2$ conducts & $\vf = 0$ (clamped by $S_2$) & $\ir = 0$; no current in aux.\ branch \\
-(b) & $A_1$ ON, $S_2$ & $\vf = 0$ (still clamped) & $\ir$ ramps up: $\dot{\ir} = \Vdc/2\Lr$; $S_2$ carrying $\IL - \ir$ \\
-(c) & $A_1$ ON, $D_2$ & $\vf = 0$ (clamped by $D_2$) & $S_2$ current $\to 0$; $S_2$ turns off; $\ir$ ramps to $\IL + i_\text{boost}$ \\
-(d) & $\Lr$--$\Cr$ free & $\vf$ swings $0 \to \Vdc$ sinusoidally & $\ir$ follows LC circle trajectory \\
-(e) & $D_1$ clamps & $\vf = \Vdc$ (clamped to upper rail) & $\ir$ ramps down; $S_1$ fires at ZVS; $\ir \to 0$ \\
-\bottomrule
-\end{tabular}
-\end{circuitbox}
-
-\begin{eqnbox}
-\textbf{Why $2\IL$ in the timing formula?}
-When $A_1$ fires (state b), $S_2$ is still conducting: the $\Vdc/2$ rail voltage
-drives $\ir$ upward at rate $\Vdc/2\Lr$.  The switch $S_2$ carries the
-\emph{difference} $\IL - \ir$; it turns off naturally once $\ir = \IL$.
-The boost then continues to $\IL + i_\text{boost}$, adding another
-$\Lr\,i_\text{boost}/({\Vdc/2})$.  Total ramp time:
-\begin{equation}
-    T_\text{boost} = \frac{2\Lr(\IL + i_\text{boost})}{\Vdc}
-                   + \frac{2\Lr\,\IL}{\Vdc}
-                   = \frac{2\Lr(2\IL + i_\text{boost})}{\Vdc}
-    \label{eq:T_boost_switch_low}
-\end{equation}
-
-\textbf{Total commutation time} (states b through e):
-\begin{equation}
-    T_c = \frac{2\Lr(2\IL + i_\text{boost})}{\Vdc} + \pi\sqrt{\Lr\Cr}
-    \label{eq:T_comm_switch_low}
-\end{equation}
-\end{eqnbox}
-
-% ============================================================
-\subsection{P1 Fig.\,9 — Commutation from Switch at High Current}
-\label{sec:P1Fig9}
-
-% Each sub-figure is a separate PNG. Uncomment as you extract each one.
-% Three states in a single row.
-
-\begin{figure}[H]
-\centering
-\begin{subfigure}[b]{0.30\textwidth}
-  % \includegraphics[width=\textwidth]{P1_Fig9a_state1_S2_high_current}
-  \caption*{\textbf{(a)} $S_2$ on, $\IL \geq I_{th}$\\no boost needed}
-  \label{fig:P1Fig9a}
-\end{subfigure}\hfill
-\begin{subfigure}[b]{0.30\textwidth}
-  % \includegraphics[width=\textwidth]{P1_Fig9b_state2_natural_swing}
-  \caption*{\textbf{(b)} $S_2$ off\\$\IL$ charges $C_r$}
-  \label{fig:P1Fig9b}
-\end{subfigure}\hfill
-\begin{subfigure}[b]{0.30\textwidth}
-  % \includegraphics[width=\textwidth]{P1_Fig9c_state3_S1_ZVS_on}
-  \caption*{\textbf{(c)} $D_1$ clamps\\$S_1$ fires at ZVS}
-  \label{fig:P1Fig9c}
-\end{subfigure}
-\caption{P1 Fig.\,9 — Commutation from Switch at High Current: three switching states (a)--(c).
-         Source: De Doncker \& Lyons, IEEE IAS 1990, p.\,6.}
-\label{fig:P1Fig9_all}
-\end{figure}
-
-% ---- Per-state analysis table ----
-
-\begin{circuitbox}[State-by-State Circuit Description — P1 Fig.\,9a–c]
-\renewcommand{\arraystretch}{1.35}
-\begin{tabular}{p{0.6cm} p{3.0cm} p{3.5cm} p{4.8cm}}
-\toprule
-\textbf{State} & \textbf{Active devices} & \textbf{Pole voltage $\vf$} & \textbf{Inductor/load current} \\
-\midrule
-(a) & $S_2$ conducts & $\vf = 0$ & $\ir = 0$; $\IL \geq I_{th}$; no auxiliary action \\
-(b) & $C_r$ charges naturally & $\vf$ rises: $\dot{\vf} = \IL/2\Cr$ (linear) & $\ir = 0$; load current $\IL$ alone swings $\vf$ \\
-(c) & $D_1$ clamps & $\vf = \Vdc$ (ZVS condition met) & $S_1$ fires at zero voltage; commutation done \\
-\bottomrule
-\end{tabular}
-\end{circuitbox}
-
-\begin{eqnbox}
-Load current threshold above which no auxiliary boost is needed:
-\begin{equation}
-    I_{th} = \frac{2\Cr\Vdc}{T_\text{max}}
-    \label{eq:Ith}
-\end{equation}
-When $\IL \geq I_{th}$, the load current alone charges $\Cr$ at rate
-$\dot{\vf} = \IL/2\Cr$, completing the rail-to-rail swing within the
-allowed commutation window $T_\text{max}$.
-
-\textbf{Time for natural swing} (state b):
-\begin{equation}
-    T_\text{swing} = \frac{2\Cr\Vdc}{\IL} \leq T_\text{max}
-    \qquad (\text{satisfied iff } \IL \geq I_{th})
-    \label{eq:T_swing_high}
-\end{equation}
-\end{eqnbox}
-
-\begin{physbox}
-This is the control decision boundary.  The outer current loop compares
-$|\IL|$ to $I_{th}$ on every switching cycle:
-\begin{itemize}
-    \item $|\IL| < I_{th}$ (low-current path, Fig.\,8): fire $A_1$ for
-          duration $T_\text{boost}$; auxiliary current assists commutation.
-    \item $|\IL| \geq I_{th}$ (high-current path, Fig.\,9): skip boost entirely;
-          load current alone charges $\Cr$ to $\Vdc$ in time $\leq T_\text{max}$.
-\end{itemize}
-The three-state sequence is the fastest possible commutation: only one linear
-ramp, no resonant swing, no auxiliary switch firing.  Auxiliary switch stress and
-conduction losses are minimised at high load.
-\end{physbox}
-
-% ============================================================
-\section{Simulated Waveforms}
-% ============================================================
-
-\subsection{P1 Fig.\,10 — Commutation Waveforms at Low Current}
-\label{sec:P1Fig10}
-
-% \figentry{fig:P1Fig10}{P1_Fig10_waveforms_low_current.png}
-%          {Simulated ARCP commutation waveforms at low load current.
-%           Source: De Doncker \& Lyons, IEEE IAS 1990, p.\,7.}{0.85}
-
-\begin{circuitbox}[What to Read in This Waveform — P1 Fig.\,10]
-The figure shows time traces of $\vf(t)$ and $\ir(t)$ during a single
-low-to-high commutation event at $\IL < I_{th}$:
-\begin{itemize}
-    \item \textbf{Trace 1} ($\ir$): starts at 0, ramps linearly during boost
-          (states b--c), then follows a sinusoidal arc during the LC swing
-          (state d), then ramps back down to 0 (states e--f)
-    \item \textbf{Trace 2} ($\vf$): stays at 0 during the boost phase,
-          then sweeps from 0 to $\Vdc$ sinusoidally, then clamps at $\Vdc$
-    \item \textbf{Gate signals}: $A_1$ pulse width $= T_\text{boost}$;
-          $S_1$ fires at the moment $\ir$ returns to 0 (ZVS confirmed)
-\end{itemize}
-\end{circuitbox}
-
-\begin{physbox}
-\textbf{How to verify ZVS from the waveform:}
-$S_1$ must fire only while $\vf = \Vdc$ and while $\ir$ is decreasing
-toward 0.  If $S_1$ fires before $\vf$ reaches $\Vdc$, hard-switching
-occurs.  Check that the $S_1$ gate pulse begins \emph{after} $\vf$
-reaches the upper rail and \emph{before} $\ir$ returns to 0.
-
-\textbf{Key measurable time intervals:}
-\begin{align*}
-    T_\text{boost} &= \frac{2\Lr\,i_\text{boost}}{\Vdc}
-    & &\text{(width of A}_1\text{ pulse)} \\[4pt]
-    T_\text{res}   &= \pi\sqrt{\Lr\Cr}
-    & &\text{(duration of } \vf \text{ swing, state d)}
-\end{align*}
-\end{physbox}
-
-% ============================================================
-\subsection{P1 Fig.\,11 — Commutation Waveforms at High Current}
-\label{sec:P1Fig11}
-
-% \figentry{fig:P1Fig11}{P1_Fig11_waveforms_high_current.png}
-%          {Simulated ARCP commutation waveforms at high load current.
-%           Source: De Doncker \& Lyons, IEEE IAS 1990, p.\,7.}{0.85}
-
-\begin{circuitbox}[What to Read in This Waveform — P1 Fig.\,11]
-Same axes as Fig.\,10, but with $\IL \geq I_{th}$ (high-current case):
-\begin{itemize}
-    \item \textbf{No $A_1$ pulse}: auxiliary switch does not fire at all
-    \item \textbf{$\ir$ stays at 0}: the auxiliary branch is dormant
-    \item \textbf{$\vf$ ramp}: $\vf$ rises linearly at rate $\IL/2\Cr$
-          driven entirely by the load current charging $\Cr$
-    \item \textbf{Faster commutation}: without a boost or resonant swing,
-          the transition from 0 to $\Vdc$ is a straight ramp
-\end{itemize}
-\end{circuitbox}
-
-\begin{physbox}
-Compare Fig.\,10 and Fig.\,11 side by side:
-\begin{itemize}
-    \item Fig.\,10 (low $I$): $\vf$ swing is sinusoidal — LC oscillation
-    \item Fig.\,11 (high $I$): $\vf$ swing is linear — pure capacitor charging
-\end{itemize}
-The crossover happens at $I_{th} = 2\Cr\Vdc/T_\text{max}$.  Above $I_{th}$,
-no auxiliary energy is needed; below it, the auxiliary boost stores the
-missing energy in $\Lr$ to complete the swing.
-\end{physbox}
-
-% ============================================================
-\section{Master Figure Reference Table — Paper 1}
+\section{Master Figure Reference Table}
 % ============================================================
 
 \begin{longtable}{p{5.8cm} p{1.0cm} p{1.5cm} p{5.0cm}}
@@ -801,75 +387,18 @@ missing energy in $\Lr$ to complete the swing.
 \textbf{Filename (omit \texttt{.png})} & \textbf{Pg} & \textbf{Section} & \textbf{Key Equation(s)} \\
 \midrule
 \endhead
-\texttt{P1\_Fig1\_resonant\_pole\_inverter}    & 1   & \ref{sec:P1Fig1}  & \eqref{eq:omega_r}, \eqref{eq:Z_r} \\
-\texttt{P1\_Fig2\_resonant\_pole\_load\_side}  & 1   & \ref{sec:P1Fig2}  & — \\
-\texttt{P1\_Fig3\_ARDPI\_topology}             & 2   & \ref{sec:P1Fig3}  & — \\
-\texttt{P1\_Fig4\_ARPI\_topology}              & 2   & \ref{sec:P1Fig4}  & — \\
-\texttt{P1\_Fig5\_ARCP\_pole\_leg}             & 3   & \ref{sec:P1Fig5}  & \eqref{eq:dvf_dt}--\eqref{eq:shifted_states} \\
-\texttt{P1\_Fig6\_ARCP\_ac\_to\_ac\_system}    & 3   & \ref{sec:P1Fig6}  & — \\
+\texttt{P1\_Fig5\_ARCP\_pole\_leg}              & 3    & \ref{sec:P1Fig5}  & \eqref{eq:dvf_dt}--\eqref{eq:shifted_states} \\
 \midrule
-\texttt{P1\_Fig7a\_state1\_D2\_conducting}     & 4   & \ref{sec:P1Fig7}  & — \\
-\texttt{P1\_Fig7b\_state2\_A1\_boost\_start}   & 4   & \ref{sec:P1Fig7}  & \eqref{eq:T_boost} \\
-\texttt{P1\_Fig7c\_state3\_boost\_complete}    & 4   & \ref{sec:P1Fig7}  & \eqref{eq:T_boost} \\
-\texttt{P1\_Fig7d\_state4\_resonant\_swing}    & 4--5 & \ref{sec:P1Fig7} & \eqref{eq:swing_ode}--\eqref{eq:ir_swing} \\
-\texttt{P1\_Fig7e\_state5\_upper\_diode\_clamp}& 5   & \ref{sec:P1Fig7}  & \eqref{eq:Ipeak_diode} \\
-\texttt{P1\_Fig7f\_state6\_ir\_ramps\_down}    & 5   & \ref{sec:P1Fig7}  & \eqref{eq:T_comm_diode} \\
-\texttt{P1\_Fig7g\_state7\_S1\_steady}         & 5   & \ref{sec:P1Fig7}  & — \\
-\midrule
-\texttt{P1\_Fig8a\_state1\_S2\_conducting}     & 5   & \ref{sec:P1Fig8}  & — \\
-\texttt{P1\_Fig8b\_state2\_A1\_fires\_S2\_on}  & 5   & \ref{sec:P1Fig8}  & \eqref{eq:T_boost_switch_low} \\
-\texttt{P1\_Fig8c\_state3\_S2\_commutates}     & 5   & \ref{sec:P1Fig8}  & \eqref{eq:T_boost_switch_low} \\
-\texttt{P1\_Fig8d\_state4\_resonant\_swing}    & 5   & \ref{sec:P1Fig8}  & \eqref{eq:swing_ode} \\
-\texttt{P1\_Fig8e\_state5\_S1\_ZVS\_on}        & 5   & \ref{sec:P1Fig8}  & \eqref{eq:T_comm_switch_low} \\
-\midrule
-\texttt{P1\_Fig9a\_state1\_S2\_high\_current}  & 6   & \ref{sec:P1Fig9}  & \eqref{eq:Ith} \\
-\texttt{P1\_Fig9b\_state2\_natural\_swing}     & 6   & \ref{sec:P1Fig9}  & \eqref{eq:T_swing_high} \\
-\texttt{P1\_Fig9c\_state3\_S1\_ZVS\_on}        & 6   & \ref{sec:P1Fig9}  & — \\
-\midrule
-\texttt{P1\_Fig10\_waveforms\_low\_current}    & 7   & \ref{sec:P1Fig10} & \eqref{eq:T_boost}, \eqref{eq:T_res} \\
-\texttt{P1\_Fig11\_waveforms\_high\_current}   & 7   & \ref{sec:P1Fig11} & \eqref{eq:T_swing_high} \\
+\texttt{P1\_Fig7a\_state1\_D2\_conducting}      & 4    & \ref{sec:P1Fig7}  & — \\
+\texttt{P1\_Fig7b\_state2\_A1\_boost\_start}    & 4    & \ref{sec:P1Fig7}  & \eqref{eq:T_boost} \\
+\texttt{P1\_Fig7c\_state3\_boost\_complete}     & 4    & \ref{sec:P1Fig7}  & \eqref{eq:T_boost} \\
+\texttt{P1\_Fig7d\_state4\_resonant\_swing}     & 4--5 & \ref{sec:P1Fig7}  & \eqref{eq:swing_ode}--\eqref{eq:ir_swing} \\
+\texttt{P1\_Fig7e\_state5\_upper\_diode\_clamp} & 5    & \ref{sec:P1Fig7}  & \eqref{eq:Ipeak_diode} \\
+\texttt{P1\_Fig7f\_state6\_ir\_ramps\_down}     & 5    & \ref{sec:P1Fig7}  & \eqref{eq:T_comm_diode} \\
+\texttt{P1\_Fig7g\_state7\_S1\_steady}          & 5    & \ref{sec:P1Fig7}  & — \\
 \bottomrule
-\caption{All 21 P1 figures mapped to sections and equations.
-         Extract each PNG from the paper and place in \texttt{./figures/}.}
+\caption{Currently available figures (8 PNGs). Add rows as new figures are extracted.}
 \label{tab:master_index}
 \end{longtable}
-
-% ============================================================
-\appendix
-\section{How to Add a New Figure Section}
-% ============================================================
-
-Copy the template below and fill in the \texttt{TODO} fields:
-
-\begin{verbatim}
-\subsection{PX FigY — [Caption from paper]}
-\label{sec:PXFigY}
-
-\figentry{fig:PXFigY}{PX_FigY_description.png}
-         {[Caption]. Source: [Authors], p.\,[N].}{0.75}
-
-\begin{circuitbox}[Circuit Description — PX FigY]
-TODO: describe components and connections
-\end{circuitbox}
-
-\begin{statebox}
-\begin{tabular}{lll}
-\toprule
-Symbol & Quantity & Value \\
-\midrule
-TODO
-\bottomrule
-\end{tabular}
-\end{statebox}
-
-\begin{eqnbox}
-TODO: derive equations from KVL/KCL on the circuit
-\end{eqnbox}
-
-\begin{physbox}
-TODO: what does this mean physically?
-energy flow, ZVS implications, design trade-offs
-\end{physbox}
-\end{verbatim}
 
 \end{document}
