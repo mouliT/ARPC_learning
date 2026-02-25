@@ -153,22 +153,26 @@ IEEE IAS Annual Meeting, 1990.
           Source: De Doncker \& Lyons, IEEE IAS 1990, p.\,3.}{0.75}
 
 \begin{circuitbox}[Circuit Description — P1 Fig.\,5]
-The ARCP adds an \textbf{auxiliary resonant branch} to a standard inverter pole leg:
+The ARCP pole leg consists of:
 \begin{itemize}
-    \item \textbf{Main devices}: $S_1$, $S_2$ (IGBTs/MOSFETs) with anti-parallel
-          diodes $D_1$, $D_2$
-    \item \textbf{Snubber capacitors}: $\Cr$ across each main switch (forms the
-          resonant capacitance at the pole node)
-    \item \textbf{Auxiliary resonant inductor}: $\Lr$ — center leg, carries
-          resonant current $\ir$
-    \item \textbf{Auxiliary switches}: $A_1$ (connected to $+\Vdc/2$) and
-          $A_2$ (connected to $-\Vdc/2$) — fire briefly to initiate the
-          resonant swing
-    \item \textbf{Pole node}: voltage $\vf$, the state variable that must
-          swing rail-to-rail before the main switch fires
+    \item \textbf{DC bus}: split into two equal halves by two $2C_{dc}$
+          capacitors, creating a midpoint rail at $\Vdc/2$
+    \item \textbf{Main upper device}: $S_1$ (IGBT) with anti-parallel diode
+          $D_1$; snubber capacitor $\Cr/2$ across $S_1$
+    \item \textbf{Main lower device}: $S_2$ (IGBT) with anti-parallel diode
+          $D_2$; snubber capacitor $\Cr/2$ across $S_2$
+    \item \textbf{Pole node}: the junction of $S_1$ and $S_2$; voltage $\vf$
+          swings between 0 and $\Vdc$ during commutation
+    \item \textbf{Auxiliary switches}: $A_1$ and $A_2$ are back-to-back
+          bidirectional switches (p-channel MCTs) connected between the
+          \emph{DC bus midpoint} and the resonant inductor $\Lr$
+    \item \textbf{Resonant inductor}: $\Lr$ connects from the $A_1$/$A_2$
+          pair to the pole node; carries auxiliary current $\ir$
+    \item \textbf{Load}: filter inductor $L_F$ and load current $I_F$ at
+          the pole node; $V_F$ is the filtered output voltage
 \end{itemize}
-The auxiliary branch ($A_1$--$\Lr$--$A_2$) is \emph{only active during
-commutation}. At steady state it carries zero current.
+The auxiliary branch ($A_1$--$A_2$--$\Lr$) is \emph{only active during
+commutation}. At steady state $\ir = 0$.
 \end{circuitbox}
 
 \begin{statebox}
