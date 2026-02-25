@@ -176,17 +176,18 @@ commutation}. At steady state $\ir = 0$.
 \end{circuitbox}
 
 \begin{statebox}
-\begin{tabular}{lll}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{p{0.12\linewidth} p{0.32\linewidth} p{0.46\linewidth}}
 \toprule
-Symbol & Quantity & Role \\
+\textbf{Symbol} & \textbf{Quantity} & \textbf{Role} \\
 \midrule
-$\vf$       & Pole-node voltage          & Primary state variable; must reach $\Vdc$ or 0 for ZVS \\
-$\ir$       & Auxiliary inductor current & Secondary state variable; drives $\Cr$ swing \\
-$\IL$       & Load current (quasi-static)& Disturbance input during commutation \\
-$\Vdc$      & DC bus voltage             & Forcing potential \\
-$\Lr$       & Auxiliary inductance       & Sets boost ramp rate and resonant frequency \\
-$\Cr$       & Snubber capacitance        & Sets resonant frequency and commutation speed \\
-$A_1, A_2$  & Auxiliary switches         & Gate-controlled; fire for $T_\text{boost}$ only \\
+$\vf$      & Pole-node voltage           & Primary state variable; swings 0 to $\Vdc$ during commutation \\
+$\ir$      & Auxiliary inductor current  & Secondary state variable; drives the $\Cr$ swing \\
+$\IL$      & Load current (quasi-static) & Treated as constant disturbance during commutation \\
+$\Vdc$     & DC bus voltage              & Forcing potential across the pole \\
+$\Lr$      & Auxiliary inductance        & Sets boost ramp rate and resonant frequency \\
+$\Cr$      & Snubber capacitance         & Sets resonant frequency and commutation speed \\
+$A_1, A_2$ & Auxiliary switches (MCTs)   & Fire for $T_\text{boost}$ duration only; silent otherwise \\
 \bottomrule
 \end{tabular}
 \end{statebox}
