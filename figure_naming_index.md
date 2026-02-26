@@ -33,8 +33,10 @@
 | `P1_Fig9b_state1_S2_conducting.png` | 6 | Commutation from Switch (High $I$) — State (a): $S_2$ on, $I_L \geq I_{th}$, no boost needed | $I_{th} = 2C_r V_{dc}/T_\text{max}$ | Natural commutation condition |
 | `P1_Fig9c_state2_natural_swing.png` | 6 | Commutation from Switch (High $I$) — State (b): $S_2$ off; load current alone charges $C_r$; $v_f$ swings $0 \to V_{dc}$ | $\dot{v}_f = I_L/(2C_r)$ | Load-driven cap charging |
 | `P1_Fig9d_state3_S1_ZVS_on.png` | 6 | Commutation from Switch (High $I$) — State (c): $D_1$ clamps at $v_f = V_{dc}$; $S_1$ fires at ZVS | ZVS achieved | Commutation complete |
-| `P1_Fig10_waveforms_low_current.png` | 7 | ARCP Commutation at Low Current | — | Simulated time traces ($V_f$, $i_r$) |
-| `P1_Fig11_waveforms_high_current.png` | 7 | ARCP Commutation at High Current | — | Simulated time traces ($V_f$, $i_r$) |
+| `P1_Fig10a_vf_low_current.png` | 7 | ARCP Commutation at Low Current — top panel: $v_f(t)$ | — | Simulated $v_f(t)$ time trace |
+| `P1_Fig10b_ir_low_current.png` | 7 | ARCP Commutation at Low Current — bottom panel: $i_r(t)$ | — | Simulated $i_r(t)$ time trace |
+| `P1_Fig11a_vf_high_current.png` | 7 | ARCP Commutation at High Current — top panel: $v_f(t)$ | — | Simulated $v_f(t)$ time trace |
+| `P1_Fig11b_ir_high_current.png` | 7 | ARCP Commutation at High Current — bottom panel: $i_r(t)$ | — | Simulated $i_r(t)$ time trace |
 
 ---
 
@@ -93,5 +95,6 @@
 | ⭐⭐⭐ | `P2_Fig3p4_state3_resonant_swing.png` | The two governing ODEs of the LC swing |
 | ⭐⭐ | `P1_Fig8a` – `P1_Fig8e` (5 files) | Low-current path: S2 turn-off + boost + resonant swing |
 | ⭐⭐ | `P1_Fig9a` – `P1_Fig9d` (4 files) | High-current natural commutation (no boost) |
+| ⭐⭐ | `P1_Fig10a/b` and `P1_Fig11a/b` (4 files) | Simulated $v_f$ and $i_r$ for low- and high-current commutation |
 | ⭐⭐ | `P2_Fig4p3_energy_loss_comparison.png` | Core motivation: ARCP vs hard-switching |
 | ⭐ | `P3_Fig8_toplevel_state_machine.png` | How physics maps to control logic |
