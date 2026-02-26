@@ -1132,6 +1132,113 @@ forward-biased and starts conducting.
 $D_1$ clamps $\vf$ at $\Vdc$, the resonant swing stops, and the circuit
 enters state~(e).
 
+% ── State (e) explanation ─────────────────────────────────────────────────────
+\subsection*{State (e) — $D_1$ clamps: ZVS window opens for $S_1$}
+
+\figentry{fig:P1Fig7e}{P1_Fig7e_state5_upper_diode_clamp}
+    {P1 Fig.\,7(e) — $D_1$ clamps $\vf = \Vdc$.
+     $A_2$ still on; $D_1$ conducts the excess current $\ir - \IL$
+     to the positive rail.
+     $S_1$ sees zero volts and is ready to be fired at ZVS.
+     Source: De~Doncker \& Lyons, IEEE IAS 1990, p.\,5.}{0.50}
+
+\textbf{Top panel (waveform) — what you see in the state\,(e) strip.}
+
+We are now in the \textit{S1/A2} strip of the waveform in
+\figref{fig:P1Fig7e}.
+\begin{itemize}
+    \item $\vf$ is flat at $\Vdc$ --- clamped by $D_1$.
+    \item $\ir$ is \emph{ramping downward} from its peak value
+          $I_\text{peak}$ at a constant slope.
+          The ramp is linear, mirroring the boost ramp of state~(b) but
+          in the opposite direction.
+\end{itemize}
+
+\medskip
+\textbf{Bottom panel (circuit snapshot) — $D_1$ and $A_2$ both conducting.}
+
+Two devices are bold in \figref{fig:P1Fig7e}: $D_1$ and $A_2$.
+\begin{itemize}
+    \item $A_2$ is still on --- for the same mandatory reason as in
+          state~(d): $\Lr$ is carrying $\ir > 0$ and must not be
+          open-circuited.
+    \item $D_1$ has just become forward-biased.
+          Its anode is at the pole node ($\vf = \Vdc$); its cathode is
+          at the positive DC rail ($\Vdc$).
+          The moment $\vf$ reached $\Vdc$, $D_1$ turned on and clamped
+          $\vf$ there.
+\end{itemize}
+
+\medskip
+\textbf{What $D_1$ clamping does to the current paths.}
+
+Before $D_1$ clamped (state~d), the excess current $\ir - \IL$ was
+flowing into the snubber capacitors, charging them and driving $\vf$
+upward.
+The moment $D_1$ conducts, it provides a \emph{lower-impedance} path
+from the pole node directly to the positive DC rail.
+The capacitors are now fully charged ($\Cr/2$ across $S_2$ is at $\Vdc$;
+$\Cr/2$ across $S_1$ is at 0\,V) and cannot change further because
+$D_1$ pins $\vf$.
+
+The current balance at the pole node is now:
+\begin{equation}
+    \ir = \IL + i_{D_1}, \qquad
+    i_{D_1} = \ir - \IL
+    \label{eq:stateE_kcl}
+\end{equation}
+$D_1$ carries the excess $\ir - \IL$ to the positive rail.
+
+\medskip
+\textbf{Why $\ir$ ramps down linearly.}
+
+With $A_2$ on and $\vf = \Vdc$ (held by $D_1$), the KVL around the
+auxiliary loop gives:
+\begin{equation}
+    \Lr\,\frac{d\ir}{dt} = \frac{\Vdc}{2} - \vf
+                         = \frac{\Vdc}{2} - \Vdc
+                         = -\frac{\Vdc}{2}
+    \quad\Longrightarrow\quad
+    \frac{d\ir}{dt} = -\frac{\Vdc}{2\Lr}
+    \label{eq:ir_rampdown}
+\end{equation}
+The right-hand side is a negative constant --- the same magnitude as the
+boost ramp of state~(b) but with opposite sign.
+$\ir$ therefore decreases at a \emph{constant rate}, tracing a straight
+line downward on the waveform.
+
+\medskip
+\textbf{The ZVS window --- why $S_1$ can now be fired for free.}
+
+The voltage across $S_1$ is $\Vdc - \vf$.
+With $D_1$ clamping $\vf = \Vdc$:
+\begin{equation*}
+    V_{S_1} = \Vdc - \vf = \Vdc - \Vdc = 0\,\text{V}
+\end{equation*}
+$S_1$ sees \emph{exactly zero volts} across it.
+Firing $S_1$ now costs zero switching energy:
+$P_\text{sw} = V_{S_1} \times I_{S_1} = 0$.
+This is the ZVS turn-on the entire commutation sequence was designed to
+achieve.
+
+The control must fire $S_1$ while $D_1$ is still conducting --- i.e.\
+before $\ir$ ramps down to $\IL$.
+If $S_1$ is fired too late (after $\ir < \IL$, so $i_{D_1} = 0$ and
+$D_1$ turns off), $\vf$ would leave $\Vdc$ and the ZVS window would be
+lost.
+
+\medskip
+\textbf{What ends this state.}
+
+The control fires $S_1$.
+Because $V_{S_1} = 0$, this is lossless.
+$S_1$ takes over the current $\ir$ from $D_1$; $D_1$ turns off (it was
+only conducting because the switch was not yet on).
+$A_2$ is turned off at the same moment --- since $S_1$ is now carrying
+the current, $\Lr$'s current path is maintained through $S_1$ rather
+than through $A_2$.
+The circuit enters state~(f).
+
 \begin{circuitbox}[State-by-State Circuit Description — P1 Fig.\,7a–g]
 \renewcommand{\arraystretch}{1.35}
 \begin{tabular}{p{0.6cm} p{2.8cm} p{3.5cm} p{5.0cm}}
