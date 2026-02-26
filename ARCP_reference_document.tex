@@ -1930,6 +1930,130 @@ If $\ir$ were non-zero, the resonant swing would start from a different initial
 point, potentially causing $D_2$ to clamp too early or too late --- both of
 which break the ZVS condition for $S_2$.
 
+% ── State (b) explanation ─────────────────────────────────────────────────────
+\subsection*{State (b) --- $A_1$ fires: the boost phase begins}
+
+\figentry{fig:P1Fig8c}{P1_Fig8c_state2_A1_boost_start}
+    {P1 Fig.\,8(c) [our state~(b)] --- $A_1$ fires: $\ir$ begins ramping
+     negatively from zero.
+     $S_1$ is still gated on and keeps $\vf = \Vdc$.
+     Top panel: $\ir$ dips downward linearly in the \textit{S1/A1} strip of
+     \figref{fig:P1Fig8a}.
+     Bottom panel: bold paths show $A_1$ and $S_1$ both conducting.
+     Source: De~Doncker \& Lyons, IEEE IAS 1990, p.\,5.}{0.50}
+
+\textbf{What triggers this state.}
+
+The control decides it is time to commutate the pole node from
+$\vf = \Vdc$ down to $\vf = 0$.
+It fires $A_1$ --- the upper half of the back-to-back bidirectional
+auxiliary switch pair on the left of the pole leg
+(see \figref{fig:P1Fig8c}, bottom panel).
+
+\medskip
+\textbf{Top panel (waveform) --- what you see in the state\,(b) strip.}
+
+We are now in the second strip of the waveform in \figref{fig:P1Fig8a},
+labelled \textit{S1/A1}.
+\begin{itemize}
+    \item $\ir$ starts falling from 0 in a straight line --- a
+          \emph{linear ramp in the negative direction}.
+          The slope is constant throughout this strip.
+    \item $\vf$ is still completely flat at $\Vdc$.
+          $S_1$ is clamping the pole node to the positive rail, so
+          $C_r$ does \emph{not} discharge during this state.
+\end{itemize}
+The downward dip in $\ir$ is the mirror image of the upward ramp seen
+in state~(b) of \figref{fig:P1Fig7a} (paper Fig.\,7), where $A_2$
+drove $\ir$ positive.
+
+\medskip
+\textbf{Bottom panel (circuit snapshot) --- two devices conducting at once.}
+
+Two current paths are active simultaneously:
+\begin{enumerate}
+    \item \textbf{The new $A_1$--$\Lr$ path.}
+          $A_1$ connects the DC bus midpoint (held at $\Vdc/2$ by the
+          two large $2C_{dc}$ bus capacitors) to one terminal of $\Lr$.
+          The other terminal of $\Lr$ connects to the pole node, which
+          is held at $\Vdc$ by $S_1$.
+          The voltage across $\Lr$ is therefore:
+          \[
+              V_{\Lr} = \Vdc - \frac{\Vdc}{2} = \frac{\Vdc}{2}
+              \qquad\text{(pole end positive, midpoint end negative)}
+          \]
+          Current is driven from the pole node, through $\Lr$, through
+          $A_1$, into the midpoint --- a \emph{downward} (negative)
+          flow.
+
+    \item \textbf{The continuing $S_1$--load path.}
+          The load current $\IL$ still flows from the positive rail
+          through $S_1$ to the pole node and on to the load.
+          But now the auxiliary branch is also drawing current
+          $|\ir|$ out of the pole node.
+          $S_1$ must supply both:
+          \[
+              I_{S_1} = \IL + |\ir|
+          \]
+          As $|\ir|$ grows, $S_1$ carries progressively more current.
+\end{enumerate}
+
+\medskip
+\textbf{Why the ramp is linear --- the inductor equation.}
+
+An inductor obeys $V_{\Lr} = \Lr\,\dfrac{d\ir}{dt}$.
+Because $V_{\Lr} = \Vdc/2$ and is \emph{constant} throughout this
+state (both $S_1$ and the bus midpoint hold their ends of $\Lr$ at
+fixed voltages), the ramp rate is constant:
+\begin{equation}
+    \frac{d\ir}{dt} = -\frac{\Vdc}{2\Lr}
+    \label{eq:boost_ramp_fig8}
+\end{equation}
+The negative sign reflects the downward direction.
+Starting from $\ir(0^-) = 0$:
+\begin{equation}
+    \ir(t) = -\frac{\Vdc}{2\Lr}\,t
+    \label{eq:ir_ramp_fig8}
+\end{equation}
+This is a straight line falling at a constant slope --- the linear dip
+visible in the \textit{S1/A1} strip of \figref{fig:P1Fig8a}.
+
+\medskip
+\textbf{Why $\Vdc/2$ and not $\Vdc$?}
+
+The auxiliary branch connects to the \emph{DC bus midpoint}, not to the
+negative rail.
+Using the midpoint halves the driving voltage and therefore halves the
+ramp rate, giving the control more time to hit its current target
+precisely.
+This is identical reasoning to state~(b) of \figref{fig:P1Fig7a}
+(paper Fig.\,7).
+
+\medskip
+\textbf{Why $S_1$ must remain on during this state.}
+
+This is the critical design choice of the low-current commutation.
+As shown in Step~7 of the Big~Picture, state~(b) is the
+\emph{pre-charge stage}: $\Lr$ is wound up with energy while $C_r$ is
+held frozen at $\Vdc$ by $S_1$.
+If $S_1$ were opened now, the LC resonance would begin immediately ---
+but with $|\ir|$ still too small, the resonant arc would not be wide
+enough to carry $\vf$ all the way from $\Vdc$ down to 0.
+$D_2$ would never clamp and ZVS of $S_2$ would fail.
+$S_1$ stays on \emph{exactly long enough} to charge $\Lr$ to the
+required current target before the swing begins.
+
+\medskip
+\textbf{What ends this state.}
+
+State~(b) ends when the control determines that $|\ir|$ has reached the
+target boost level --- enough stored energy in $\Lr$ to guarantee that
+the resonant swing in state~(c) will carry $\vf$ all the way to 0.
+At that moment the control gates \emph{$S_1$ off}.
+$A_1$ is \emph{not} turned off here; it stays on.
+With $S_1$ open, the pole node is freed and the LC resonance begins ---
+state~(c).
+
 % ============================================================
 \section{Master Figure Reference Table}
 % ============================================================
