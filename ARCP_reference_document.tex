@@ -2395,6 +2395,107 @@ When $\ir = 0$:
 The pole node is now in its new resting condition: $S_2$ on,
 $\vf = 0$, $\ir = 0$ --- state~(e).
 
+% ── State (e) explanation ─────────────────────────────────────────────────────
+\subsection*{State (e) --- $S_2$ steady: commutation complete}
+
+\figentry{fig:P1Fig8f}{P1_Fig8f_state5_S2_steady}
+    {P1 Fig.\,8(f) [our state~(e)] --- Steady lower conduction: $S_2$
+     carries $\IL$, $\ir = 0$, auxiliary branch off.
+     Source: De~Doncker \& Lyons, IEEE IAS 1990, p.\,5.}{0.50}
+
+State~(e) is the end of the downward commutation sequence.
+The circuit has returned to a simple, quiet steady state --- but on
+the \emph{opposite} rail from where it started.
+State~(a) had $S_1$ holding the pole node to the \emph{upper} rail
+with $\ir = 0$.
+State~(e) has $S_2$ holding the pole node to the \emph{lower} rail
+with $\ir = 0$.
+The ARCP has achieved what a hard-switched inverter would have done
+with a brutal voltage-step turn-off of $S_1$ --- but entirely without
+switching loss.
+
+\medskip
+\textbf{Top panel (waveform) --- what you see in the state\,(e) strip.}
+
+We are in the final strip of the waveform in \figref{fig:P1Fig8a},
+labelled \textit{D2} (it is labelled for the lower rail conduction;
+$S_2$ conducts in the same role).
+\begin{itemize}
+    \item $\vf$ is flat at 0\,V --- held by $S_2$.
+    \item $\ir = 0$.
+          The auxiliary inductor carries no current; the auxiliary
+          branch is completely idle.
+          Both waveforms are settled; nothing dynamic is happening.
+\end{itemize}
+
+\medskip
+\textbf{Bottom panel (circuit snapshot) --- only $S_2$ conducting.}
+
+Compare \figref{fig:P1Fig8f} with \figref{fig:P1Fig8b} (our state~a).
+They are the \emph{exact mirror images} of each other within Fig.\,8:
+state~(a) had only $S_1$ bold; state~(e) has only $S_2$ bold.
+Everything else --- $A_1$, $\Lr$, $D_1$, $D_2$, $S_1$ --- is off and
+carries no current.
+$A_1$ was gated off just before $\ir$ reached zero (state~d) and is
+now fully open.
+$\Lr$ is demagnetised: $\tfrac{1}{2}\Lr\ir^2 = 0$.
+$S_2$ carries the full load current $\IL$ from the pole node down to
+the negative DC rail.
+The path is:
+\[
+    \text{load} \;\longrightarrow\; L_F \;\longrightarrow\;
+    \text{pole node} \;\xrightarrow{\;S_2\;}\; \text{0\,V rail}
+\]
+
+The snubber capacitors are at their new settled values:
+\begin{itemize}
+    \item $\Cr/2$ across $S_2$ --- discharged to 0\,V
+          (short-circuited by the conducting $S_2$).
+    \item $\Cr/2$ across $S_1$ --- charged to $\Vdc$
+          (full bus voltage across the open $S_1$).
+\end{itemize}
+These are exactly the starting conditions for a future
+\emph{upward} commutation ($S_2$ or $D_2 \to S_1$) using $A_2$ ---
+the mirror-image sequence described in \figref{fig:P1Fig7a}
+(paper Fig.\,7).
+
+\medskip
+\textbf{What ends this state.}
+
+Nothing ends it from within the circuit.
+State~(e) persists until the outer PWM control loop decides it is time
+to switch the pole node back to the upper rail, at which point the
+upward commutation sequence begins, using $A_2$ in the mirror-image
+role that $A_1$ played here.
+
+\medskip
+\begin{circuitbox}[State-by-State Circuit Description --- P1 Fig.\,8(a)--(e)]
+\renewcommand{\arraystretch}{1.35}
+\begin{tabular}{p{0.6cm} p{2.8cm} p{3.5cm} p{5.0cm}}
+\toprule
+\textbf{State} & \textbf{Active devices} & \textbf{Pole voltage $\vf$}
+               & \textbf{Inductor current $\ir$} \\
+\midrule
+(a) & $S_1$ ON
+    & $\vf = \Vdc$ (held by $S_1$)
+    & $\ir = 0$; aux.\ branch idle \\
+(b) & $A_1$ ON, $S_1$ ON
+    & $\vf = \Vdc$ (held by $S_1$)
+    & $\ir$ ramps: $\dot{\ir} = -\Vdc/(2\Lr)$ \\
+(c) & $A_1$ ON, $\Lr$--$\Cr$
+    & $\vf$ swings $\Vdc\!\to\!0$ (sine)
+    & $\ir$ follows LC clockwise arc; most negative at $\vf=\Vdc/2$ \\
+(d) & $A_1$ ON, $D_2$, $S_2$(ZVS)
+    & $\vf = 0$ (clamped by $D_2$/$S_2$)
+    & $\ir$ ramps: $\dot{\ir} = +\Vdc/(2\Lr)$;
+      $D_2$/$S_2$ carries $(\IL+|\ir|)$ \\
+(e) & $S_2$ ON
+    & $\vf = 0$ (steady)
+    & $\ir = 0$; $A_1$ gated off; aux.\ branch idle \\
+\bottomrule
+\end{tabular}
+\end{circuitbox}
+
 % ============================================================
 \section{Master Figure Reference Table}
 % ============================================================
