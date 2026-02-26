@@ -393,10 +393,40 @@ Substituting into \eqref{eq:circle}:
     R = \sqrt{\left(\frac{\Vdc}{2}\right)^{\!2} + (i_\text{boost}\,\Zr)^2}
     \label{eq:radius}
 \end{equation}
-More boost current $\Rightarrow$ larger $R$ $\Rightarrow$ the arc
-reaches $\vf = \Vdc$ sooner.
-The three trajectories in \figref{fig:phase_plane_3ICs} illustrate
-this directly for $i_\text{boost} = 0$, $10$\,A, and $20$\,A.
+\textbf{How does the phase plane connect to time?}
+
+The phase plane has no time axis, so it is not obvious how a longer or
+shorter arc corresponds to a longer or shorter commutation.
+The answer comes directly from the parametric solution
+\eqref{eq:u_solution}--\eqref{eq:j_solution}, which we can write as:
+\begin{equation*}
+    X(t) = u(t), \qquad Y(t) = j(t)\Zr,
+    \qquad \text{where the parameter is } \theta = \omegar t
+\end{equation*}
+Every time step $\Delta t$ advances the angle $\theta$ by exactly
+$\omegar\,\Delta t$, regardless of where on the circle the trajectory
+currently sits.
+Therefore the time taken to travel from the start angle $\theta_\text{start}$
+to the end angle $\theta_\text{end}$ is:
+\begin{equation*}
+    T_\text{comm} = \frac{\theta_\text{end} - \theta_\text{start}}{\omegar}
+\end{equation*}
+A smaller swept angle means a shorter commutation time.
+
+\textbf{How does $i_\text{boost}$ change the swept angle?}
+
+All three trajectories in \figref{fig:phase_plane_3ICs} start at the
+same $\vf = 0$ (i.e.\ $u_0 = -\Vdc/2$) but at different heights
+$j_0\Zr = i_\text{boost}\Zr$ on the vertical axis.
+The target is always $\vf = \Vdc$ (i.e.\ $u = +\Vdc/2$).
+A higher starting point is already closer (in angle) to the target on the
+right side of the circle, so less angle needs to be swept.
+The extreme case is $i_\text{boost} = 0$: the trajectory starts exactly on
+the horizontal axis at $(-\Vdc/2,\;0)$ and must sweep a full
+$\pi$\,radians (a semicircle) to reach $(+\Vdc/2,\;0)$, taking time
+$\pi/\omegar$.
+Every additional ampere of boost lifts the starting point, reduces the
+angle to be swept, and shortens the commutation time.
 \end{eqnbox}
 
 \figentry{fig:phase_plane_3ICs}{arcp_phase_plane_3ICs.png}
