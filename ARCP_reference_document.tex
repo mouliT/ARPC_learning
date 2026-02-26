@@ -2086,6 +2086,181 @@ $A_1$ is \emph{not} turned off here; it stays on.
 With $S_1$ open, the pole node is freed and the LC resonance begins ---
 state~(c).
 
+% ── State (c) explanation ─────────────────────────────────────────────────────
+\subsection*{State (c) --- the resonant LC swing: $\vf$ falls from $\Vdc$ to 0}
+
+\figentry{fig:P1Fig8d}{P1_Fig8d_state3_resonant_swing}
+    {P1 Fig.\,8(d) [our state~(c)] --- Resonant LC swing.
+     $\vf$ falls in an S-curve from $\Vdc$ to 0; $|\ir|$ peaks then
+     decreases.
+     $A_1$ remains on; both $\Cr/2$ snubbers are active.
+     No main switch or diode conducts.
+     Source: De~Doncker \& Lyons, IEEE IAS 1990, p.\,5.}{0.50}
+
+\textbf{State~(c) is the core of the downward commutation.}
+
+Everything in states~(a) and~(b) was preparation: establishing the
+resting condition, then charging $\Lr$ to the correct boost current.
+State~(c) is where that stored energy is put to work: the resonant
+swing carries $\vf$ from $\Vdc$ all the way down to 0, enabling $S_2$
+to be turned on at zero voltage.
+It is the mirror image of state~(d) in \figref{fig:P1Fig7a}
+(paper Fig.\,7), which swung $\vf$ upward from 0 to $\Vdc$.
+
+\medskip
+\textbf{Top panel (waveform) --- what you see in the state\,(c) strip.}
+
+We are in the third strip of the waveform in \figref{fig:P1Fig8a},
+labelled \textit{Cr/A1}.
+\begin{itemize}
+    \item $\vf$ falls in a smooth \emph{S-shaped curve} from $\Vdc$
+          towards 0.
+          It does not ramp linearly --- it follows a sinusoidal shape,
+          slow at first, fastest at the midpoint $\Vdc/2$, then
+          slowing again as it approaches 0.
+    \item $\ir$ is already negative at the start (from the boost in
+          state~(b)).
+          Its magnitude first \emph{increases} (dips deeper) until
+          $\vf$ passes through $\Vdc/2$, then \emph{decreases} (dip
+          becomes shallower) as $\vf$ approaches 0.
+          The deepest point of the dip --- labelled $I_\text{boost}$
+          in \figref{fig:P1Fig8a} --- occurs at $\vf = \Vdc/2$.
+\end{itemize}
+
+\medskip
+\textbf{Bottom panel (circuit snapshot) --- only $A_1$, $\Lr$, and the
+two $\Cr/2$ caps.}
+
+Looking at \figref{fig:P1Fig8d}: $A_1$ is the only switch conducting.
+Both $\Cr/2$ snubbers are active --- one discharging (across $S_1$,
+from $\Vdc$ towards 0) and one charging (across $S_2$, from 0
+towards $\Vdc$).
+All other devices --- $S_1$, $S_2$, $D_1$, $D_2$ --- are open.
+$D_2$ is still firmly reverse-biased: its anode is at 0\,V and its
+cathode is at $\vf > 0$.
+
+\medskip
+\textbf{Why $A_1$ must stay on during the swing.}
+
+The two reasons are identical to those for $A_2$ in state~(d) of
+\figref{fig:P1Fig7a}, applied in mirror image.
+
+\textit{Reason 1 (mandatory) --- an inductor carrying current cannot
+be open-circuited.}
+
+At the moment $S_1$ opens, $\Lr$ is already carrying the boost
+current $\ir = -|\ir_0|$.
+If $A_1$ were turned off simultaneously, the circuit through $\Lr$
+would be broken.
+$\Lr$ cannot let $\ir$ change instantaneously; it would generate a
+destructive voltage spike.
+$A_1$ must remain on to keep the current path intact.
+
+\textit{Reason 2 (physics) --- $A_1$ provides the forcing that centres
+the oscillation at $\Vdc/2$.}
+
+With $A_1$ on, the DC midpoint ($\Vdc/2$) remains connected to $\Lr$
+throughout the swing.
+The KVL equation around the auxiliary loop contains the forcing term
+$\Vdc/2 - \vf$, which centres the oscillation at $\vf = \Vdc/2$.
+This is what allows the trajectory to swing from $\vf = \Vdc$ all the
+way across to $\vf = 0$ on the other side.
+Without the midpoint connection the oscillation would be centred
+somewhere else and the swing would not reach the correct rail.
+
+\medskip
+\textbf{The governing equations --- same as state~(d) of
+\figref{fig:P1Fig7a}.}
+
+Check the three conditions for the LC oscillator (same as the
+green box in Section~\ref{sec:P1Fig5}):
+\begin{enumerate}
+    \item $A_1$ is \textbf{on} --- DC midpoint connected to $\Lr$.
+          \checkmark
+    \item $S_1$ has \textbf{just opened} --- pole node is free.
+          \checkmark
+    \item Both $\Cr/2$ caps are \textbf{free} --- $S_1$ no longer
+          clamps one end. \checkmark
+\end{enumerate}
+All three conditions are satisfied.
+The governing equations are therefore identical to those of state~(d)
+in \figref{fig:P1Fig7a}:
+\begin{equation}
+    \frac{d\vf}{dt} = \frac{\ir - \IL}{\Cr},
+    \qquad
+    \frac{d\ir}{dt} = \frac{\Vdc/2 - \vf}{\Lr}
+    \label{eq:swing_odes_fig8}
+\end{equation}
+Combining these gives the forced harmonic oscillator
+(equation~\eqref{eq:swing_ode_fig8} from the Big~Picture):
+\begin{equation*}
+    \ddot{\vf} + \omegar^2\,\vf = \omegar^2\,\frac{\Vdc}{2},
+    \qquad \omegar = \frac{1}{\sqrt{\Lr\Cr}},
+    \quad \Zr = \sqrt{\frac{\Lr}{\Cr}}
+\end{equation*}
+
+\medskip
+\textbf{The solution --- a clockwise arc in the phase plane.}
+
+Using the shifted variables $u = \vf - \Vdc/2$ and $j = \ir - \IL$,
+the trajectory in the $(u,\; j\Zr)$ phase plane is a
+\textbf{circle centred at the origin} with radius:
+\begin{equation}
+    R = \sqrt{\left(\frac{\Vdc}{2}\right)^{\!2} + (j_0\Zr)^2},
+    \qquad j_0 = \ir(0^+) - \IL
+    \label{eq:R_fig8}
+\end{equation}
+where $\ir(0^+)$ is the (negative) boost current at the instant $S_1$
+opens.
+Because $j_0 < 0$ (and $|j_0|$ can be large), the radius $R > \Vdc/2$.
+
+Comparing with the upward commutation in \figref{fig:P1Fig7a}:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{lll}
+\toprule
+\textbf{Property} & \textbf{Fig.\,7 state (d) --- upward}
+                  & \textbf{Fig.\,8 state (c) --- downward} \\
+\midrule
+Start point $(u,\;j\Zr)$
+    & $(-\Vdc/2,\;i_\text{boost}\Zr)$ --- bottom right
+    & $(+\Vdc/2,\;j_0\Zr)$ --- top right \\
+End point $(u,\;j\Zr)$
+    & $(+\Vdc/2,\;\cdot)$ --- top right
+    & $(-\Vdc/2,\;\cdot)$ --- bottom left \\
+Direction of travel & Counter-clockwise & \textbf{Clockwise} \\
+Clamping diode & $D_1$ (clamps $\vf = \Vdc$) & $D_2$ (clamps $\vf = 0$) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\medskip
+\textbf{Why $|\ir|$ peaks at $\vf = \Vdc/2$.}
+
+From equation~\eqref{eq:swing_odes_fig8}:
+$\vf$ is changing fastest when $|\ir - \IL|$ is largest.
+In the phase plane, $|j| = |\ir - \IL|$ is maximum at the
+\emph{bottommost point} of the clockwise trajectory, which occurs
+when $u = 0$, i.e.\ when $\vf = \Vdc/2$.
+Before the midpoint $|\ir|$ grows; after the midpoint $|\ir|$ shrinks.
+This is the deepest point of the $\ir$ dip in the waveform.
+
+\medskip
+\textbf{What ends this state.}
+
+As $\vf$ falls below $\Vdc/2$, the magnitude of $\ir$ starts to
+decrease.
+The resonant arc carries enough energy for $\vf$ to reach 0 ---
+in fact, it would try to push $\vf$ \emph{below} 0 because the circle
+radius $R > \Vdc/2$.
+Throughout the swing $D_2$ is reverse-biased (anode at 0\,V, cathode
+at $\vf > 0$).
+As $\vf$ approaches 0 the reverse bias shrinks.
+The instant $\vf$ tries to go fractionally below 0\,V, $D_2$ becomes
+forward-biased, conducts, and clamps $\vf$ at the negative rail.
+The resonant swing is arrested and the circuit enters state~(d).
+
 % ============================================================
 \section{Master Figure Reference Table}
 % ============================================================
