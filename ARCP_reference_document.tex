@@ -1790,16 +1790,48 @@ to carry $\vf$ all the way from $\Vdc$ down to 0.
 \end{enumerate}
 
 \medskip
-\textbf{No ramp phases --- a shorter sequence.}
+\textbf{What De~Doncker means by ``no ramp phases'' --- a shorter sequence.}
 
-De~Doncker states explicitly that this sequence \textit{``is similar to
-that described above except there are no ramp phases.''}
-In \figref{fig:P1Fig7a} (paper Fig.\,7), two separate linear-ramp steps
-(states b and c) were needed before the resonant swing because $D_2$ had
-to be naturally commutated before $S_2$ could take over.
-Here, $S_1$ is simply gated off at the right moment --- no intermediate
-device handoff.
-The sequence is therefore \textbf{five states (a)--(e)} instead of seven.
+De~Doncker states that this sequence \textit{``is similar to that
+described above except there are no ramp phases.''}
+This statement needs careful reading --- $\ir$ \emph{does} still ramp
+in state~(b) of this sequence (the \textit{S1/A1} boost strip).
+What De~Doncker means is that the \emph{two-stage, device-handoff ramp
+structure} of \figref{fig:P1Fig7a} disappears.
+
+In \figref{fig:P1Fig7a} (upward commutation from diode $D_2$), two
+separate pre-resonant ramp stages were forced on the circuit:
+\begin{itemize}
+    \item \textbf{State (b):} $\ir$ ramps from 0 to $\IL$ --- required
+          to displace $D_2$'s current to zero so $D_2$ could turn off
+          \emph{naturally}.  A diode has no gate; it cannot simply be
+          commanded off.
+    \item \textbf{State (c):} $S_2$ takes over from $D_2$; $\ir$
+          ramps further from $\IL$ to $\IL + i_\text{boost}$ --- the
+          additional boost needed above $\IL$.
+\end{itemize}
+Both stages existed purely because of the passive nature of $D_2$.
+
+Here, the starting device $S_1$ is a \emph{gated switch} --- it can be
+turned off at any instant the control chooses.
+No device-handoff ramp is needed.
+$\Lr$ is pre-charged during a single boost stage (state~(b), $S_1$
+still on), and then $S_1$ is simply gated off.
+The two-stage pre-resonant structure collapses into one stage, reducing
+the total sequence from \textbf{seven states to five}:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{lll}
+\toprule
+ & \textbf{Fig.\,7 — from diode} & \textbf{Fig.\,8 — from switch} \\
+\midrule
+Pre-resonant ramp stages & Two (states b + c) & One (state b only) \\
+Why two were needed      & $D_2$ must be naturally commutated & Not applicable --- $S_1$ is gated \\
+Total states             & 7 & 5 \\
+\bottomrule
+\end{tabular}
+\end{center}
 
 \smallskip
 \textit{Note on state labels:} the paper numbers these states (b)--(f) because
