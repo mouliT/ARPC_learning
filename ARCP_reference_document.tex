@@ -1552,11 +1552,120 @@ commutation: the pole leg switching \emph{downward} --- from the upper main
 switch $S_1$ (conducting at $\vf = \Vdc$) to the lower freewheeling diode
 $D_2$ (at $\vf = 0$), using $A_1$ (the upper auxiliary switch).
 
-This scenario arises when the load current $\IL$ is below the natural
-commutation threshold $I_\text{th}$.
-Below this threshold, $\IL$ alone is insufficient to discharge the snubber
-capacitors quickly enough for ZVS; the auxiliary circuit must pre-load
-$\Lr$ with boost energy to assist.
+\medskip
+\textbf{Step 1 — start with a capacitor.}
+
+Before worrying about auxiliary switches and resonance, recall one
+fundamental fact about capacitors:
+\begin{equation}
+    \frac{d\vf}{dt} = \frac{i_\text{pole}}{C_r}
+    \label{eq:cap_discharge}
+\end{equation}
+The pole-node voltage $\vf$ can only change if current flows in or out of
+the snubber capacitor $C_r$.
+No current flowing $\Rightarrow$ $\vf$ stays frozen.
+More current $\Rightarrow$ $\vf$ changes faster.
+This single equation is the key to everything that follows.
+
+\medskip
+\textbf{Step 2 — what has to happen during a downward commutation?}
+
+Before commutation: $S_1$ is on, $\vf = \Vdc$.
+After commutation: $D_2$ (or $S_2$) must conduct, $\vf = 0$.
+The snubber capacitor $C_r$ at the pole node is currently charged to
+$\Vdc$.
+For ZVS, $C_r$ must be \emph{fully discharged to $0$\,V before $S_2$ is
+gated on}.
+If $S_2$ is gated on while $\vf > 0$, the capacitor discharges
+instantaneously through $S_2$ --- that is hard-switching, with all the
+energy loss we are trying to avoid.
+
+So the question reduces to: \emph{what discharges $C_r$?}
+
+\medskip
+\textbf{Step 3 — the only discharge current available is $\IL$.}
+
+Once $S_1$ is gated off, it is an open circuit.
+The load filter inductor $L_F$ forces its current $\IL$ to keep flowing
+regardless --- that is what inductors do.
+$\IL$ flows \emph{out of} the pole node into the load:
+\[
+    \text{pole node} \;\xrightarrow{\;I_L\;}\; L_F \;\longrightarrow\;
+    \text{load}
+\]
+This outward current is the only thing pulling charge away from $C_r$.
+By equation~\eqref{eq:cap_discharge}:
+\[
+    \frac{d\vf}{dt} = -\frac{\IL}{C_r}
+\]
+The pole voltage falls at a rate set entirely by $\IL$ and $C_r$.
+
+\medskip
+\textbf{Step 4 — how long does the discharge take?}
+
+Starting from $\vf = \Vdc$ and falling at constant rate $\IL/C_r$, the
+time to reach $\vf = 0$ is:
+\begin{equation}
+    T_\text{swing} = \frac{\Vdc\,C_r}{\IL}
+    \label{eq:Tswing}
+\end{equation}
+Notice: the \emph{smaller} $\IL$ is, the \emph{longer} this takes.
+
+\medskip
+\textbf{Step 5 — the control has a time budget.}
+
+The control cannot wait forever.
+The switching period and deadtime set a maximum window $T_\text{max}$
+within which $\vf$ must reach zero.
+For ZVS we therefore need $T_\text{swing} \leq T_\text{max}$, which
+rearranges to:
+\begin{equation}
+    \IL \;\geq\; \underbrace{\frac{\Vdc\,C_r}{T_\text{max}}}_{\displaystyle I_\text{th}}
+    \label{eq:Ith}
+\end{equation}
+The quantity $I_\text{th}$ is the \textbf{natural commutation threshold}.
+It is not a property of the load --- it is a property of the
+\emph{circuit} ($\Vdc$, $C_r$) and the \emph{control} ($T_\text{max}$).
+
+\medskip
+\textbf{Step 6 --- what goes wrong when $\IL < I_\text{th}$?}
+
+When the load current is small:
+\begin{itemize}
+    \item $\vf$ falls slowly --- equation~\eqref{eq:Tswing}.
+    \item Before $\vf$ reaches zero, the control's deadtime expires.
+    \item The control must gate $S_2$ on, even though $\vf > 0$.
+    \item $S_2$ turns on with voltage across it --- hard switching.
+          The energy $\tfrac{1}{2}C_r \vf^2$ dissipates instantly inside
+          $S_2$.
+\end{itemize}
+This is exactly the loss the ARCP topology was designed to eliminate.
+
+\medskip
+\textbf{Step 7 --- the fix: add auxiliary current to help discharge $C_r$.}
+
+The auxiliary switch $A_1$ provides a second current path into the pole
+node.
+Before $S_1$ is gated off, $A_1$ is fired.
+Current $\ir$ builds up through $\Lr$, flowing \emph{out of} the pole
+node (downward, negative in convention):
+\[
+    \text{pole node} \;\xrightarrow{\;i_r\;}\; \Lr \;\xrightarrow{}\;
+    A_1 \;\longrightarrow\; \text{DC midpoint}
+\]
+Now the total discharge current is $\IL + |\ir|$, and:
+\[
+    \frac{d\vf}{dt} = -\frac{\IL + |\ir|}{C_r}
+\]
+Even when $\IL$ alone is too small, adding $|\ir|$ brings the total
+above the threshold, discharging $C_r$ fast enough for ZVS.
+
+\textbf{``Pre-loading $\Lr$ with boost energy''} simply means building up
+$\ir$ in $\Lr$ \emph{before} $S_1$ is gated off --- so the auxiliary
+discharge current is already flowing the moment the resonant swing must
+begin.
+$\Lr$ stores the energy $\tfrac{1}{2}\Lr\ir^2$ like a compressed
+spring, ready to release it when the pole node is freed.
 
 \medskip
 \textbf{Three structural differences from \figref{fig:P1Fig7a} (paper Fig.\,7).}
