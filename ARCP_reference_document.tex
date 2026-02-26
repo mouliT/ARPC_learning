@@ -341,11 +341,18 @@ Once $\vf$ reaches $\Vdc$, the diode $D_1$ clamps it there — $D_1$ is the
 anti-parallel diode of $S_1$, with its cathode at the positive rail ($\Vdc$)
 and its anode at the pole node ($\vf$).
 The moment $\vf$ touches $\Vdc$, $D_1$ becomes forward-biased and starts
-conducting, diverting the auxiliary current $\ir$ away from $\Cr$ and into
-the DC bus.
-This prevents $\vf$ from rising any further and holds it firmly at $\Vdc$.
-$S_1$ now sees zero voltage across it and can be gated on with no switching
-loss.
+conducting, diverting $\ir$ away from \emph{both} $\Cr/2$ snubber capacitors
+and into the positive DC rail directly.
+To see why both are involved: during the resonant swing $\ir$ was
+simultaneously charging the $\Cr/2$ across $S_2$ (from 0 up to $\Vdc$)
+\emph{and} discharging the $\Cr/2$ across $S_1$ (from $\Vdc$ down to 0).
+When $\vf = \Vdc$, both processes complete at the same instant —
+the $\Cr/2$ across $S_2$ is fully charged, and the $\Cr/2$ across $S_1$
+is fully discharged to zero.
+$D_1$ conducts and locks $\vf$ at $\Vdc$, so neither cap can change
+further; $\ir$ flows through $D_1$ into the bus instead.
+$S_1$ now has $V_{S_1} = \Vdc - \vf = 0$ and can be gated on with no
+switching loss.
 
 \medskip
 % ── 2. Why R >= Vdc/2 is the ZVS geometric condition ─────────────────────────
