@@ -1583,91 +1583,78 @@ energy loss we are trying to avoid.
 So the question reduces to: \emph{what discharges $C_r$?}
 
 \medskip
-\textbf{Step 3 — the only discharge current available is $\IL$.}
+\textbf{Step 3 — imagine $\Lr$ is absent: only $\IL$ discharges $C_r$.}
 
-Once $S_1$ is gated off, it is an open circuit.
+\textit{We temporarily remove the auxiliary circuit to understand the
+problem first.  The full picture with $\Lr$ comes in Steps~5 and~6.}
+
+Once $S_1$ is gated off it becomes an open circuit.
 The load filter inductor $L_F$ forces its current $\IL$ to keep flowing
 regardless --- that is what inductors do.
-$\IL$ flows \emph{out of} the pole node into the load:
+$\IL$ flows \emph{out of} the pole node toward the load:
 \[
     \text{pole node} \;\xrightarrow{\;I_L\;}\; L_F \;\longrightarrow\;
     \text{load}
 \]
 
 \medskip
-\textit{``But if current is flowing out of the pole node, can't $D_2$
+\textit{``But if current flows out of the pole node, can't $D_2$
 immediately supply it from below?''}
 
-No --- and this is the key point.
-Check the bias on $D_2$ at the moment $S_1$ opens:
+No --- $D_2$ is reverse-biased the entire time $\vf > 0$.
+Check the bias at the moment $S_1$ opens:
 \begin{itemize}
-    \item $D_2$ anode $=$ 0\,V (negative DC rail)
-    \item $D_2$ cathode $= \vf = \Vdc$ (pole node, just released by $S_1$)
+    \item $D_2$ anode $= 0$\,V (negative DC rail --- fixed)
+    \item $D_2$ cathode $= \vf = \Vdc$ (just released by $S_1$)
 \end{itemize}
-$D_2$ has the full bus voltage $\Vdc$ across it in the \textbf{reverse}
-direction.
-It is firmly off.
-
-Who then supplies the current $\IL$ is demanding?
-The snubber capacitor $C_r$ does.
-$C_r$ was charged to $\Vdc$ when $S_1$ was on; now it begins to
-\emph{discharge} — its charge flows out through the pole node to supply
-$\IL$.
-As charge leaves $C_r$, the pole-node voltage $\vf$ falls.
-
-$D_2$ becomes forward-biased only at the very \emph{end} of the
-discharge, when $\vf$ has fallen all the way to (near) 0\,V.
-At that point $D_2$ clamps the pole node to the negative rail and state~(d)
-begins.
-
-So the correct sequence is:
-\begin{center}
-\renewcommand{\arraystretch}{1.25}
-\begin{tabular}{llll}
-\toprule
-\textbf{Phase} & \textbf{$\vf$} & \textbf{$D_2$ status} & \textbf{Who carries $\IL$?} \\
-\midrule
-S1 just opened & $\Vdc$ & Reverse biased --- OFF & $C_r$ (discharging) \\
-Discharge      & $\Vdc \to 0$   & Still reverse biased & $C_r$ (discharging) \\
-End of swing   & $\approx 0$    & Forward biases --- ON & $D_2$ (clamps) \\
-ZVS window     & $0$            & $D_2$ clamping        & $D_2$ then $S_2$ \\
-\bottomrule
-\end{tabular}
-\end{center}
-
-With this picture clear, the discharge rate follows from
-equation~\eqref{eq:cap_discharge}:
-\[
-    \frac{d\vf}{dt} = -\frac{\IL}{C_r}
-\]
-The pole voltage falls at a rate set entirely by $\IL$ and $C_r$.
+$D_2$ has the full bus voltage across it in the reverse direction.
+It turns on only at the very end, when $\vf$ has fallen to (near) 0\,V
+and forward-biases $D_2$.
+Until then, the snubber capacitor $C_r$ is the only thing supplying $\IL$.
+$C_r$ discharges, losing charge, and $\vf$ falls.
 
 \medskip
-\textbf{Step 4 — how long does the discharge take?}
+\textit{``Then why does $\vf$ look like a sinusoid in the waveform?
+Shouldn't it be a straight ramp?''}
 
-Starting from $\vf = \Vdc$ and falling at constant rate $\IL/C_r$, the
+Exactly right --- \textbf{without $\Lr$, the discharge would be a straight
+ramp.}
+With only $C_r$ and constant $\IL$, equation~\eqref{eq:cap_discharge}
+gives:
+\[
+    \frac{d\vf}{dt} = -\frac{\IL}{C_r} = \text{constant}
+    \qquad\Rightarrow\qquad
+    \vf(t) = \Vdc - \frac{\IL}{C_r}\,t \quad\text{(straight line)}
+\]
+The sinusoidal shape you see in \figref{fig:P1Fig8a} is produced by
+$\Lr$ --- we will come to that in Step~5.
+For now, use the simpler straight-ramp model to derive the threshold.
+
+\medskip
+\textbf{Step 4 — how long does the straight-ramp discharge take?}
+
+Starting from $\vf = \Vdc$ and falling at constant slope $\IL/C_r$, the
 time to reach $\vf = 0$ is:
 \begin{equation}
     T_\text{swing} = \frac{\Vdc\,C_r}{\IL}
     \label{eq:Tswing}
 \end{equation}
-Notice: the \emph{smaller} $\IL$ is, the \emph{longer} this takes.
+The smaller $\IL$ is, the longer this takes.
 
 \medskip
-\textbf{Step 5 — the control has a time budget.}
+\textbf{Step 5 — the control has a time budget: this gives us $I_\text{th}$.}
 
 The control cannot wait forever.
 The switching period and deadtime set a maximum window $T_\text{max}$
 within which $\vf$ must reach zero.
-For ZVS we therefore need $T_\text{swing} \leq T_\text{max}$, which
-rearranges to:
+For ZVS we need $T_\text{swing} \leq T_\text{max}$, which gives:
 \begin{equation}
     \IL \;\geq\; \underbrace{\frac{\Vdc\,C_r}{T_\text{max}}}_{\displaystyle I_\text{th}}
     \label{eq:Ith}
 \end{equation}
-The quantity $I_\text{th}$ is the \textbf{natural commutation threshold}.
-It is not a property of the load --- it is a property of the
-\emph{circuit} ($\Vdc$, $C_r$) and the \emph{control} ($T_\text{max}$).
+$I_\text{th}$ is the \textbf{natural commutation threshold}.
+It depends only on the circuit ($\Vdc$, $C_r$) and the control
+($T_\text{max}$), not on the load.
 
 \medskip
 \textbf{Step 6 --- what goes wrong when $\IL < I_\text{th}$?}
@@ -1684,30 +1671,96 @@ When the load current is small:
 This is exactly the loss the ARCP topology was designed to eliminate.
 
 \medskip
-\textbf{Step 7 --- the fix: add auxiliary current to help discharge $C_r$.}
+\textbf{Step 7 --- the fix: bring $\Lr$ back into the picture.}
 
-The auxiliary switch $A_1$ provides a second current path into the pole
-node.
+Now we restore the auxiliary circuit and see what $\Lr$ actually does.
+$\Lr$ changes the problem in \emph{two} ways simultaneously.
+
+\medskip
+\textit{What $\Lr$ does (1): adds a second discharge current.}
+
 Before $S_1$ is gated off, $A_1$ is fired.
-Current $\ir$ builds up through $\Lr$, flowing \emph{out of} the pole
-node (downward, negative in convention):
+With $S_1$ still \emph{on} and $\vf = \Vdc$, the full half-bus voltage
+$\Vdc/2$ appears across $\Lr$ (pole node at $\Vdc$, DC midpoint at
+$\Vdc/2$).
+$\Lr$ is an inductor --- it responds by ramping up a current $\ir$
+\emph{linearly}:
 \[
-    \text{pole node} \;\xrightarrow{\;i_r\;}\; \Lr \;\xrightarrow{}\;
+    \frac{d\ir}{dt} = \frac{\Vdc}{2\Lr} \qquad
+    \text{(during state~(b), S1 still on)}
+\]
+This is the \textbf{boost phase} --- $\Lr$ is pre-charged like a spring
+being wound up, but $C_r$ does not discharge yet because $S_1$ is still
+holding $\vf = \Vdc$.
+
+When $S_1$ is then gated off, the pole node is freed and $\ir$ is already
+flowing \emph{out} of it:
+\[
+    \text{pole node} \;\xrightarrow{\;\ir\;}\; \Lr \;\xrightarrow{}\;
     A_1 \;\longrightarrow\; \text{DC midpoint}
 \]
-Now the total discharge current is $\IL + |\ir|$, and:
-\[
-    \frac{d\vf}{dt} = -\frac{\IL + |\ir|}{C_r}
-\]
-Even when $\IL$ alone is too small, adding $|\ir|$ brings the total
-above the threshold, discharging $C_r$ fast enough for ZVS.
+Now both $\IL$ \emph{and} $\ir$ drain the pole node, and $C_r$
+discharges faster than $\IL$ alone ever could.
 
-\textbf{``Pre-loading $\Lr$ with boost energy''} simply means building up
-$\ir$ in $\Lr$ \emph{before} $S_1$ is gated off --- so the auxiliary
-discharge current is already flowing the moment the resonant swing must
-begin.
-$\Lr$ stores the energy $\tfrac{1}{2}\Lr\ir^2$ like a compressed
-spring, ready to release it when the pole node is freed.
+\medskip
+\textit{What $\Lr$ does (2): converts the straight ramp into a
+sinusoid.}
+
+Once $S_1$ opens, $\Lr$ and $C_r$ are in a \emph{coupled loop}.
+As $C_r$ discharges and $\vf$ falls, the voltage across $\Lr$ changes,
+which changes $\ir$, which changes how fast $C_r$ discharges, which
+changes $\vf$ again --- a continuous feedback:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{ccccc}
+$\vf\!\downarrow$ & $\Rightarrow$ &
+$\text{voltage across }\Lr\!\uparrow$ & $\Rightarrow$ &
+$|\ir|\!\uparrow$ \\[2pt]
+& & $\Uparrow$ & & $\Downarrow$ \\[2pt]
+\multicolumn{3}{c}{$C_r$ discharges faster} & $\Leftarrow$ &
+$\text{more current out of pole}$
+\end{tabular}
+\end{center}
+
+This self-reinforcing loop is precisely an LC oscillator.
+The governing ODE is:
+\begin{equation}
+    \ddot{\vf} + \omegar^2\,\vf = \omegar^2\,\frac{\Vdc}{2},
+    \qquad \omegar = \frac{1}{\sqrt{\Lr C_r}}
+    \label{eq:swing_ode_fig8}
+\end{equation}
+whose solution is a \textbf{sinusoid centred at $\Vdc/2$} --- exactly
+the smooth S-curve seen in \figref{fig:P1Fig8a}.
+Without $\Lr$, equation~\eqref{eq:cap_discharge} gives only a straight
+ramp; $\Lr$ is what bends that ramp into the sinusoidal arc.
+
+\medskip
+\textit{The complete two-stage picture.}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{p{1.8cm} p{2.8cm} p{3.8cm} p{3.8cm}}
+\toprule
+\textbf{State} & \textbf{S1 status} & \textbf{What $\Lr$ is doing} &
+\textbf{What $C_r$ is doing} \\
+\midrule
+(b) boost & \textbf{ON} --- holds $\vf=\Vdc$ &
+  $\ir$ ramps linearly ($\dot{\ir}=\Vdc/2\Lr$) &
+  Not discharging --- $\vf$ frozen \\
+(c) swing  & \textbf{OFF} --- pole node freed &
+  $\ir$ and $C_r$ locked in LC resonance &
+  Discharging sinusoidally; $\vf: \Vdc \to 0$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{``Pre-loading $\Lr$ with boost energy''} means completing
+stage~(b) \emph{before} $S_1$ is gated off, so that $\ir$ is already at
+its target value the instant the LC resonance begins.
+The initial value of $\ir$ sets the radius of the sinusoidal arc;
+a larger $\ir$ at the start of stage~(c) guarantees a wide enough arc
+to carry $\vf$ all the way from $\Vdc$ down to 0.
 
 \medskip
 \textbf{Three structural differences from \figref{fig:P1Fig7a} (paper Fig.\,7).}
