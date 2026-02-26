@@ -23,11 +23,12 @@
 | `P1_Fig7e_state5_upper_diode_clamp.png` | 5 | Commutation from Diode — State (e): $\vf = V_{dc}$, $D_1$ clamps, $A_1$ turns off | ZVS condition met | Upper rail reached |
 | `P1_Fig7f_state6_ir_ramps_down.png` | 5 | Commutation from Diode — State (f): $\ir$ ramps back to 0, $S_1$ fires at ZVS | $\dot{i}_r = -V_{dc}/2L_r$ | ZVS turn-on of $S_1$ |
 | `P1_Fig7g_state7_S1_steady.png` | 5 | Commutation from Diode — State (g): $S_1$ conducting, $\ir=0$, steady state | — | Commutation complete |
-| `P1_Fig8a_state1_S2_conducting.png` | 5 | Commutation from Switch (Low $I$) — State (a): $S_2$ on, $v_f=0$, $i_r=0$ | — | Initial switch conduction state |
-| `P1_Fig8b_state2_A1_fires_S2_on.png` | 5 | Commutation from Switch (Low $I$) — State (b): $A_1$ fires, $i_r$ ramps; $S_2$ still on | $\dot{i}_r = V_{dc}/2L_r$ | Current ramp, switch conducting |
-| `P1_Fig8c_state3_S2_commutates.png` | 5 | Commutation from Switch (Low $I$) — State (c): $S_2$ forced off; $D_2$ clamps; boost continues to $I_L+i_\text{boost}$ | — | Switch-off event |
-| `P1_Fig8d_state4_resonant_swing.png` | 5 | Commutation from Switch (Low $I$) — State (d): LC resonant swing, $v_f: 0 \to V_{dc}$ | $\ddot{v}_f + \omega_r^2 v_f = \omega_r^2 V_{dc}/2$ | **Core resonant swing** |
-| `P1_Fig8e_state5_S1_ZVS_on.png` | 5 | Commutation from Switch (Low $I$) — State (e): $D_1$ clamps, $i_r$ ramps down; $S_1$ fires at ZVS | $T_c = 2L_r(2I_L+i_\text{boost})/V_{dc}+\pi\sqrt{L_rC_r}$ | Commutation complete |
+| `P1_Fig8a_waveform_switch_low_current.png` | 5 | Commutation from Switch (Low $I$) — Full waveform with all timing strips labelled (S1/A1, Cr/A1, D2/A1, S2) | — | **Waveform only** (no circuit snapshot) |
+| `P1_Fig8b_state1_S1_conducting.png` | 5 | Commutation from Switch (Low $I$) — State (b): $S_1$ on, $v_f=V_{dc}$, $i_r=0$ | — | Initial idle state (mirror of Fig.\,7g) |
+| `P1_Fig8c_state2_A1_boost_start.png` | 5 | Commutation from Switch (Low $I$) — State (c): $A_1$ fires; $i_r$ ramps up; $S_1$ still on | $\dot{i}_r = V_{dc}/(2L_r)$ | Boost phase; $S_1$ carries $I_L+i_r$ |
+| `P1_Fig8d_state3_resonant_swing.png` | 5 | Commutation from Switch (Low $I$) — State (d): $S_1$ gated off; LC resonant swing; $v_f: V_{dc}\to 0$ | $\ddot{v}_f+\omega_r^2 v_f=\omega_r^2 V_{dc}/2$ | **Core resonant swing** (downward) |
+| `P1_Fig8e_state4_D2_clamp.png` | 5 | Commutation from Switch (Low $I$) — State (e): $D_2$ clamps $v_f=0$; $S_2$ gated on at ZVS; $A_1$ still on; $i_r$ ramps down | $\dot{i}_r = -V_{dc}/(2L_r)$ | Clamp + ramp-down; $A_1$ on until $i_r=0$ |
+| `P1_Fig8f_state5_S2_steady.png` | 5 | Commutation from Switch (Low $I$) — State (f): $S_2$ conducting, $i_r=0$, $A_1$ gated off | — | Commutation complete (mirror of Fig.\,7g) |
 | `P1_Fig9a_state1_S2_high_current.png` | 6 | Commutation from Switch (High $I$) — State (a): $S_2$ on, $I_L \geq I_{th}$, no boost needed | $I_{th} = 2C_r V_{dc}/T_\text{max}$ | Natural commutation condition |
 | `P1_Fig9b_state2_natural_swing.png` | 6 | Commutation from Switch (High $I$) — State (b): $S_2$ off; load current alone charges $C_r$ | $\dot{v}_f = I_L/(2C_r)$ | Load-driven cap charging |
 | `P1_Fig9c_state3_S1_ZVS_on.png` | 6 | Commutation from Switch (High $I$) — State (c): $D_1$ clamps; $S_1$ fires at ZVS | ZVS achieved | Commutation complete |
