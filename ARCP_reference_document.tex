@@ -475,9 +475,11 @@ So the entire job of the resonant swing is:
 Once $\vf$ reaches $\Vdc$, the diode $D_1$ clamps it there — $D_1$ is the
 anti-parallel diode of $S_1$, with its cathode at the positive rail ($\Vdc$)
 and its anode at the pole node ($\vf$).
-The moment $\vf$ touches $\Vdc$, $D_1$ becomes forward-biased and starts
-conducting, diverting $\ir$ away from \emph{both} $\Cr/2$ snubber capacitors
-and into the positive DC rail directly.
+The moment $\vf$ tries to \emph{exceed} $\Vdc$, the pole node (anode of
+$D_1$) rises fractionally above the positive DC rail (cathode of $D_1$);
+$D_1$ becomes forward-biased and starts conducting, diverting $\ir$ away
+from \emph{both} $\Cr/2$ snubber capacitors and into the positive DC rail
+directly.
 To see why both are involved: during the resonant swing $\ir$ was
 simultaneously charging the $\Cr/2$ across $S_2$ (from 0 up to $\Vdc$)
 \emph{and} discharging the $\Cr/2$ across $S_1$ (from $\Vdc$ down to 0).
@@ -1125,12 +1127,26 @@ $\Vdc$.
 \medskip
 \textbf{What ends this state.}
 
-State~(d) ends the moment $\vf$ reaches $\Vdc$.
-At that instant, $D_1$ --- the anti-parallel diode of the upper switch
-$S_1$, with its anode at the pole node and cathode at $\Vdc$ --- becomes
-forward-biased and starts conducting.
-$D_1$ clamps $\vf$ at $\Vdc$, the resonant swing stops, and the circuit
-enters state~(e).
+State~(d) ends when $D_1$ clamps $\vf$ at $\Vdc$.
+Here is the precise sequence.
+The resonant arc carries enough energy to push $\vf$ \emph{above}
+$\Vdc$: the phase-plane circle has radius
+$R = \sqrt{(V_{dc}/2)^2+(i_\text{boost}Z_r)^2} > \Vdc/2$,
+so its rightmost extent $\Vdc/2 + R$ lies above $\Vdc$ whenever
+$i_\text{boost}>0$.
+Throughout the swing $D_1$ is \emph{reverse}-biased — its anode (pole
+node, $\vf$) is below its cathode (positive DC rail, $\Vdc$) — so it
+stays off.
+At $\vf = \Vdc$ the bias reaches exactly zero.
+But $\ir$ still exceeds $\IL$ at this moment, so the circuit tries to
+push $\vf$ higher still.
+The instant the pole node rises fractionally above $\Vdc$, $D_1$ becomes
+forward-biased, conducts, and shunts the excess current
+$(\ir - \IL)$ into the positive DC bus.
+The bus is held rigid at $\Vdc$ by the bulk DC capacitor — no matter how
+much current flows in, the voltage barely moves.
+$\vf$ is therefore pinned: $D_1$ clamps $\vf = \Vdc$, the resonant swing
+stops, and the circuit enters state~(e).
 
 % ── State (e) explanation ─────────────────────────────────────────────────────
 \subsection*{State (e) — $D_1$ clamps: ZVS window opens for $S_1$}
@@ -1162,11 +1178,18 @@ Two devices are bold in \figref{fig:P1Fig7e}: $D_1$ and $A_2$.
     \item $A_2$ is still on --- for the same mandatory reason as in
           state~(d): $\Lr$ is carrying $\ir > 0$ and must not be
           open-circuited.
-    \item $D_1$ has just become forward-biased.
-          Its anode is at the pole node ($\vf = \Vdc$); its cathode is
-          at the positive DC rail ($\Vdc$).
-          The moment $\vf$ reached $\Vdc$, $D_1$ turned on and clamped
-          $\vf$ there.
+    \item $D_1$ is now conducting, but it did \emph{not} become
+          forward-biased at the instant $\vf = \Vdc$.
+          Throughout state~(d), $D_1$ was \emph{reverse}-biased
+          (anode $= \vf <$ cathode $= \Vdc$).
+          At $\vf = \Vdc$ the bias reached zero — $D_1$ was on the verge.
+          Because $\ir > \IL$ at that moment, the circuit tried to push
+          $\vf$ \emph{above} $\Vdc$, making the anode (pole node)
+          fractionally higher than the cathode (positive rail) — that tiny
+          excess instantly forward-biased $D_1$.
+          $D_1$ then shunts the surplus current $(\ir - \IL)$ directly
+          into the rigid $\Vdc$ bus, preventing $\vf$ from rising further.
+          Result: $\vf$ is clamped at $\Vdc$.
 \end{itemize}
 
 \medskip
