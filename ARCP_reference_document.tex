@@ -337,8 +337,15 @@ $\vf = \Vdc$.
 
 So the entire job of the resonant swing is:
 \emph{drive $\vf$ from 0 all the way up to $\Vdc$ before $S_1$ is fired.}
-Once $\vf$ reaches $\Vdc$, the diode $D_1$ clamps it there, $S_1$ sees
-zero voltage, and it can be gated on with no switching loss.
+Once $\vf$ reaches $\Vdc$, the diode $D_1$ clamps it there — $D_1$ is the
+anti-parallel diode of $S_1$, with its cathode at the positive rail ($\Vdc$)
+and its anode at the pole node ($\vf$).
+The moment $\vf$ touches $\Vdc$, $D_1$ becomes forward-biased and starts
+conducting, diverting the auxiliary current $\ir$ away from $\Cr$ and into
+the DC bus.
+This prevents $\vf$ from rising any further and holds it firmly at $\Vdc$.
+$S_1$ now sees zero voltage across it and can be gated on with no switching
+loss.
 
 \medskip
 % ── 2. Why R >= Vdc/2 is the ZVS geometric condition ─────────────────────────
