@@ -983,6 +983,129 @@ This is why the turn-off of $S_2$ is described as
 \emph{near-zero-current switching} (near-ZCS): the current being interrupted
 is small and the voltage transition is smooth.
 
+% ── State (d) explanation ─────────────────────────────────────────────────────
+\subsection*{State (d) — the resonant LC swing: $\vf$ rises from 0 to $\Vdc$}
+
+\figentry{fig:P1Fig7d}{P1_Fig7d_state4_resonant_swing}
+    {P1 Fig.\,7(d) — Resonant LC swing.
+     $\vf$ rises in an S-curve from 0 to $\Vdc$; $\ir$ peaks then falls.
+     $A_2$ remains on; both $\Cr/2$ snubbers are active (labelled).
+     No main switch or diode conducts.
+     Source: De~Doncker \& Lyons, IEEE IAS 1990, p.\,4--5.}{0.50}
+
+\textbf{State~(d) is the reason the ARCP exists.}
+
+Everything in states (a)--(c) was preparation: ramping $\ir$ to the right
+starting value, establishing the right initial voltage.
+State~(d) is where those initial conditions are put to work: the resonant
+swing carries $\vf$ all the way from 0 to $\Vdc$, enabling $S_1$ to be
+turned on at zero voltage.
+
+\medskip
+\textbf{Top panel (waveform) — what you see in the state\,(d) strip.}
+
+We are in the fourth strip of the waveform in \figref{fig:P1Fig7d},
+labelled \textit{Cr/A2}.
+\begin{itemize}
+    \item $\vf$ rises in a smooth \emph{S-shaped curve} from 0 towards
+          $\Vdc$.  It does not ramp linearly --- it follows a sinusoidal
+          shape, slow at first, fastest at the midpoint $\Vdc/2$, then
+          slowing again as it approaches $\Vdc$.
+    \item $\ir$ first \emph{rises} above its starting value
+          $\IL + i_\text{boost}$, reaches a peak, then \emph{falls} back
+          down.  The peak occurs when $\vf$ passes through $\Vdc/2$.
+\end{itemize}
+
+\medskip
+\textbf{Bottom panel (circuit snapshot) — only $A_2$, $\Lr$, and the two
+$\Cr/2$ caps.}
+
+Looking at \figref{fig:P1Fig7d}: $A_2$ is the only switch conducting.
+Both $\Cr/2$ snubbers are explicitly labelled and shown with bold
+connections --- one charging (across $S_1$, from 0 towards $\Vdc$) and one
+discharging (across $S_2$, from $\Vdc$ towards 0).
+All other devices --- $S_1$, $S_2$, $D_1$, $D_2$ --- are open.
+
+\medskip
+\textbf{Why $A_2$ must stay on during the swing.}
+
+This is a subtle but critical point.
+If $A_2$ were turned off the moment $S_2$ opened, $\Lr$ would be
+disconnected from the DC midpoint.
+The LC oscillation would then be a \emph{free} oscillation with its
+equilibrium at $\vf = 0$ --- the circuit would simply ring around zero
+and $\vf$ would never reach $\Vdc$.
+
+With $A_2$ on, the DC midpoint ($\Vdc/2$) remains connected to $\Lr$
+throughout the swing.
+This shifts the equilibrium of the oscillation to $\vf = \Vdc/2$ (the
+forcing point), so the swing is centred at the midpoint of the bus and
+can reach $\Vdc$ on the far side.
+This is precisely the \emph{forced harmonic oscillator} we derived in the
+green box of Section~\ref{sec:P1Fig5}.
+
+\medskip
+\textbf{The governing equations --- already derived in Section~\ref{sec:P1Fig5}.}
+
+Check the three conditions from the green box against the current circuit:
+\begin{enumerate}
+    \item $A_2$ is \textbf{on} --- DC midpoint connected to $\Lr$. \checkmark
+    \item $D_2$ has \textbf{stopped conducting} --- it turned off at the
+          end of state~(b). \checkmark
+    \item Both $\Cr/2$ caps are \textbf{free} --- $S_2$ opened at the
+          start of state~(d). \checkmark
+\end{enumerate}
+All three conditions are satisfied simultaneously for the first time.
+The governing equations \eqref{eq:dvf_dt}--\eqref{eq:dir_dt} therefore
+apply exactly here:
+\begin{equation*}
+    \frac{d\vf}{dt} = \frac{\ir - \IL}{\Cr}, \qquad
+    \frac{d\ir}{dt} = \frac{\Vdc/2 - \vf}{\Lr}
+\end{equation*}
+Combining these (as shown in the green box) gives the forced harmonic
+oscillator:
+\begin{equation*}
+    \ddot{\vf} + \omegar^2\,\vf = \omegar^2\,\frac{\Vdc}{2},
+    \qquad \omegar = \frac{1}{\sqrt{\Lr\Cr}},\quad \Zr = \sqrt{\frac{\Lr}{\Cr}}
+\end{equation*}
+
+\medskip
+\textbf{The solution --- a circular arc in the phase plane.}
+
+As derived in the green box, the trajectory in the
+$({\vf},\; j\Zr)$ phase plane is a \textbf{circle} centred at
+$(\Vdc/2,\; 0)$ with radius:
+\begin{equation*}
+    R = \sqrt{\left(\frac{\Vdc}{2}\right)^{\!2} + (i_\text{boost}\,\Zr)^2}
+\end{equation*}
+The trajectory starts at $(\vf = 0,\; j\Zr = i_\text{boost}\Zr)$ and
+travels counter-clockwise until it reaches $\vf = \Vdc$ on the right side
+of the circle.
+\figref{fig:phase_plane_3ICs} shows this arc for three values of
+$i_\text{boost}$.
+
+\medskip
+\textbf{Why $\ir$ peaks at $\vf = \Vdc/2$.}
+
+From the KCL equation $d\vf/dt = (\ir - \IL)/\Cr$:
+$\vf$ is rising fastest when $\ir - \IL$ is largest, i.e.\ when $\ir$ is
+at its peak.
+In the phase plane, $\ir$ is maximum when the trajectory passes through
+the topmost point of the circle, which occurs at $\vf = \Vdc/2$ (the
+centre of the circle lies directly below this point).
+After the peak, $\ir$ decreases while $\vf$ continues to rise towards
+$\Vdc$.
+
+\medskip
+\textbf{What ends this state.}
+
+State~(d) ends the moment $\vf$ reaches $\Vdc$.
+At that instant, $D_1$ --- the anti-parallel diode of the upper switch
+$S_1$, with its anode at the pole node and cathode at $\Vdc$ --- becomes
+forward-biased and starts conducting.
+$D_1$ clamps $\vf$ at $\Vdc$, the resonant swing stops, and the circuit
+enters state~(e).
+
 \begin{circuitbox}[State-by-State Circuit Description — P1 Fig.\,7a–g]
 \renewcommand{\arraystretch}{1.35}
 \begin{tabular}{p{0.6cm} p{2.8cm} p{3.5cm} p{5.0cm}}
