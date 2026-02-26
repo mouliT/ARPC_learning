@@ -1528,17 +1528,17 @@ next in Fig.\,8.
 \label{sec:P1Fig8}
 % ============================================================
 
-\subsection*{Big picture --- what Fig.\,8 is about}
+\subsection*{Big picture}
 
-Fig.\,7 showed the ARCP pole leg commutating \emph{upward} --- from the
-lower freewheeling diode $D_2$ (pole node at $\vf = 0$) to the upper main
-switch $S_1$ (pole node at $\vf = \Vdc$), using $A_2$ as the auxiliary
-switch.
+\figref{fig:P1Fig7a} (paper Fig.\,7) showed the ARCP pole leg commutating
+\emph{upward} --- from the lower freewheeling diode $D_2$ (pole node at
+$\vf = 0$) to the upper main switch $S_1$ (pole node at $\vf = \Vdc$),
+using $A_2$ as the auxiliary switch.
 
-Fig.\,8 is the \emph{mirror-image} commutation: the pole leg switching
-\emph{downward} --- from the upper main switch $S_1$ (conducting at
-$\vf = \Vdc$) to the lower freewheeling diode $D_2$ (at $\vf = 0$),
-using $A_1$ (the upper auxiliary switch).
+\figref{fig:P1Fig8a} (paper Fig.\,8) is the \emph{mirror-image}
+commutation: the pole leg switching \emph{downward} --- from the upper main
+switch $S_1$ (conducting at $\vf = \Vdc$) to the lower freewheeling diode
+$D_2$ (at $\vf = 0$), using $A_1$ (the upper auxiliary switch).
 
 This scenario arises when the load current $\IL$ is below the natural
 commutation threshold $I_\text{th}$.
@@ -1547,25 +1547,26 @@ capacitors quickly enough for ZVS; the auxiliary circuit must pre-load
 $\Lr$ with boost energy to assist.
 
 \medskip
-\textbf{Three structural differences from Fig.\,7.}
+\textbf{Three structural differences from \figref{fig:P1Fig7a} (paper Fig.\,7).}
 
 \begin{enumerate}
     \item \textbf{Starting device is a switch, not a diode.}
-          In Fig.\,7, $D_2$ was conducting passively --- no gate signal,
-          just forward-biased by the load current, and it turned off
-          \emph{naturally} when $\ir$ displaced its current.
+          In \figref{fig:P1Fig7a}, $D_2$ was conducting passively --- no
+          gate signal, just forward-biased by the load current, and it
+          turned off \emph{naturally} when $\ir$ displaced its current.
           Here, $S_1$ is actively gated on and must be \emph{forced} off
           by the control at the right moment.
 
     \item \textbf{Direction reversed: $\vf$ falls from $\Vdc$ to $0$.}
-          In Fig.\,7, $\vf$ rose from $0$ to $\Vdc$ and $D_1$ clamped
-          the pole to the positive rail.
+          In \figref{fig:P1Fig7a}, $\vf$ rose from $0$ to $\Vdc$ and
+          $D_1$ clamped the pole to the positive rail.
           Here, $\vf$ falls from $\Vdc$ to $0$ and $D_2$ clamps the pole
           to the negative rail.
 
     \item \textbf{Auxiliary current $\ir$ flows in the opposite direction.}
-          In Fig.\,7, $\ir$ went positive: DC midpoint $\to$ $A_2$ $\to$
-          $\Lr$ $\to$ pole node, building energy to push $\vf$ upward.
+          In \figref{fig:P1Fig7a}, $\ir$ went positive: DC midpoint
+          $\to$ $A_2$ $\to$ $\Lr$ $\to$ pole node, building energy to
+          push $\vf$ upward.
           Here, $\ir$ goes negative: pole node $\to$ $\Lr$ $\to$ $A_1$
           $\to$ DC midpoint, building energy to pull $\vf$ downward.
           On the waveform of \figref{fig:P1Fig8a}, this appears as a
@@ -1577,9 +1578,9 @@ $\Lr$ with boost energy to assist.
 
 De~Doncker states explicitly that this sequence \textit{``is similar to
 that described above except there are no ramp phases.''}
-In Fig.\,7, two separate linear-ramp steps (states b and c) were needed
-before the resonant swing because $D_2$ had to be naturally commutated
-before $S_2$ could take over.
+In \figref{fig:P1Fig7a} (paper Fig.\,7), two separate linear-ramp steps
+(states b and c) were needed before the resonant swing because $D_2$ had
+to be naturally commutated before $S_2$ could take over.
 Here, $S_1$ is simply gated off at the right moment --- no intermediate
 device handoff.
 The sequence is therefore \textbf{five states (b)--(f)} instead of seven.
