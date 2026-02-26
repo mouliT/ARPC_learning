@@ -193,103 +193,177 @@ $A_1, A_2$ & Auxiliary switches (MCTs)   & Fire for $T_\text{boost}$ duration on
 \end{statebox}
 
 \begin{eqnbox}
-\textbf{Starting point — KCL and KVL during the resonant swing (Phase\,2 only):}
-\begin{align}
-    \frac{d\vf}{dt} &= \frac{\ir - \IL}{\Cr}       \label{eq:dvf_dt} \\[4pt]
-    \frac{d\ir}{dt} &= \frac{\Vdc/2 - \vf}{\Lr}    \label{eq:dir_dt}
-\end{align}
+\textbf{When do these equations apply? — the exact circuit condition.}
+
+These equations are valid only during the brief interval when all of the
+following are simultaneously true:
+\begin{itemize}
+    \item $A_1$ is \textbf{on} — the DC midpoint is connected through $\Lr$
+          to the pole node, so $\Vdc/2$ drives the auxiliary inductor.
+    \item $D_2$ has \textbf{just stopped conducting} — the pole node is no
+          longer clamped to 0\,V and is free to rise.
+    \item Both $\Cr/2$ snubber capacitors are free to charge and discharge —
+          no main switch is actively short-circuiting the pole node.
+\end{itemize}
+The instant any one of those conditions changes (e.g.\ $D_1$ clamps, or
+$A_1$ turns off) the circuit topology changes and different equations take
+over.
 
 \medskip
-\textbf{Step 1 — Eliminate $\ir$: differentiate \eqref{eq:dvf_dt}, substitute \eqref{eq:dir_dt}.}
+\textbf{The two circuit equations for this condition.}
 
-Differentiate both sides of \eqref{eq:dvf_dt} with respect to time:
+\textit{KCL at the pole node:}
+$\ir$ flows in; $\IL$ flows out to the load; the rest charges the combined
+snubber capacitance $\Cr$ (= $\Cr/2$ in parallel with $\Cr/2$, seen from
+the pole node):
+\begin{equation}
+    \frac{d\vf}{dt} = \frac{\ir - \IL}{\Cr}
+    \label{eq:dvf_dt}
+\end{equation}
+
+\textit{KVL around the auxiliary loop ($A_1$--$\Lr$--pole\,node):}
+The DC midpoint sits at $\Vdc/2$.
+The pole node sits at $\vf$.
+The full voltage difference $(\Vdc/2 - \vf)$ appears across $\Lr$ and
+drives the rate of change of $\ir$:
+\begin{equation}
+    \frac{d\ir}{dt} = \frac{\Vdc/2 - \vf}{\Lr}
+    \label{eq:dir_dt}
+\end{equation}
+
+\medskip
+\textbf{Step 1 — Combine into one equation for $\vf$ alone.}
+
+Equation~\eqref{eq:dvf_dt} involves both $\vf$ and $\ir$.
+Equation~\eqref{eq:dir_dt} tells us how $\ir$ changes.
+To get a single equation in $\vf$ only, differentiate
+\eqref{eq:dvf_dt} once with respect to time:
 \begin{equation*}
     \frac{d^2\vf}{dt^2} = \frac{1}{\Cr}\,\frac{d\ir}{dt}
 \end{equation*}
-The right-hand side is exactly equation~\eqref{eq:dir_dt}, so substitute:
+The right-hand side contains $d\ir/dt$, which is exactly what
+\eqref{eq:dir_dt} gives us.  Substitute:
 \begin{equation*}
     \frac{d^2\vf}{dt^2}
         = \frac{1}{\Cr}\cdot\frac{\Vdc/2 - \vf}{\Lr}
         = \frac{\Vdc/2}{\Lr\Cr} - \frac{\vf}{\Lr\Cr}
 \end{equation*}
-Bring the $\vf$ term to the left and define
-$\omegar^2 \triangleq 1/(\Lr\Cr)$, $\omegar = 1/\sqrt{\Lr\Cr}$:
+Move the $\vf$ term to the left.  Define $\omegar \triangleq 1/\sqrt{\Lr\Cr}$
+so that $\omegar^2 = 1/(\Lr\Cr)$:
 \begin{equation}
     \ddot{\vf} + \omegar^2\,\vf = \omegar^2\cdot\frac{\Vdc}{2}
     \label{eq:oscillator}
 \end{equation}
-This is a \emph{forced harmonic oscillator}.
-Its equilibrium (particular solution) is $\vf = \Vdc/2$, not zero.
+This is a \emph{forced harmonic oscillator} — the same form as a
+spring-mass system driven by a constant force.  The right-hand side acts
+as the ``equilibrium point'': $\vf$ wants to settle at $\Vdc/2$
+(the DC midpoint), not at zero.
 
 \medskip
-\textbf{Step 2 — Shift the state: define $j \triangleq \ir - \IL$
-and $u \triangleq \vf - \Vdc/2$.}
+\textbf{Step 2 — Simplify by measuring from the equilibrium point.}
 
-$\IL$ is constant during the swing, so $\dot{j} = \dot{\ir}$.
-Rewrite \eqref{eq:dvf_dt}--\eqref{eq:dir_dt} in terms of $j$ and $u$:
+The equilibrium of \eqref{eq:oscillator} sits at $\vf = \Vdc/2$.
+Working directly with $\vf$ keeps dragging this constant around.
+A cleaner approach is to measure $\vf$ \emph{relative to} the equilibrium.
+Define:
+\begin{equation*}
+    u \triangleq \vf - \frac{\Vdc}{2}
+    \qquad (\text{deviation of pole voltage from DC midpoint})
+\end{equation*}
+Also, notice that $\IL$ is a constant (load current changes slowly compared
+to the commutation), so define:
+\begin{equation*}
+    j \triangleq \ir - \IL
+    \qquad (\text{auxiliary current above the load current})
+\end{equation*}
+Since $\IL$ is constant, $\dot{j} = \dot{\ir}$.
+Now rewrite \eqref{eq:dvf_dt} and \eqref{eq:dir_dt} in terms of $u$ and $j$:
 \begin{align*}
     \dot{u} = \dot{\vf}
-        &= \frac{\ir - \IL}{\Cr} = \frac{j}{\Cr} \\[4pt]
+        &= \frac{\ir - \IL}{\Cr} = \frac{j}{\Cr} \\[6pt]
     \dot{j} = \dot{\ir}
         &= \frac{\Vdc/2 - \vf}{\Lr}
          = \frac{\Vdc/2 - (u + \Vdc/2)}{\Lr}
          = \frac{-u}{\Lr}
 \end{align*}
-The forcing term $\Vdc/2$ has cancelled exactly.
-Defining $\Zr \triangleq \sqrt{\Lr/\Cr}$, the system is:
+The constant $\Vdc/2$ has dropped out completely.
+Defining $\Zr \triangleq \sqrt{\Lr/\Cr}$ (the characteristic impedance of
+the LC circuit), the final system is:
 \begin{equation}
     \dot{u} = \frac{j}{\Cr}, \qquad \dot{j} = -\frac{u}{\Lr}
     \label{eq:shifted_states}
 \end{equation}
-This is \emph{free} simple harmonic motion centred at the origin
-$(u,j)=(0,0)$, equivalently $(\vf,j)=(\Vdc/2,\,0)$.
+These two equations are symmetric and coupled: $u$ drives $j$, and
+$j$ drives $u$ back. This back-and-forth is the hallmark of oscillation.
 
 \medskip
-\textbf{Step 3 — Prove the trajectory is a circle and find the radius.}
+\textbf{Step 3 — What shape does the trajectory trace?}
 
-Form the candidate conserved quantity
-$\mathcal{E} \triangleq u^2 + (j\Zr)^2$ and differentiate:
-\begin{align*}
-    \frac{d\mathcal{E}}{dt}
-        &= 2u\dot{u} + 2(j\Zr^2)\,\dot{j} \\[4pt]
-        &= 2u\cdot\frac{j}{\Cr}
-           \;+\; 2j\Zr^2\cdot\left(-\frac{u}{\Lr}\right) \\[4pt]
-        &= \frac{2uj}{\Cr} - \frac{2uj\Zr^2}{\Lr}
-\end{align*}
-Since $\Zr^2 = \Lr/\Cr$ we have $\Zr^2/\Lr = 1/\Cr$, therefore:
+We have the pair $\dot{u} = j/\Cr$ and $\dot{j} = -u/\Lr$.
+The question is: as time goes on, what curve does the point $(u,\,j)$ trace
+in the plane?
+
+The simplest thing that can stay constant in a two-variable system is some
+combination $f(u,\,j)$ whose time derivative is zero.
+Start with the most natural guess: $u^2 + j^2$.
+Differentiate:
 \begin{equation*}
-    \frac{d\mathcal{E}}{dt}
-        = \frac{2uj}{\Cr} - \frac{2uj}{\Cr} = 0
+    \frac{d}{dt}\!\left(u^2 + j^2\right)
+        = 2u\dot{u} + 2j\dot{j}
+        = 2u\cdot\frac{j}{\Cr} + 2j\cdot\frac{-u}{\Lr}
+        = \frac{2uj}{\Cr} - \frac{2uj}{\Lr}
 \end{equation*}
-$\mathcal{E}$ is \emph{exactly conserved} along every trajectory. Hence:
+This is zero only if $\Lr = \Cr$, which is not generally true
+($\Lr$ is in henries, $\Cr$ in farads — they cannot even be equal).
+So $u^2 + j^2$ is \emph{not} constant; the point does not move on a
+circle in the raw $(u,\,j)$ plane.
+
+Now try scaling $j$ by a constant $\alpha$ and ask: for what $\alpha$ is
+$u^2 + (\alpha j)^2$ constant?
+\begin{equation*}
+    \frac{d}{dt}\!\left(u^2 + \alpha^2 j^2\right)
+        = 2u\cdot\frac{j}{\Cr} + 2\alpha^2 j\cdot\frac{-u}{\Lr}
+        = 2uj\left(\frac{1}{\Cr} - \frac{\alpha^2}{\Lr}\right)
+\end{equation*}
+This is zero for all $u$ and $j$ when:
+\begin{equation*}
+    \frac{\alpha^2}{\Lr} = \frac{1}{\Cr}
+    \quad\Longrightarrow\quad
+    \alpha^2 = \frac{\Lr}{\Cr} = \Zr^2
+    \quad\Longrightarrow\quad
+    \alpha = \Zr
+\end{equation*}
+So the combination $u^2 + (j\Zr)^2$ does \emph{not change with time}.
+It equals whatever value it started with:
 \begin{equation}
-    u^2 + (j\Zr)^2 = R^2 = \text{constant},
-    \qquad R = \sqrt{u_0^2 + (j_0\Zr)^2}
+    u^2 + (j\Zr)^2 = u_0^2 + (j_0\Zr)^2 = R^2
     \label{eq:circle}
 \end{equation}
-In the $(u,\,j\Zr)$ plane — equivalently the $(\vf,\,j\Zr)$ plane
-shifted by $\Vdc/2$ — this is a \textbf{circle} of radius $R$ centred
-at $(\vf,\,j\Zr)=(\Vdc/2,\,0)$.
+This is the equation of a \textbf{circle} of radius $R$ in the
+$(u,\;j\Zr)$ plane — or equivalently in the $(\vf,\;j\Zr)$ plane
+shifted so the centre sits at $(\Vdc/2,\;0)$.
 
 \medskip
-\textbf{Initial conditions at the start of the resonant swing.}
+\textbf{Initial conditions and the radius of the circle.}
 
-At the moment the resonant swing begins, the pole node is still
-clamped by $D_2$, so $\vf(0)=0$.
-The auxiliary current has been ramped up to $\ir(0)=\IL+i_\text{boost}$.
-Therefore:
+Just before the resonant swing begins, $D_2$ is still conducting and
+pins $\vf = 0$.  The boost phase has already ramped $\ir$ up to
+$\IL + i_\text{boost}$.  So:
 \begin{equation}
-    u_0 = \vf(0) - \frac{\Vdc}{2} = -\frac{\Vdc}{2}, \qquad
-    j_0 = \ir(0) - \IL = i_\text{boost}
+    u_0 = 0 - \frac{\Vdc}{2} = -\frac{\Vdc}{2},
+    \qquad
+    j_0 = (\IL + i_\text{boost}) - \IL = i_\text{boost}
     \label{eq:swing_ic}
 \end{equation}
-Substituting into~\eqref{eq:circle}:
+Substituting into \eqref{eq:circle}:
 \begin{equation}
     R = \sqrt{\left(\frac{\Vdc}{2}\right)^{\!2} + (i_\text{boost}\,\Zr)^2}
     \label{eq:radius}
 \end{equation}
+More boost current $\Rightarrow$ larger $R$ $\Rightarrow$ the arc
+reaches $\vf = \Vdc$ sooner.
 The three trajectories in \figref{fig:phase_plane_3ICs} illustrate
-how $R$ grows with $i_\text{boost}$.
+this directly for $i_\text{boost} = 0$, $10$\,A, and $20$\,A.
 \end{eqnbox}
 
 \figentry{fig:phase_plane_3ICs}{arcp_phase_plane_3ICs.png}
