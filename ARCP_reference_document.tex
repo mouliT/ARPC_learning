@@ -301,17 +301,146 @@ how $R$ grows with $i_\text{boost}$.
      full circles of which only the solid portions execute physically.}{0.78}
 
 \begin{physbox}
-\textbf{ZVS condition:} $\vf$ must reach $\Vdc$ (or 0 for the reverse
-transition) before the main switch fires.  The circular trajectory must reach
-the upper rail, requiring radius $R \geq \Vdc/2$.
+% ── 1. What is ZVS and why does it matter ────────────────────────────────────
+\textbf{1.\ What is zero-voltage switching (ZVS) and why does it matter?}
 
-\textbf{Role of the boost phase:} Before the resonant swing, $A_1$ is turned on
-and $\ir$ ramps up linearly, pre-charging $\Lr$ to give the circle enough radius
-to reach the rail.  This is explained step-by-step in Section~\ref{sec:P1Fig7}.
+Consider closing any switch (here an IGBT $S_1$) in a circuit.
+The switch transitions from fully off to fully on in a short but finite time
+$t_\text{sw}$.  During that transition:
+\begin{itemize}
+    \item there is a voltage $V_{S_1}$ across the switch (it has not yet
+          fully turned on), \emph{and}
+    \item there is a current $I_{S_1}$ flowing through it (the load is
+          already demanding current).
+\end{itemize}
+Instantaneous power dissipated in the switch $= V_{S_1} \times I_{S_1}$.
+Integrated over the transition, this gives an \textbf{energy loss every
+single switching cycle}.  At high switching frequencies (tens of kHz to MHz)
+these losses add up and heat the switch, reducing efficiency and requiring
+large heatsinks.
 
-\textbf{Why $\Cr$ must be small:} A larger $\Cr$ requires a larger $\ir$ to
-swing $\vf$ rail-to-rail.  Smaller $\Cr$ reduces commutation energy but
-increases $dv/dt$ on the main switch.
+\textbf{Zero-voltage switching} eliminates this loss by a simple idea:
+\emph{ensure the voltage across $S_1$ is zero at the exact moment you
+fire it.}  Then $P = 0 \times I_{S_1} = 0$ regardless of how large the
+current is — the switch turns on for free.
+
+\medskip
+\textbf{How does the ARCP achieve ZVS for $S_1$?}
+
+The voltage across $S_1$ is
+\begin{equation*}
+    V_{S_1} = \Vdc - \vf
+\end{equation*}
+because the upper terminal of $S_1$ sits at $\Vdc$ and the lower terminal
+(the pole node) sits at $\vf$.  For $V_{S_1} = 0$ we need
+$\vf = \Vdc$.
+
+So the entire job of the resonant swing is:
+\emph{drive $\vf$ from 0 all the way up to $\Vdc$ before $S_1$ is fired.}
+Once $\vf$ reaches $\Vdc$, the diode $D_1$ clamps it there, $S_1$ sees
+zero voltage, and it can be gated on with no switching loss.
+
+\medskip
+% ── 2. Geometric condition R ≥ Vdc/2 ─────────────────────────────────────────
+\textbf{2.\ Why must $R \geq \Vdc/2$? — a geometric argument.}
+
+We proved that the resonant swing traces a circle in the
+$(\vf,\,j\Zr)$ plane with:
+\begin{itemize}
+    \item \textbf{Centre} at $\vf = \Vdc/2$ (the DC midpoint)
+    \item \textbf{Radius} $R = \sqrt{({\Vdc}/{2})^2 + (j_0\Zr)^2}$
+\end{itemize}
+The rightmost point the trajectory can reach is
+\begin{equation*}
+    \vf^\text{max} = \frac{\Vdc}{2} + R
+\end{equation*}
+For $\vf$ to reach $\Vdc$ (the ZVS target), we need:
+\begin{equation*}
+    \frac{\Vdc}{2} + R \geq \Vdc
+    \quad\Longrightarrow\quad
+    R \geq \frac{\Vdc}{2}
+\end{equation*}
+Substituting the radius formula:
+\begin{equation*}
+    \sqrt{\left(\frac{\Vdc}{2}\right)^{\!2} + (j_0\Zr)^2} \geq \frac{\Vdc}{2}
+\end{equation*}
+This is automatically true for \emph{any} $j_0 \geq 0$, because
+$\sqrt{a^2 + b^2} \geq a$ whenever $b \geq 0$.
+
+\medskip
+\textbf{What goes wrong when $j_0 < 0$?}
+
+$j_0 = \ir(0) - \IL$ is the auxiliary current \emph{above} the load current
+at the start of the swing.  If $j_0 < 0$ (i.e.\ $\ir < \IL$), the net current
+charging $\Cr$ is negative: from equation~\eqref{eq:dvf_dt},
+$\dot{\vf} = j_0/\Cr < 0$.
+The pole voltage \emph{falls} initially instead of rising.
+In the phase plane this means the trajectory starts going in the wrong
+direction — downward and to the left — before eventually looping back.
+Physically, diode $D_2$ immediately clamps $\vf$ at 0 and prevents
+it from going negative, so the commutation \emph{fails}.
+This is visible in the IC-1 trajectory ($j_0=0$) of
+Figure~\ref{fig:phase_plane_3ICs}: the trajectory starts horizontally
+(neither rising nor falling), which is the marginal case.
+
+\medskip
+% ── 3. Role of the boost phase ───────────────────────────────────────────────
+\textbf{3.\ Why is a boost phase needed?}
+
+At light load the current $\IL$ is small.
+When $S_2$ is turned off, the only current available to charge $\Cr$ and
+raise $\vf$ is $\IL$ itself ($\ir = 0$ initially).  If $\IL$ is too small,
+$\vf$ rises too slowly and cannot reach $\Vdc$ within the available
+commutation window — $S_1$ would have to be fired before $\vf = \Vdc$,
+causing hard switching and energy loss.
+
+The boost phase solves this by pre-charging the resonant inductor $\Lr$:
+\begin{enumerate}
+    \item $A_1$ fires briefly; $\ir$ ramps up linearly from 0 to
+          $\IL + i_\text{boost}$.
+    \item $A_1$ turns off; the swing begins with
+          $j_0 = i_\text{boost} > 0$.
+    \item A positive $j_0$ gives a radius $R > \Vdc/2$, the trajectory
+          goes in the right direction, and $\vf$ reaches $\Vdc$ — ZVS
+          is achieved even at light load.
+\end{enumerate}
+The larger $i_\text{boost}$ is, the larger $R$ becomes, and the more
+quickly $\vf$ swings to $\Vdc$.  At heavy load ($\IL$ large), the load
+current alone is sufficient ($j_0 = 0$ is the marginal case) and no
+boost is needed — this is called \emph{natural commutation}.
+
+\medskip
+% ── 4. Why Cr must be small ──────────────────────────────────────────────────
+\textbf{4.\ Why must $\Cr$ be kept small? — a design trade-off.}
+
+\textit{Reason to make $\Cr$ small — reduce commutation energy:}
+Each time the pole commutates, $\Cr$ must be fully charged from 0 to
+$\Vdc$ (or discharged from $\Vdc$ to 0).
+The energy moved in and out of $\Cr$ every commutation is
+\begin{equation*}
+    E_\Cr = \tfrac{1}{2}\Cr\Vdc^2
+\end{equation*}
+This energy is supplied by the auxiliary inductor $\Lr$ (via the boost
+and resonant swing) and ultimately comes from the DC bus.
+Smaller $\Cr$ means less energy wasted on every switching event.
+
+\textit{Reason not to make $\Cr$ too small — limit the voltage slew rate:}
+When $S_2$ turns off, its current does not disappear instantly — it
+diverts into $\Cr$ and begins charging it.
+The rate at which the voltage across $S_2$ rises is
+\begin{equation*}
+    \frac{d\vf}{dt} = \frac{\ir - \IL}{\Cr}
+\end{equation*}
+If $\Cr$ is very small, this rate becomes very large — the voltage
+across $S_2$ spikes up extremely fast.
+Real IGBTs and MOSFETs have a finite tolerance for how fast their
+blocking voltage can rise ($dv/dt$ rating).
+Exceeding it causes extra losses, gate-ringing, or device failure.
+
+\textit{Summary — the design trade-off:}
+Choose $\Cr$ small enough that $E_\Cr = \frac{1}{2}\Cr\Vdc^2$ is
+acceptably small, yet large enough that the turn-off $dv/dt$ stays
+within the switch's rating.
 \end{physbox}
 
 % ============================================================
