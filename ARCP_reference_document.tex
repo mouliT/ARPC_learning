@@ -1593,8 +1593,50 @@ $\IL$ flows \emph{out of} the pole node into the load:
     \text{pole node} \;\xrightarrow{\;I_L\;}\; L_F \;\longrightarrow\;
     \text{load}
 \]
-This outward current is the only thing pulling charge away from $C_r$.
-By equation~\eqref{eq:cap_discharge}:
+
+\medskip
+\textit{``But if current is flowing out of the pole node, can't $D_2$
+immediately supply it from below?''}
+
+No --- and this is the key point.
+Check the bias on $D_2$ at the moment $S_1$ opens:
+\begin{itemize}
+    \item $D_2$ anode $=$ 0\,V (negative DC rail)
+    \item $D_2$ cathode $= \vf = \Vdc$ (pole node, just released by $S_1$)
+\end{itemize}
+$D_2$ has the full bus voltage $\Vdc$ across it in the \textbf{reverse}
+direction.
+It is firmly off.
+
+Who then supplies the current $\IL$ is demanding?
+The snubber capacitor $C_r$ does.
+$C_r$ was charged to $\Vdc$ when $S_1$ was on; now it begins to
+\emph{discharge} — its charge flows out through the pole node to supply
+$\IL$.
+As charge leaves $C_r$, the pole-node voltage $\vf$ falls.
+
+$D_2$ becomes forward-biased only at the very \emph{end} of the
+discharge, when $\vf$ has fallen all the way to (near) 0\,V.
+At that point $D_2$ clamps the pole node to the negative rail and state~(d)
+begins.
+
+So the correct sequence is:
+\begin{center}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{llll}
+\toprule
+\textbf{Phase} & \textbf{$\vf$} & \textbf{$D_2$ status} & \textbf{Who carries $\IL$?} \\
+\midrule
+S1 just opened & $\Vdc$ & Reverse biased --- OFF & $C_r$ (discharging) \\
+Discharge      & $\Vdc \to 0$   & Still reverse biased & $C_r$ (discharging) \\
+End of swing   & $\approx 0$    & Forward biases --- ON & $D_2$ (clamps) \\
+ZVS window     & $0$            & $D_2$ clamping        & $D_2$ then $S_2$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+With this picture clear, the discharge rate follows from
+equation~\eqref{eq:cap_discharge}:
 \[
     \frac{d\vf}{dt} = -\frac{\IL}{C_r}
 \]
