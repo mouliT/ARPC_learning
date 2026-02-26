@@ -1620,6 +1620,92 @@ strips.
 We now walk through each state using the same Feynman approach as Fig.\,7.
 
 % ── State (b) explanation ─────────────────────────────────────────────────────
+\subsection*{State (b) --- $S_1$ conducting: the resting state before downward
+commutation}
+
+\figentry{fig:P1Fig8b}{P1_Fig8b_state1_S1_conducting}
+    {P1 Fig.\,8(b) --- $S_1$ conducting: initial resting state.
+     $\vf = \Vdc$, $\ir = 0$.
+     Top panel: full commutation waveform (\figref{fig:P1Fig8a}, paper
+     Fig.\,8) with the state~(b) strip highlighted.
+     Bottom panel: circuit snapshot showing $S_1$ as the only active path.
+     Source: De~Doncker \& Lyons, IEEE IAS 1990, p.\,5.}{0.50}
+
+\textbf{Top panel (waveform) --- what you see in the state\,(b) strip.}
+
+State~(b) occupies the leftmost strip of the waveform in
+\figref{fig:P1Fig8a}, labelled \textit{S1}.
+Both traces are completely flat throughout this strip:
+\begin{itemize}
+    \item $\ir = 0$\,A --- no current flows in the resonant branch.
+          The auxiliary inductor $\Lr$ is at rest; the auxiliary back-to-back
+          switches $A_1$ and $A_2$ are both open.
+    \item $\vf = \Vdc$\,V --- the pole node is pinned to the
+          \emph{positive} DC rail.
+\end{itemize}
+This strip has no fixed duration.
+It lasts as long as the PWM upper-side conduction period lasts.
+What matters is the pair of numbers it establishes before commutation begins:
+\begin{equation}
+    \vf(0^-) = \Vdc, \qquad \ir(0^-) = 0\,\text{A}
+    \label{eq:stateB8_ic}
+\end{equation}
+These are the initial conditions for every subsequent calculation in states
+(c)\,through\,(f).
+
+\medskip
+\textbf{Bottom panel (circuit snapshot) --- what is conducting and why.}
+
+Only $S_1$ appears with a bold current path; all other devices are open.
+$S_1$ is actively gated on.
+The load current $\IL$ flows along the path:
+\[
+    \text{positive DC rail} \;\longrightarrow\; S_1 \;\longrightarrow\;
+    \text{pole node} \;\longrightarrow\; L_F \;\longrightarrow\; \text{load}
+\]
+The two snubber capacitors sit at fixed voltages: the one across $S_1$ is
+\emph{discharged} to 0\,V (short-circuited by the conducting $S_1$); the one
+across $S_2$ is \emph{charged} to $\Vdc$ (the full bus voltage sits across the
+open $S_2$).
+The lower main switch $S_2$, the freewheeling diode $D_2$, the upper
+freewheeling diode $D_1$, and both auxiliary back-to-back switches $A_1$,
+$A_2$ are all open.
+
+\medskip
+\textbf{Comparison with state~(a) of \figref{fig:P1Fig7a} (paper Fig.\,7).}
+
+State~(b) here is the exact mirror image of state~(a) in
+\figref{fig:P1Fig7a}:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{lll}
+\toprule
+\textbf{Quantity} & \textbf{State (a) — Fig.\,7} & \textbf{State (b) — Fig.\,8} \\
+\midrule
+Conducting device    & $D_2$ (passive diode)        & $S_1$ (gated switch) \\
+Pole voltage $\vf$   & $0$\,V (lower rail)          & $\Vdc$ (upper rail) \\
+Aux.\ current $\ir$  & $0$\,A                       & $0$\,A \\
+Charged capacitor    & $\Cr/2$ across $S_1$         & $\Cr/2$ across $S_2$ \\
+Direction to commute & Upward ($0 \to \Vdc$)        & Downward ($\Vdc \to 0$) \\
+Auxiliary switch used & $A_2$ (lower aux.)           & $A_1$ (upper aux.) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\medskip
+\textbf{Why this state exists --- what it does for the system.}
+
+State~(b) is the \emph{resting state between switching events}, exactly as
+state~(a) was for the upward commutation.
+Its role is to guarantee that when the downward commutation is triggered, the
+circuit starts from a fully known, clean condition
+(equation~\eqref{eq:stateB8_ic}).
+Specifically, $\ir = 0$ ensures the auxiliary inductor has no residual energy
+left over from a previous event.
+If $\ir$ were non-zero, the resonant swing would start from a different initial
+point, potentially causing $D_2$ to clamp too early or too late --- both of
+which break the ZVS condition for $S_2$.
 
 % ============================================================
 \section{Master Figure Reference Table}
