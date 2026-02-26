@@ -1595,7 +1595,14 @@ In \figref{fig:P1Fig7a} (paper Fig.\,7), two separate linear-ramp steps
 to be naturally commutated before $S_2$ could take over.
 Here, $S_1$ is simply gated off at the right moment --- no intermediate
 device handoff.
-The sequence is therefore \textbf{five states (b)--(f)} instead of seven.
+The sequence is therefore \textbf{five states (a)--(e)} instead of seven.
+
+\smallskip
+\textit{Note on state labels:} the paper numbers these states (b)--(f) because
+the paper's state~(a) is the full waveform panel, which in this document is
+placed separately as \figref{fig:P1Fig8a}.
+In this document we re-label them (a)--(e) so that, as in Fig.\,7, state~(a)
+is always the initial resting state.
 
 \medskip
 \textbf{Reading the waveform strips in \figref{fig:P1Fig8a}.}
@@ -1627,25 +1634,25 @@ Five dashed vertical lines divide the waveform into strips:
 \end{tabular}
 \end{center}
 
-States (b)--(f) in this document correspond one-to-one with these five
+States (a)--(e) in this document correspond one-to-one with these five
 strips.
 We now walk through each state using the same Feynman approach as Fig.\,7.
 
-% ── State (b) explanation ─────────────────────────────────────────────────────
-\subsection*{State (b) --- $S_1$ conducting: the resting state before downward
+% ── State (a) explanation ─────────────────────────────────────────────────────
+\subsection*{State (a) --- $S_1$ conducting: the resting state before downward
 commutation}
 
 \figentry{fig:P1Fig8b}{P1_Fig8b_state1_S1_conducting}
-    {P1 Fig.\,8(b) --- $S_1$ conducting: initial resting state.
+    {P1 Fig.\,8(b) [our state~(a)] --- $S_1$ conducting: initial resting state.
      $\vf = \Vdc$, $\ir = 0$.
      Top panel: full commutation waveform (\figref{fig:P1Fig8a}, paper
-     Fig.\,8) with the state~(b) strip highlighted.
+     Fig.\,8) with the \textit{S1} strip highlighted.
      Bottom panel: circuit snapshot showing $S_1$ as the only active path.
      Source: De~Doncker \& Lyons, IEEE IAS 1990, p.\,5.}{0.50}
 
-\textbf{Top panel (waveform) --- what you see in the state\,(b) strip.}
+\textbf{Top panel (waveform) --- what you see in the state\,(a) strip.}
 
-State~(b) occupies the leftmost strip of the waveform in
+State~(a) occupies the leftmost strip of the waveform in
 \figref{fig:P1Fig8a}, labelled \textit{S1}.
 Both traces are completely flat throughout this strip:
 \begin{itemize}
@@ -1660,10 +1667,10 @@ It lasts as long as the PWM upper-side conduction period lasts.
 What matters is the pair of numbers it establishes before commutation begins:
 \begin{equation}
     \vf(0^-) = \Vdc, \qquad \ir(0^-) = 0\,\text{A}
-    \label{eq:stateB8_ic}
+    \label{eq:stateA8_ic}
 \end{equation}
 These are the initial conditions for every subsequent calculation in states
-(c)\,through\,(f).
+(b)\,through\,(e).
 
 \medskip
 \textbf{Bottom panel (circuit snapshot) --- what is conducting and why.}
@@ -1686,14 +1693,14 @@ $A_2$ are all open.
 \medskip
 \textbf{Comparison with state~(a) of \figref{fig:P1Fig7a} (paper Fig.\,7).}
 
-State~(b) here is the exact mirror image of state~(a) in
+State~(a) here is the exact mirror image of state~(a) in
 \figref{fig:P1Fig7a}:
 
 \begin{center}
 \renewcommand{\arraystretch}{1.25}
 \begin{tabular}{lll}
 \toprule
-\textbf{Quantity} & \textbf{State (a) — Fig.\,7} & \textbf{State (b) — Fig.\,8} \\
+\textbf{Quantity} & \textbf{State (a) — Fig.\,7} & \textbf{State (a) — Fig.\,8} \\
 \midrule
 Conducting device    & $D_2$ (passive diode)        & $S_1$ (gated switch) \\
 Pole voltage $\vf$   & $0$\,V (lower rail)          & $\Vdc$ (upper rail) \\
@@ -1708,11 +1715,11 @@ Auxiliary switch used & $A_2$ (lower aux.)           & $A_1$ (upper aux.) \\
 \medskip
 \textbf{Why this state exists --- what it does for the system.}
 
-State~(b) is the \emph{resting state between switching events}, exactly as
+State~(a) is the \emph{resting state between switching events}, exactly as
 state~(a) was for the upward commutation.
 Its role is to guarantee that when the downward commutation is triggered, the
 circuit starts from a fully known, clean condition
-(equation~\eqref{eq:stateB8_ic}).
+(equation~\eqref{eq:stateA8_ic}).
 Specifically, $\ir = 0$ ensures the auxiliary inductor has no residual energy
 left over from a previous event.
 If $\ir$ were non-zero, the resonant swing would start from a different initial
