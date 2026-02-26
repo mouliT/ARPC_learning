@@ -648,55 +648,15 @@ Reading both panels together for each state builds the complete physical
 picture: you see \emph{where in time} you are (waveform) and
 \emph{which path the current takes} (circuit snapshot) simultaneously.
 
-\begin{figure}[H]
-\centering
-% Row 1
-\begin{subfigure}[b]{0.30\textwidth}
-  \includegraphics[width=\textwidth]{P1_Fig7a_state1_D2_conducting}
-  \caption*{\textbf{(a)} $D_2$ conducts\\$\vf=0,\ \ir=0$}
-  \label{fig:P1Fig7a}
-\end{subfigure}\hfill
-\begin{subfigure}[b]{0.30\textwidth}
-  \includegraphics[width=\textwidth]{P1_Fig7b_state2_A1_boost_start}
-  \caption*{\textbf{(b)} $A_1$ fires\\$\ir$ ramps up}
-  \label{fig:P1Fig7b}
-\end{subfigure}\hfill
-\begin{subfigure}[b]{0.30\textwidth}
-  \includegraphics[width=\textwidth]{P1_Fig7c_state3_boost_complete}
-  \caption*{\textbf{(c)} Boost complete\\swing begins}
-  \label{fig:P1Fig7c}
-\end{subfigure}
-\\[0.8em]
-% Row 2
-\begin{subfigure}[b]{0.30\textwidth}
-  \includegraphics[width=\textwidth]{P1_Fig7d_state4_resonant_swing}
-  \caption*{\textbf{(d)} LC resonant\\swing ($\vf \to \Vdc$)}
-  \label{fig:P1Fig7d}
-\end{subfigure}\hfill
-\begin{subfigure}[b]{0.30\textwidth}
-  \includegraphics[width=\textwidth]{P1_Fig7e_state5_upper_diode_clamp}
-  \caption*{\textbf{(e)} $D_1$ clamps\\$\vf = \Vdc$, ZVS ready}
-  \label{fig:P1Fig7e}
-\end{subfigure}\hfill
-\begin{subfigure}[b]{0.30\textwidth}
-  \includegraphics[width=\textwidth]{P1_Fig7f_state6_ir_ramps_down}
-  \caption*{\textbf{(f)} $\ir \to 0$\\$S_1$ fires at ZVS}
-  \label{fig:P1Fig7f}
-\end{subfigure}
-\\[0.8em]
-% Row 3 (final state, centred)
-\begin{subfigure}[b]{0.30\textwidth}
-  \includegraphics[width=\textwidth]{P1_Fig7g_state7_S1_steady}
-  \caption*{\textbf{(g)} $S_1$ conducts\\$\ir=0$, steady state}
-  \label{fig:P1Fig7g}
-\end{subfigure}
-\caption{P1 Fig.\,7 — Commutation from Diode: seven switching states (a)--(g).
-         Source: De Doncker \& Lyons, IEEE IAS 1990, p.\,4--5.}
-\label{fig:P1Fig7_all}
-\end{figure}
-
 % ── State (a) explanation ─────────────────────────────────────────────────────
 \subsection*{State (a) — $D_2$ conducting: the resting state before commutation}
+
+\figentry{fig:P1Fig7a}{P1_Fig7a_state1_D2_conducting}
+    {P1 Fig.\,7(a) — $D_2$ conducting: initial resting state.
+     $\vf = 0$, $\ir = 0$.
+     Top panel: full commutation waveform with state~(a) strip highlighted.
+     Bottom panel: circuit snapshot showing $D_2$ as the only active path.
+     Source: De~Doncker \& Lyons, IEEE IAS 1990, p.\,4.}{0.50}
 
 \textbf{Top panel (waveform) — what you see in the state\,(a) strip.}
 
@@ -750,6 +710,94 @@ commutation had not fully reset the auxiliary branch — the resonant swing
 would start from a different initial point and the ZVS condition might fail.
 State~(a) ensures the slate is wiped clean every cycle.
 
+% ── State (b) explanation ─────────────────────────────────────────────────────
+\subsection*{State (b) — $A_2$ fires: the boost phase begins}
+
+\figentry{fig:P1Fig7b}{P1_Fig7b_state2_A1_boost_start}
+    {P1 Fig.\,7(b) — $A_2$ fires: $\ir$ begins ramping linearly from zero.
+     $D_2$ still conducts and keeps $\vf = 0$.
+     Top panel: $\ir$ strip rising linearly in the \textit{D2/A2} region.
+     Bottom panel: bold paths show $A_2$ and $D_2$ both conducting.
+     Source: De~Doncker \& Lyons, IEEE IAS 1990, p.\,4.}{0.50}
+
+\textbf{What triggers this state.}
+
+The control logic decides it is time to commutate from $D_2$ to $S_1$.
+It fires the auxiliary switch $A_2$ --- the lower half of the back-to-back
+bidirectional switch pair on the left of the pole leg
+(see \figref{fig:P1Fig7b}, bottom panel).
+
+\medskip
+\textbf{Top panel (waveform) — what you see in the state\,(b) strip.}
+
+We are now in the second strip, labelled \textit{D2/A2} in the waveform of
+\figref{fig:P1Fig7b}.
+\begin{itemize}
+    \item $\ir$ starts rising from 0 in a straight line --- a \emph{linear
+          ramp}. The slope is constant throughout this strip.
+    \item $\vf$ is still completely flat at 0\,V.
+\end{itemize}
+
+\medskip
+\textbf{Bottom panel (circuit snapshot) — two devices conducting at once.}
+
+Two current paths are active simultaneously (both drawn bold):
+\begin{enumerate}
+    \item \textbf{The new $A_2$--$\Lr$ path:}
+          $A_2$ connects the DC bus midpoint (held at $\Vdc/2$ by the two
+          $2C_{dc}$ capacitors) to one terminal of $\Lr$.
+          The other terminal of $\Lr$ connects to the pole node, which is
+          still clamped at 0\,V by $D_2$.
+          So the full voltage $\Vdc/2 - 0 = \Vdc/2$ appears across $\Lr$,
+          driving $\ir$ to ramp upward.
+
+    \item \textbf{The continuing $D_2$--load path:}
+          The load current $\IL$ still needs a return path to the negative
+          rail.  $D_2$ provides it, carrying the \emph{difference}
+          $\IL - \ir$ (which decreases as $\ir$ rises).
+          While $D_2$ conducts, it clamps $\vf$ firmly at 0\,V.
+          This in turn keeps the full $\Vdc/2$ across $\Lr$, maintaining
+          the constant ramp rate.
+\end{enumerate}
+
+\medskip
+\textbf{Why the ramp is linear — the inductor equation.}
+
+An inductor obeys $V_{\Lr} = \Lr\,\dfrac{d\ir}{dt}$.
+Rearranging:
+\begin{equation}
+    \frac{d\ir}{dt} = \frac{V_{\Lr}}{\Lr} = \frac{\Vdc/2}{\Lr}
+                    = \frac{\Vdc}{2\Lr}
+    \label{eq:boost_ramp}
+\end{equation}
+The right-hand side is a constant (both $\Vdc$ and $\Lr$ are fixed).
+A constant $d\ir/dt$ means $\ir$ increases at a \emph{constant rate} ---
+a straight line on the waveform.
+Starting from $\ir(0^-) = 0$:
+\begin{equation}
+    \ir(t) = \frac{\Vdc}{2\Lr}\,t
+    \label{eq:ir_ramp}
+\end{equation}
+
+\medskip
+\textbf{Why $\Vdc/2$ and not $\Vdc$?}
+
+The auxiliary branch is connected to the \emph{DC bus midpoint}, not to
+the full positive rail.  The midpoint is created by two $2C_{dc}$
+capacitors that split the bus exactly in half.
+Using the midpoint halves the driving voltage, which halves the ramp rate
+and gives the control system more time to hit its current target precisely.
+If the full $\Vdc$ were used, $\ir$ would ramp twice as fast and the timing
+would be harder to control.
+
+\medskip
+\textbf{What ends this state.}
+
+State~(b) continues as long as $A_2$ is on and $\ir$ is still below the
+boost target.  The control system counts time (or senses $\ir$ directly)
+and turns off $A_2$ once $\ir$ reaches the desired level.
+At that instant the circuit enters state~(c), which we will examine next.
+
 \begin{circuitbox}[State-by-State Circuit Description — P1 Fig.\,7a–g]
 \renewcommand{\arraystretch}{1.35}
 \begin{tabular}{p{0.6cm} p{2.8cm} p{3.5cm} p{5.0cm}}
@@ -757,8 +805,8 @@ State~(a) ensures the slate is wiped clean every cycle.
 \textbf{State} & \textbf{Active devices} & \textbf{Pole voltage $\vf$} & \textbf{Inductor current $\ir$} \\
 \midrule
 (a) & $D_2$ conducts        & $\vf = 0$ (clamped to lower rail)  & $\ir = 0$; no current in aux.\ branch \\
-(b) & $A_1$ ON, $D_2$       & $\vf = 0$ (still clamped)          & $\ir$ ramps up linearly: $\dot{\ir} = \Vdc/2\Lr$ \\
-(c) & $A_1$ ON, $D_2$       & $\vf = 0$                          & $\ir = \IL + i_\text{boost}$; boost ends, $A_1$ off \\
+(b) & $A_2$ ON, $D_2$       & $\vf = 0$ (still clamped)          & $\ir$ ramps up linearly: $\dot{\ir} = \Vdc/2\Lr$ \\
+(c) & $A_2$ ON, $D_2$       & $\vf = 0$                          & $\ir = \IL + i_\text{boost}$; boost ends, $A_2$ off \\
 (d) & $\Lr$--$\Cr$ free     & $\vf$ swings $0 \to \Vdc$ sinusoidally & $\ir$ follows LC circle trajectory \\
 (e) & $D_1$ clamps          & $\vf = \Vdc$ (clamped to upper rail) & $\ir = I_\text{peak}$; ZVS condition satisfied \\
 (f) & $D_1$, $\Lr$          & $\vf = \Vdc$ (clamped)             & $\ir$ ramps back down: $\dot{\ir} = -\Vdc/2\Lr$ \\
