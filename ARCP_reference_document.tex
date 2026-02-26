@@ -299,49 +299,82 @@ $j$ drives $u$ back. This back-and-forth is the hallmark of oscillation.
 \medskip
 \textbf{Step 3 — What shape does the trajectory trace?}
 
-We have the pair $\dot{u} = j/\Cr$ and $\dot{j} = -u/\Lr$.
-The question is: as time goes on, what curve does the point $(u,\,j)$ trace
-in the plane?
-
-The simplest thing that can stay constant in a two-variable system is some
-combination $f(u,\,j)$ whose time derivative is zero.
-Start with the most natural guess: $u^2 + j^2$.
-Differentiate:
+From Step~1 we already know that $u$ satisfies
+$\ddot{u} + \omegar^2 u = 0$ — simple harmonic motion (SHM), the same
+equation as a mass on a spring with no friction.
+Every student of SHM knows that the general solution is a sinusoid:
 \begin{equation*}
-    \frac{d}{dt}\!\left(u^2 + j^2\right)
-        = 2u\dot{u} + 2j\dot{j}
-        = 2u\cdot\frac{j}{\Cr} + 2j\cdot\frac{-u}{\Lr}
-        = \frac{2uj}{\Cr} - \frac{2uj}{\Lr}
+    u(t) = u_0 \cos(\omegar t) + C\,\sin(\omegar t)
 \end{equation*}
-This is zero only if $\Lr = \Cr$, which is not generally true
-($\Lr$ is in henries, $\Cr$ in farads — they cannot even be equal).
-So $u^2 + j^2$ is \emph{not} constant; the point does not move on a
-circle in the raw $(u,\,j)$ plane.
-
-Now try scaling $j$ by a constant $\alpha$ and ask: for what $\alpha$ is
-$u^2 + (\alpha j)^2$ constant?
+where $u_0 = u(0)$ is fixed by the initial condition and $C$ is determined
+by the initial velocity.
+From \eqref{eq:shifted_states}, $\dot{u} = j/\Cr$, so at $t=0$:
 \begin{equation*}
-    \frac{d}{dt}\!\left(u^2 + \alpha^2 j^2\right)
-        = 2u\cdot\frac{j}{\Cr} + 2\alpha^2 j\cdot\frac{-u}{\Lr}
-        = 2uj\left(\frac{1}{\Cr} - \frac{\alpha^2}{\Lr}\right)
-\end{equation*}
-This is zero for all $u$ and $j$ when:
-\begin{equation*}
-    \frac{\alpha^2}{\Lr} = \frac{1}{\Cr}
+    \dot{u}(0) = \frac{j_0}{\Cr}
     \quad\Longrightarrow\quad
-    \alpha^2 = \frac{\Lr}{\Cr} = \Zr^2
+    C\,\omegar = \frac{j_0}{\Cr}
     \quad\Longrightarrow\quad
-    \alpha = \Zr
+    C = \frac{j_0}{\Cr\,\omegar}
 \end{equation*}
-So the combination $u^2 + (j\Zr)^2$ does \emph{not change with time}.
-It equals whatever value it started with:
+Now $\Cr\,\omegar = \Cr/\sqrt{\Lr\Cr} = \sqrt{\Cr/\Lr} = 1/\Zr$,
+so $C = j_0\Zr$.  The explicit solution for $u(t)$ is:
 \begin{equation}
-    u^2 + (j\Zr)^2 = u_0^2 + (j_0\Zr)^2 = R^2
+    u(t) = u_0\cos(\omegar t) + j_0\Zr\,\sin(\omegar t)
+    \label{eq:u_solution}
+\end{equation}
+
+Now get $j(t)$ directly from \eqref{eq:shifted_states}: $j = \Cr\dot{u}$.
+Differentiate \eqref{eq:u_solution} and multiply by $\Cr$:
+\begin{align*}
+    j(t) &= \Cr\bigl[-u_0\,\omegar\sin(\omegar t)
+                      + j_0\Zr\,\omegar\cos(\omegar t)\bigr] \\[4pt]
+         &= \Cr\,\omegar\bigl[-u_0\sin(\omegar t)
+                               + j_0\Zr\cos(\omegar t)\bigr]
+\end{align*}
+Using $\Cr\,\omegar = 1/\Zr$ again:
+\begin{equation}
+    j(t) = -\frac{u_0}{\Zr}\sin(\omegar t) + j_0\cos(\omegar t)
+    \label{eq:j_solution}
+\end{equation}
+
+\medskip
+We now have explicit expressions for both $u(t)$ and $j(t)$.
+Define two new coordinates:
+\begin{equation*}
+    X \triangleq u, \qquad Y \triangleq j\,\Zr
+\end{equation*}
+($Y$ is simply $j$ rescaled so that both axes carry the same units of
+volts.)  Writing out $X$ and $Y$:
+\begin{align*}
+    X &= u_0\cos(\omegar t) + j_0\Zr\,\sin(\omegar t) \\[4pt]
+    Y &= j\Zr = -u_0\sin(\omegar t) + j_0\Zr\,\cos(\omegar t)
+\end{align*}
+Now compute $X^2 + Y^2$, expanding term by term:
+\begin{align*}
+    X^2 &= u_0^2\cos^2(\omegar t)
+           + 2u_0 j_0\Zr\cos(\omegar t)\sin(\omegar t)
+           + j_0^2\Zr^2\sin^2(\omegar t) \\[4pt]
+    Y^2 &= u_0^2\sin^2(\omegar t)
+           - 2u_0 j_0\Zr\sin(\omegar t)\cos(\omegar t)
+           + j_0^2\Zr^2\cos^2(\omegar t)
+\end{align*}
+Adding: the cross terms ($\pm 2u_0 j_0\Zr\cos\sin$) cancel exactly, and
+$\cos^2 + \sin^2 = 1$ collapses each remaining pair:
+\begin{equation}
+    X^2 + Y^2
+        = u_0^2\underbrace{(\cos^2 + \sin^2)}_{1}
+        + j_0^2\Zr^2\underbrace{(\sin^2 + \cos^2)}_{1}
+        = u_0^2 + (j_0\Zr)^2
     \label{eq:circle}
 \end{equation}
-This is the equation of a \textbf{circle} of radius $R$ in the
-$(u,\;j\Zr)$ plane — or equivalently in the $(\vf,\;j\Zr)$ plane
-shifted so the centre sits at $(\Vdc/2,\;0)$.
+The right-hand side is a \emph{constant} (set by the initial conditions,
+not by time).  Therefore, as $t$ increases, the point $(X, Y) = (u,\,j\Zr)$
+moves along a \textbf{circle} of radius:
+\begin{equation*}
+    R = \sqrt{u_0^2 + (j_0\Zr)^2}
+\end{equation*}
+centred at the origin of the $(u,\,j\Zr)$ plane, which is the point
+$(\vf,\,j\Zr) = (\Vdc/2,\,0)$ in the original coordinates.
 
 \medskip
 \textbf{Initial conditions and the radius of the circle.}
