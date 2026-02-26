@@ -1029,11 +1029,37 @@ All other devices --- $S_1$, $S_2$, $D_1$, $D_2$ --- are open.
 \medskip
 \textbf{Why $A_2$ must stay on during the swing.}
 
-This is a subtle but critical point.
-If $A_2$ were turned off the moment $S_2$ opened, $\Lr$ would be
-disconnected from the DC midpoint.
-The LC oscillation would then be a \emph{free} oscillation with its
-equilibrium at $\vf = 0$ --- the circuit would simply ring around zero
+There are two reasons, one mandatory and one physical.
+
+\textit{Reason 1 (mandatory) — an inductor carrying current cannot be
+open-circuited.}
+
+At the moment $S_2$ opens, $\Lr$ is carrying the current
+$\ir = \IL + i_\text{boost}$.
+An inductor obeys $V = \Lr\,d\ir/dt$.
+If $A_2$ were turned off simultaneously with $S_2$, there would be no
+closed path for $\ir$ to continue flowing --- the circuit through $\Lr$
+would be broken.
+The inductor cannot let $\ir$ drop to zero instantaneously, so it generates
+a very large voltage spike across $A_2$ to try to maintain the current.
+In practice this spike destroys the switch.
+Turning off $A_2$ while $\ir > 0$ is therefore physically impermissible ---
+$A_2$ \emph{must} remain on to keep the current path intact.
+
+\textit{Reason 2 (physics) --- $A_2$ provides the forcing that centres the
+oscillation at $\Vdc/2$.}
+
+Once we accept that $A_2$ stays on (for the reason above), there is a
+second, equally important consequence.
+With $A_2$ on, the DC midpoint ($\Vdc/2$) is connected to $\Lr$, and the
+KVL equation around the auxiliary loop contains the forcing term
+$\Vdc/2 - \vf$.
+This is exactly the forced harmonic oscillator derived in
+Section~\ref{sec:P1Fig5}, whose equilibrium is at $\vf = \Vdc/2$.
+The circular trajectory in the phase plane is centred at $\Vdc/2$, which
+is what allows the swing to reach $\vf = \Vdc$ on the far side.
+If $A_2$ were somehow removed while maintaining a current path (hypothetically),
+the forcing term would vanish, the oscillation would centre around $\vf = 0$,
 and $\vf$ would never reach $\Vdc$.
 
 With $A_2$ on, the DC midpoint ($\Vdc/2$) remains connected to $\Lr$
