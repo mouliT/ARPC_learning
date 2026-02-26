@@ -2497,6 +2497,170 @@ role that $A_1$ played here.
 \end{circuitbox}
 
 % ============================================================
+\section{Commutation from Switch --- High Current (P1 Fig.\,9)}
+\label{sec:P1Fig9}
+% ============================================================
+
+\subsection*{Big picture}
+
+\figentry{fig:P1Fig9a}{P1_Fig9a_waveform_switch_high_current}
+    {P1 Fig.\,9 --- Full commutation waveform for the upward transition
+     ($S_2 \to S_1$, high load current, $\IL \geq \Ith$).
+     Top trace: auxiliary inductor current $\ir(t)$ --- stays at zero
+     throughout; the auxiliary circuit is never activated.
+     Bottom trace: pole-node voltage $\vf(t)$ --- rises linearly from
+     $0$ to $\Vdc$ driven by the load current alone.
+     Source: De~Doncker \& Lyons, IEEE IAS 1990, p.\,6.}{0.75}
+
+Figures~\ref{fig:P1Fig7a} and~\ref{fig:P1Fig8a} both dealt with the
+\emph{low-current} case, where the load current $\IL$ was \emph{below}
+the natural commutation threshold $\Ith$.
+The auxiliary boost stage was essential in both sequences: without it,
+$\IL$ alone could not swing $\vf$ all the way to the target rail before
+the deadtime window expired.
+
+Figure~\ref{fig:P1Fig9a} now shows the complementary case: the load
+current is \emph{above} $\Ith$.
+This changes everything.
+
+\medskip
+\textbf{Step 1 --- what does ``high current'' mean?}
+
+In the Big picture of \figref{fig:P1Fig8a} (Fig.\,8) we derived the
+natural commutation threshold:
+\begin{equation}
+    \Ith = \frac{\Vdc\,C_r}{T_\text{max}}
+    \label{eq:Ith_recap}
+\end{equation}
+This is the minimum load current that can fully swing $\vf$ across the
+entire bus in one direction within the allowed deadtime $T_\text{max}$.
+
+When $\IL \geq \Ith$, the straight-ramp swing time satisfies:
+\begin{equation}
+    T_\text{swing} = \frac{\Vdc\,C_r}{\IL} \;\leq\; T_\text{max}
+    \label{eq:Tswing_high}
+\end{equation}
+The pole node finishes its voltage swing \emph{before} the deadtime
+window closes --- no auxiliary boost is needed at all.
+
+\medskip
+\textbf{Step 2 --- the auxiliary circuit sits completely idle.}
+
+Because $\IL$ alone is sufficient, the control never fires $A_2$.
+$\ir$ stays at zero for the entire commutation.
+No energy is stored in $\Lr$; no LC oscillation occurs.
+
+This means the governing equation reduces from the coupled ODE of
+Figs.\,7 and~8 back to the simple single-capacitor equation:
+\begin{equation}
+    \frac{d\vf}{dt} = \frac{\IL}{2\,C_r} = \text{constant}
+    \qquad \Rightarrow \qquad
+    \vf(t) = \frac{\IL}{2\,C_r}\,t
+    \label{eq:natural_ramp}
+\end{equation}
+starting from $\vf = 0$ the instant $S_2$ turns off.
+The right-hand side is constant because $\IL$ barely changes during the
+commutation window ($L_F \gg \Lr$, so the load filter inductor holds
+$\IL$ approximately steady).
+
+\medskip
+\textbf{Step 3 --- why is the waveform a straight line, not a sinusoid?}
+
+Recall from the Fig.\,8 Big picture that $\Lr$ was responsible for two
+things simultaneously:
+\begin{enumerate}
+    \item Adding $\ir$ as a second discharge (or charge) current to
+          help $\IL$.
+    \item Converting the straight ramp into a sinusoidal arc via LC
+          feedback.
+\end{enumerate}
+Here, $\Lr$ does \emph{neither}.
+Since $\ir = 0$ throughout, there is no coupled LC loop and no feedback
+between $\vf$ and $\ir$.
+$C_r$ simply integrates a constant current $\IL$, producing the
+\textbf{straight-line ramp} in $\vf$ that equation~\eqref{eq:natural_ramp}
+predicts and that \figref{fig:P1Fig9a} shows.
+
+\medskip
+\textbf{Step 4 --- ZVS is still achieved, by the same clamping mechanism.}
+
+Even though the commutation is purely capacitive, zero-voltage switching
+is still achieved for $S_1$:
+\begin{itemize}
+    \item When $\vf$ reaches $\Vdc$, diode $D_1$ forward-biases and
+          clamps the pole node to the positive rail.
+    \item $S_1$ is gated on \emph{while $D_1$ is conducting}, so:
+    \[
+        V_{S_1} = \Vdc - \vf = \Vdc - \Vdc = 0\,\text{V}
+    \]
+    \item $S_1$ turns on at exactly zero volts --- ZVS, with no
+          switching loss.
+\end{itemize}
+This is the identical clamping mechanism as in \figref{fig:P1Fig7a}
+(Fig.\,7).
+The only difference is that $D_1$ is now reached by load current alone,
+not by an LC resonant arc.
+
+\medskip
+\textbf{Three states at a glance.}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{lll}
+\toprule
+\textbf{Waveform strip} & \textbf{What is happening} & \textbf{$\vf$ shape} \\
+\midrule
+\textit{S2} & Idle: $S_2$ on, $\ir=0$, $\vf=0$ & Flat at $0$ \\
+\textit{Cr} & Natural swing: $S_2$ off; $\IL$ alone
+              charges $C_r$ & Linear ramp: $0 \to \Vdc$ \\
+\textit{S1} & Steady: $D_1$ clamped; $S_1$ ZVS on; $\ir=0$ &
+              Flat at $\Vdc$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+States (a)--(c) in this document correspond one-to-one with these three
+strips.
+We now walk through each state.
+
+\medskip
+\textbf{Comparison: Fig.\,7 vs.\ Fig.\,9 (same direction, different current regime).}
+
+Both \figref{fig:P1Fig7a} (paper Fig.\,7) and \figref{fig:P1Fig9a}
+(paper Fig.\,9) perform the same physical task --- swing $\vf$ upward
+from $0$ to $\Vdc$ and turn on $S_1$ at ZVS.
+The difference is entirely in how they accomplish it:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{p{3.2cm} p{4.8cm} p{4.8cm}}
+\toprule
+ & \textbf{Fig.\,7 --- upward, low $\IL < \Ith$}
+ & \textbf{Fig.\,9 --- upward, high $\IL \geq \Ith$} \\
+\midrule
+Auxiliary boost & Required: $A_2$ fires; $\ir$ builds above $\IL$ &
+                  Not needed: $A_2$ never fires \\
+No.\ of states  & 7 (two pre-resonant ramp stages
+                  $+$ LC swing $+$ ramp-down) &
+                  3 (idle, natural swing, steady) \\
+$\vf$ trajectory & Sinusoidal arc (LC resonance) &
+                   Straight-line ramp at $\IL/(2C_r)$ \\
+$\ir$ profile   & Peaks above $\IL$, then ramps to zero &
+                  Zero throughout \\
+ZVS mechanism   & $D_1$ clamped by LC arc reaching $\Vdc$ &
+                  $D_1$ clamped by $\IL$ charging $C_r$ to $\Vdc$ \\
+Energy cost     & $\Lr$ pre-charged; $\tfrac{1}{2}\Lr\ir^2$ returned
+                  to bus & Zero --- no auxiliary energy stored \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Fig.\,9 is the elegant limiting case: the resonant auxiliary branch
+achieves ZVS at \emph{zero extra energy cost} simply by doing nothing.
+
+% ── State (a) explanation ─────────────────────────────────────────────────────
+
+% ============================================================
 \section{Master Figure Reference Table}
 % ============================================================
 
