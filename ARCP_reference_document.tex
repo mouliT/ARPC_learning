@@ -599,6 +599,55 @@ within the switch's rating.
 \label{sec:P1Fig7}
 % ============================================================
 
+\subsection*{Big picture — what is Fig.\,7 teaching?}
+
+An inverter pole-leg has one job: connect the output node (the pole node,
+$\vf$) to either the positive rail ($\Vdc$) or the negative rail (0\,V).
+Switching between these two states is called \textbf{commutation}.
+
+In a hard-switched inverter you would simply turn off the lower device and
+fire the upper device.  That sounds simple, but during the brief transition
+the switch carries both a large voltage \emph{and} a large current
+simultaneously, dissipating energy as heat on every single switching cycle.
+
+Fig.\,7 answers the question: \emph{how does the ARCP solve this, step by
+step, starting from the moment $D_2$ is conducting?}
+
+The word ``from diode'' describes the \emph{starting condition}: the load
+current $\IL$ is flowing upward through the pole node into the load, and the
+only path available for this current on the lower side is the anti-parallel
+diode $D_2$.  The converter must now move $\vf$ from 0 all the way up to
+$\Vdc$ so that the upper switch $S_1$ can be turned on at zero voltage
+(ZVS).  Fig.\,7 shows the exact sequence of seven circuit states ---
+(a)\,through\,(g) --- that accomplish this safely.
+
+\medskip
+\noindent
+\textbf{How each state is drawn.}
+Every sub-figure in Fig.\,7 is a pair of two panels:
+\begin{itemize}
+    \item \textbf{Top panel --- the waveform strip.}
+          This shows $\ir(t)$ and $\vf(t)$ on a shared time axis covering
+          the \emph{entire} commutation from state~(a) to state~(g).
+          Vertical dashed lines divide the axis into strips; each strip is
+          labelled at the bottom with the device(s) that are conducting
+          during that interval (e.g.\ \textit{D2}, \textit{D2/A2},
+          \textit{Cr/A2}, \textit{S1}).
+          A horizontal reference line on the $\ir$ plot marks the load
+          current level $\IL$.
+          The sub-figure letter tells you which strip you are currently in.
+
+    \item \textbf{Bottom panel --- the circuit snapshot.}
+          This strips the full ARCP schematic down to only the devices
+          that are conducting right now; their current paths are drawn in
+          bold.  Everything else is open.  It is a ``frozen frame'' of the
+          circuit topology for the labelled time strip.
+\end{itemize}
+
+Reading both panels together for each state builds the complete physical
+picture: you see \emph{where in time} you are (waveform) and
+\emph{which path the current takes} (circuit snapshot) simultaneously.
+
 \begin{figure}[H]
 \centering
 % Row 1
@@ -645,6 +694,61 @@ within the switch's rating.
          Source: De Doncker \& Lyons, IEEE IAS 1990, p.\,4--5.}
 \label{fig:P1Fig7_all}
 \end{figure}
+
+% ── State (a) explanation ─────────────────────────────────────────────────────
+\subsection*{State (a) — $D_2$ conducting: the resting state before commutation}
+
+\textbf{Top panel (waveform) — what you see in the state\,(a) strip.}
+
+State~(a) occupies the leftmost strip of the waveform, labelled \textit{D2}.
+Both traces are completely flat throughout this strip:
+\begin{itemize}
+    \item $\ir = 0$\,A — no current flows in the resonant branch at all.
+          The auxiliary inductor $\Lr$ is at rest.
+    \item $\vf = 0$\,V — the pole node is pinned to the negative DC rail.
+\end{itemize}
+This strip has no fixed duration.  It lasts as long as the PWM lower-side
+conduction period lasts — anywhere from a few microseconds to tens of
+microseconds depending on the modulation index and load.
+What matters is not how long state~(a) lasts, but the two numbers it
+establishes before commutation begins:
+\begin{equation}
+    \vf(0^-) = 0\,\text{V}, \qquad \ir(0^-) = 0\,\text{A}
+    \label{eq:stateA_ic}
+\end{equation}
+These are the initial conditions that every subsequent calculation in states
+(b)\,through\,(g) is built on.
+
+\medskip
+\textbf{Bottom panel (circuit snapshot) — what is conducting and why.}
+
+Only $D_2$ appears with a bold current path; all other devices are open.
+The load current $\IL$ flows along the path:
+\[
+    \text{negative DC rail} \;\longrightarrow\; D_2 \;\longrightarrow\;
+    \text{pole node} \;\longrightarrow\; L_F \;\longrightarrow\; \text{load}
+\]
+$D_2$ is not actively driven by any gate signal — it is a diode.
+It conducts simply because $\IL$ pushes current in the upward direction
+and $D_2$ is the only forward-biased path on the lower side of the pole.
+The two snubber capacitors ($\Cr/2$ across $S_1$ and $\Cr/2$ across $S_2$)
+sit at fixed voltages: the one across $S_1$ is charged to $\Vdc$
+(full bus voltage); the one across $S_2$ is discharged to 0\,V
+(short-circuited by the conducting $D_2$).
+The main switches $S_1$, $S_2$ and both auxiliary back-to-back switches
+$A_1$, $A_2$ are all open.
+
+\medskip
+\textbf{Why this state exists — what it does for the system.}
+
+State~(a) is the \emph{resting state between switching events}.
+Its role is to guarantee that when a commutation is eventually triggered,
+the circuit starts from a fully known, clean condition
+(equation~\eqref{eq:stateA_ic}).
+If $\ir$ were not zero at the start — for example, if a previous
+commutation had not fully reset the auxiliary branch — the resonant swing
+would start from a different initial point and the ZVS condition might fail.
+State~(a) ensures the slate is wiped clean every cycle.
 
 \begin{circuitbox}[State-by-State Circuit Description — P1 Fig.\,7a–g]
 \renewcommand{\arraystretch}{1.35}
