@@ -1253,28 +1253,34 @@ lost.
 \medskip
 \textbf{What ends this state.}
 
-The control fires $S_1$.
-Because $V_{S_1} = 0$, this is lossless.
-$S_1$ takes over the current $\ir$ from $D_1$; $D_1$ turns off (it was
-only conducting because the switch was not yet on).
-$A_2$ is turned off at the same moment --- since $S_1$ is now carrying
-the current, $\Lr$'s current path is maintained through $S_1$ rather
-than through $A_2$.
-The circuit enters state~(f).
+The control fires $S_1$ at zero voltage --- ZVS turn-on, lossless.
+However, $D_1$ does \emph{not} turn off at this moment.
+$\ir$ is still above $\IL$, so $D_1$ continues to carry the excess
+$(\ir - \IL)$ to the positive DC rail, just as it has been doing since
+the start of state~(e).
+$A_2$ also remains \emph{gated on} --- it is still carrying $\ir$ from
+the DC midpoint through $\Lr$ to the pole node.
+The transition to state~(f) is not triggered by a control action but
+by a circuit event: when $\ir$ falls to $\IL$, $D_1$'s current
+$(\ir - \IL)$ reaches zero and $D_1$ turns off naturally.
+At that instant the load current begins to transfer from the $D_1$ path
+into $S_1$'s transistor, and the \emph{ramp-down} phase begins.
 
 % ── State (f) explanation ─────────────────────────────────────────────────────
 \subsection*{State (f) — $\ir$ ramps to zero: auxiliary branch winds down}
 
 \figentry{fig:P1Fig7f}{P1_Fig7f_state6_ir_ramps_down}
-    {P1 Fig.\,7(f) --- $S_1$ on; $\ir$ ramps back to zero as $A_2$'s body
-     diode carries the tail current.
+    {P1 Fig.\,7(f) --- Ramp-down phase: both $S_1$ and $A_2$ gated on;
+     $\ir$ ramps from $\IL$ to zero as the load current transfers into $S_1$.
      Source: De~Doncker \& Lyons, IEEE IAS 1990, p.\,5.}{0.50}
 
-The commutation goal is already complete: $S_1$ has fired at zero voltage
-and is carrying the load current.
-State~(f) has only one remaining task --- \emph{drain the energy stored in
-$\Lr$ back to zero} so the auxiliary branch is fully demagnetised and ready
-for the next switching event.
+State~(f) --- called the \emph{ramp-down} phase by De~Doncker ---
+begins the moment $\ir$ falls below $\IL$ and $D_1$ turns off naturally.
+$S_1$ was already gated on (ZVS) during state~(e); now its transistor
+takes over the load current as $\ir$ continues to decrease.
+The only remaining task is to \emph{drain the magnetic energy in $\Lr$
+to zero} while $A_2$ stays gated on and $S_1$ makes up the shortfall
+in load current.
 
 \medskip
 \textbf{Top panel (waveform) — what you see in the state\,(f) strip.}
@@ -1290,33 +1296,39 @@ We are in the ramp-down strip of the waveform in \figref{fig:P1Fig7a}.
 \end{itemize}
 
 \medskip
-\textbf{Bottom panel (circuit snapshot) --- $S_1$ on, $A_2$ body diode
-carrying the tail current.}
+\textbf{Bottom panel (circuit snapshot) --- $S_1$ and $A_2$ both gated on.}
 
-$S_1$ is the main conducting element in state~(f).
-It actively connects the pole node to the positive DC rail, holding
-$\vf = \Vdc$ and carrying the load current $\IL$ to the load.
+Figure~7(f) of the paper shows both $S_1$ and $A_2$ in bold --- both
+are \emph{actively gated on}.
+$A_2$ is not relying on any body diode; its gate signal has not been
+removed.
+De~Doncker uses gate-controlled auxiliary devices (the paper mentions
+MCTs, GTOs, or SCRs for $A_2$), and the gate is held asserted so that
+$A_2$'s conducting transistor carries $\ir$ from the DC midpoint through
+$\Lr$ into the pole node.
 
-$A_2$'s transistor was gated off when $S_1$ fired, but
-\emph{$A_2$'s body diode still conducts.}
-Here is why.
-$\Lr$ is still carrying $\ir > 0$ in the same direction as before ---
-from the DC midpoint, through $\Lr$, through $A_2$, into the pole node.
-A diode cannot abruptly cut off current; it must wait until the current
-reaches zero naturally.
-Think of the inductor as a flywheel: the energy $\tfrac{1}{2}\Lr\ir^2$
-stored in the magnetic field has to go somewhere, and the only available
-path is through $A_2$'s body diode into the pole node.
-The body diode turns off by itself when $\ir$ reaches zero, because any
-further tendency would reverse the current, which the body diode blocks.
-This is a natural, lossless turn-off.
+$S_1$ is also conducting through its transistor.
+Unlike state~(e) --- where $\ir > \IL$ and the excess flowed through $D_1$
+to the positive rail --- here $\ir < \IL$.
+$S_1$'s transistor therefore carries the \emph{deficit} $(\IL - \ir)$
+from the positive DC rail to the pole node, making up the shortfall
+between what the load needs and what $\Lr$ provides.
+KCL at the pole node:
+\begin{equation*}
+    \underbrace{\ir}_{\text{from }A_2/\Lr}
+    +
+    \underbrace{(\IL - \ir)}_{\text{from }S_1}
+    = \IL \quad \text{(to load)}
+\end{equation*}
+As $\ir$ decreases toward zero, $S_1$ picks up more and more of $\IL$;
+by the end of state~(f) $S_1$ carries the full load current.
 
 \medskip
 \textbf{Why the slope is $-\Vdc/(2\Lr)$ --- KVL argument.}
 
 The auxiliary loop in state~(f) is topologically identical to state~(e):
 $\Lr$ sits between the DC midpoint ($\Vdc/2$) and the pole node, with
-$A_2$'s body diode providing the conduction path.
+$A_2$ (still gated on) providing the conduction path.
 The only change is that $\vf = \Vdc$ is now enforced by a closed switch
 $S_1$ rather than a diode $D_1$.
 The KVL result is unchanged:
@@ -1337,15 +1349,20 @@ the commutation is \emph{symmetric} about the resonant swing.
 \textbf{What ends this state.}
 
 $\ir$ ramps to zero.
-$A_2$'s body diode reaches zero current; the next instant would require
-reverse current, which the diode blocks --- so the diode turns off
-naturally.
-This is a near zero-current switching (ZCS) event for $A_2$:
-negligible current at turn-off means negligible switching loss.
-$\Lr$ is now fully demagnetised.
-The auxiliary branch is electrically invisible.
-The circuit enters state~(g): $S_1$ conducts $\IL$ in steady state,
-$\ir = 0$, commutation complete.
+De~Doncker states explicitly in the paper:
+\begin{quote}
+\textit{``A2 will be gated off in anticipation of the current zero
+in order to minimise reverse recovery losses.''}
+\end{quote}
+In other words, the controller removes $A_2$'s gate signal just
+\emph{before} $\ir$ reaches zero rather than at the exact instant of
+zero.
+This ensures the residual current at $A_2$'s turn-off is negligible ---
+a near-ZCS (zero-current switching) event: negligible current, negligible
+reverse recovery charge, negligible switching loss.
+$\Lr$ is now fully demagnetised; the auxiliary branch is electrically
+invisible; $S_1$ carries the full $\IL$.
+The circuit enters state~(g).
 
 \begin{circuitbox}[State-by-State Circuit Description — P1 Fig.\,7a–g]
 \renewcommand{\arraystretch}{1.35}
