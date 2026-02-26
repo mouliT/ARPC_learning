@@ -883,16 +883,72 @@ giving a circle radius $R = \sqrt{(\Vdc/2)^2 + (i_\text{boost}\,\Zr)^2}$,
 which is larger the more boost current we add.
 
 \medskip
-\textbf{What ends this state.}
+\textbf{What ends this state — and how the resonant swing is triggered.}
 
-The control turns off $S_2$ once $\ir = \IL + i_\text{boost}$ is reached.
-$S_2$ carries only the small current $\ir - \IL = i_\text{boost}$ at this
-instant, so turning it off causes very little voltage spike --- this is
-called a \emph{near-zero-current switching} (ZCS-like) turn-off.
-The instant $S_2$ opens, there is no longer anything clamping $\vf$ at 0\,V.
-The excess current $\ir - \IL = i_\text{boost}$ immediately starts charging
-the snubber capacitors, $\vf$ begins to rise, and the resonant LC swing
-(state~d) begins.
+\textit{Step 1 — What the control does.}
+
+The control monitors $\ir$ and turns off $S_2$ the moment
+$\ir = \IL + i_\text{boost}$ is reached.
+$A_2$ stays on.
+
+\medskip
+\textit{Step 2 — Where was the current going before $S_2$ opened?}
+
+Just before $S_2$ turns off, the current balance at the pole node is:
+\begin{equation*}
+    \underbrace{\ir}_{\text{in from } \Lr}
+    \;=\;
+    \underbrace{\IL}_{\text{out to load}}
+    \;+\;
+    \underbrace{(\ir - \IL)}_{\text{down through } S_2 \text{ to lower rail}}
+\end{equation*}
+$S_2$ is carrying the small excess $\ir - \IL = i_\text{boost}$ downward.
+Everything is in balance and $\vf = 0$.
+
+\medskip
+\textit{Step 3 — What happens the instant $S_2$ opens?}
+
+An open switch carries zero current.
+The $i_\text{boost}$ that was flowing through $S_2$ \emph{must go somewhere}
+--- current in an inductor cannot disappear instantaneously.
+The only path available at the pole node (with $S_2$ open and $D_2$ already
+off) is through the two snubber capacitors: the $\Cr/2$ across $S_1$ and
+the $\Cr/2$ across $S_2$, which together form the combined $\Cr$ seen from
+the pole node.
+
+So the current $i_\text{boost}$ flows into $\Cr$ and begins charging it.
+Using the capacitor equation $i = C\,dv/dt$:
+\begin{equation}
+    \Cr\,\frac{d\vf}{dt}\bigg|_{t=0^+}
+        = \ir - \IL = i_\text{boost}
+    \quad\Longrightarrow\quad
+    \frac{d\vf}{dt}\bigg|_{t=0^+} = \frac{i_\text{boost}}{\Cr}
+    \label{eq:vf_initial_slope}
+\end{equation}
+$\vf$ immediately starts rising from 0 at a rate set by $i_\text{boost}$
+and $\Cr$.
+This is the first instant of the resonant LC swing --- state~(d) has begun.
+
+\medskip
+\textit{Step 4 — Why is the turn-off of $S_2$ relatively clean?}
+
+In a hard-switched converter, a switch turns off while carrying the full
+load current $\IL$ (which can be tens or hundreds of amperes).
+The current snaps off abruptly and the energy $\frac{1}{2}L_\text{stray}I^2$
+stored in stray wiring inductance causes a large voltage spike across the
+switch.
+
+Here $S_2$ carries only $i_\text{boost} = \ir - \IL$ at the moment it turns
+off.
+$i_\text{boost}$ is a \emph{control parameter} that the engineer can keep
+small.
+Moreover, the current does not snap off into stray inductance --- it
+commutates smoothly into $\Cr$, which absorbs it without a spike.
+$\vf$ rises at the finite rate $i_\text{boost}/\Cr$ rather than jumping
+discontinuously.
+This is why the turn-off of $S_2$ is described as
+\emph{near-zero-current switching} (near-ZCS): the current being interrupted
+is small and the voltage transition is smooth.
 
 \begin{circuitbox}[State-by-State Circuit Description — P1 Fig.\,7a–g]
 \renewcommand{\arraystretch}{1.35}
