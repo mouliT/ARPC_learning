@@ -4,7 +4,7 @@
 %  Source: De Doncker & Lyons, IEEE IAS 1990
 %  Figures stored in: figures/
 %  Naming convention: P1_Fig[N]_[description].png
-%  Current figures available: P1_Fig5, P1_Fig7a--g, arcp_fig1--4 (illustrations)
+%  Current figures available: P1_Fig5, P1_Fig7a--g
 % ============================================================
 \documentclass[12pt, a4paper]{article}
 
@@ -233,51 +233,6 @@ increases $dv/dt$ on the main switch.
 \end{physbox}
 
 % ============================================================
-\subsection{Computational Illustration of the Governing Equations}
-\label{sec:P1Fig5_illustration}
-% ============================================================
-
-The four plots below are generated analytically from the equations in the
-green box above, using representative parameters
-($\Vdc = 600\,\text{V}$, $\Lr = 4\,\mu\text{H}$,
-$\Cr = 47\,\text{nF}$, $\IL = 30\,\text{A}$, $i_\text{boost} = 10\,\text{A}$).
-They address three questions that arise when first reading the green box:
-\begin{enumerate}
-    \item Are the ODEs~\eqref{eq:dvf_dt}--\eqref{eq:dir_dt}
-          valid throughout the entire commutation, or only in part of it?
-    \item How does differentiating and substituting produce the forced
-          oscillator~\eqref{eq:oscillator}?
-    \item Why does the shifted state $j = \ir - \IL$ give a \emph{circular}
-          phase-plane trajectory?
-\end{enumerate}
-
-\figentry{fig:arcp_time_traces}{arcp_fig1_time_traces.png}
-         {Analytical time traces of $\vf(t)$ and $\ir(t)$ across all four
-          commutation phases.  The ODEs~\eqref{eq:dvf_dt}--\eqref{eq:dir_dt}
-          are \textbf{active only in Phase~2} (green shaded band).
-          Phase~1 is a linear ramp; Phases~0 and~3 are trivial constant
-          or linear segments governed by different circuit equations.}{1.0}
-
-\figentry{fig:arcp_phase_plane}{arcp_fig2_phase_plane.png}
-         {Phase-plane trajectory in $(v_f,\, j\cdot Z_r)$ space during the
-          resonant swing (Phase~2 only), where $j = \ir - \IL$.
-          The trajectory is a circular arc with centre at
-          $(V_{dc}/2,\,0)$ and radius $R = \sqrt{u_0^2 + (j_0 Z_r)^2}$.
-          $D_1$ clamps at the first crossing of $v_f = V_{dc}$,
-          at which point $\ir \approx \IL + i_\text{boost}$.}{0.70}
-
-\figentry{fig:arcp_math}{arcp_fig3_math_derivation.png}
-         {Five-step derivation from KCL~\eqref{eq:dvf_dt} and
-          KVL~\eqref{eq:dir_dt} to the forced oscillator, the shifted
-          state $j$, and the circle invariant.}{1.0}
-
-\figentry{fig:arcp_zvs}{arcp_fig4_zvs_condition.png}
-         {Effect of initial $j_0 = i_\text{boost}$ on the resonant swing.
-          Larger boost gives faster commutation.  When $j_0 < 0$ (dashed red),
-          $v_f$ initially \emph{drops} before rising — illustrating why
-          $\ir$ must exceed $\IL$ before the swing begins.}{1.0}
-
-% ============================================================
 \section{Commutation from a Conducting Diode — P1 Fig.\,7}
 \label{sec:P1Fig7}
 % ============================================================
@@ -438,11 +393,6 @@ of $A_1$ and is the mirror image.
 \midrule
 \endhead
 \texttt{P1\_Fig5\_ARCP\_pole\_leg}              & 3    & \ref{sec:P1Fig5}  & \eqref{eq:dvf_dt}--\eqref{eq:shifted_states} \\
-\midrule
-\texttt{arcp\_fig1\_time\_traces}              & —    & \ref{sec:P1Fig5_illustration} & \eqref{eq:dvf_dt}--\eqref{eq:dir_dt} (Phase~2 only) \\
-\texttt{arcp\_fig2\_phase\_plane}              & —    & \ref{sec:P1Fig5_illustration} & Circle: $u^2 + (jZ_r)^2 = R^2$ \\
-\texttt{arcp\_fig3\_math\_derivation}          & —    & \ref{sec:P1Fig5_illustration} & Steps 1--5 of derivation \\
-\texttt{arcp\_fig4\_zvs\_condition}            & —    & \ref{sec:P1Fig5_illustration} & ZVS: $j_0 \geq 0$ required \\
 \midrule
 \texttt{P1\_Fig7a\_state1\_D2\_conducting}      & 4    & \ref{sec:P1Fig7}  & — \\
 \texttt{P1\_Fig7b\_state2\_A1\_boost\_start}    & 4    & \ref{sec:P1Fig7}  & \eqref{eq:T_boost} \\
