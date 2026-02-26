@@ -193,30 +193,112 @@ $A_1, A_2$ & Auxiliary switches (MCTs)   & Fire for $T_\text{boost}$ duration on
 \end{statebox}
 
 \begin{eqnbox}
-The two state equations governing the ARCP pole during the resonant swing.
-These are derived from KCL at the pole node and KVL around the auxiliary loop:
+\textbf{Starting point — KCL and KVL during the resonant swing (Phase\,2 only):}
 \begin{align}
-    \frac{d\vf}{dt} &= \frac{\ir - \IL}{\Cr}
-    \label{eq:dvf_dt} \\[6pt]
-    \frac{d\ir}{dt} &= \frac{\Vdc/2 - \vf}{\Lr}
-    \label{eq:dir_dt}
+    \frac{d\vf}{dt} &= \frac{\ir - \IL}{\Cr}       \label{eq:dvf_dt} \\[4pt]
+    \frac{d\ir}{dt} &= \frac{\Vdc/2 - \vf}{\Lr}    \label{eq:dir_dt}
 \end{align}
-Combining~\eqref{eq:dvf_dt}--\eqref{eq:dir_dt} yields the forced oscillator:
+
+\medskip
+\textbf{Step 1 — Eliminate $\ir$: differentiate \eqref{eq:dvf_dt}, substitute \eqref{eq:dir_dt}.}
+
+Differentiate both sides of \eqref{eq:dvf_dt} with respect to time:
+\begin{equation*}
+    \frac{d^2\vf}{dt^2} = \frac{1}{\Cr}\,\frac{d\ir}{dt}
+\end{equation*}
+The right-hand side is exactly equation~\eqref{eq:dir_dt}, so substitute:
+\begin{equation*}
+    \frac{d^2\vf}{dt^2}
+        = \frac{1}{\Cr}\cdot\frac{\Vdc/2 - \vf}{\Lr}
+        = \frac{\Vdc/2}{\Lr\Cr} - \frac{\vf}{\Lr\Cr}
+\end{equation*}
+Bring the $\vf$ term to the left and define
+$\omegar^2 \triangleq 1/(\Lr\Cr)$, $\omegar = 1/\sqrt{\Lr\Cr}$:
 \begin{equation}
-    \ddot{\vf} + \omegar^2\,\vf = \omegar^2\cdot\frac{\Vdc}{2},
-    \qquad \omegar = \frac{1}{\sqrt{\Lr\Cr}}
+    \ddot{\vf} + \omegar^2\,\vf = \omegar^2\cdot\frac{\Vdc}{2}
     \label{eq:oscillator}
 \end{equation}
-Define the shifted state $j = \ir - \IL$ (load current assumed constant).
-Then~\eqref{eq:dvf_dt}--\eqref{eq:dir_dt} become:
+This is a \emph{forced harmonic oscillator}.
+Its equilibrium (particular solution) is $\vf = \Vdc/2$, not zero.
+
+\medskip
+\textbf{Step 2 — Shift the state: define $j \triangleq \ir - \IL$
+and $u \triangleq \vf - \Vdc/2$.}
+
+$\IL$ is constant during the swing, so $\dot{j} = \dot{\ir}$.
+Rewrite \eqref{eq:dvf_dt}--\eqref{eq:dir_dt} in terms of $j$ and $u$:
+\begin{align*}
+    \dot{u} = \dot{\vf}
+        &= \frac{\ir - \IL}{\Cr} = \frac{j}{\Cr} \\[4pt]
+    \dot{j} = \dot{\ir}
+        &= \frac{\Vdc/2 - \vf}{\Lr}
+         = \frac{\Vdc/2 - (u + \Vdc/2)}{\Lr}
+         = \frac{-u}{\Lr}
+\end{align*}
+The forcing term $\Vdc/2$ has cancelled exactly.
+Defining $\Zr \triangleq \sqrt{\Lr/\Cr}$, the system is:
 \begin{equation}
-    \dot{\vf} = \frac{j}{\Cr}, \qquad
-    \dot{j} = \frac{\Vdc/2 - \vf}{\Lr}
+    \dot{u} = \frac{j}{\Cr}, \qquad \dot{j} = -\frac{u}{\Lr}
     \label{eq:shifted_states}
 \end{equation}
-Solution is a circle in the $(\vf,\, j)$ phase plane with centre at
-$(\Vdc/2,\, 0)$ and radius $R = \sqrt{j_0^2 + (\vf_0 - \Vdc/2)^2}$.
+This is \emph{free} simple harmonic motion centred at the origin
+$(u,j)=(0,0)$, equivalently $(\vf,j)=(\Vdc/2,\,0)$.
+
+\medskip
+\textbf{Step 3 — Prove the trajectory is a circle and find the radius.}
+
+Form the candidate conserved quantity
+$\mathcal{E} \triangleq u^2 + (j\Zr)^2$ and differentiate:
+\begin{align*}
+    \frac{d\mathcal{E}}{dt}
+        &= 2u\dot{u} + 2(j\Zr^2)\,\dot{j} \\[4pt]
+        &= 2u\cdot\frac{j}{\Cr}
+           \;+\; 2j\Zr^2\cdot\left(-\frac{u}{\Lr}\right) \\[4pt]
+        &= \frac{2uj}{\Cr} - \frac{2uj\Zr^2}{\Lr}
+\end{align*}
+Since $\Zr^2 = \Lr/\Cr$ we have $\Zr^2/\Lr = 1/\Cr$, therefore:
+\begin{equation*}
+    \frac{d\mathcal{E}}{dt}
+        = \frac{2uj}{\Cr} - \frac{2uj}{\Cr} = 0
+\end{equation*}
+$\mathcal{E}$ is \emph{exactly conserved} along every trajectory. Hence:
+\begin{equation}
+    u^2 + (j\Zr)^2 = R^2 = \text{constant},
+    \qquad R = \sqrt{u_0^2 + (j_0\Zr)^2}
+    \label{eq:circle}
+\end{equation}
+In the $(u,\,j\Zr)$ plane — equivalently the $(\vf,\,j\Zr)$ plane
+shifted by $\Vdc/2$ — this is a \textbf{circle} of radius $R$ centred
+at $(\vf,\,j\Zr)=(\Vdc/2,\,0)$.
+
+\medskip
+\textbf{Initial conditions at the start of the resonant swing.}
+
+At the moment the resonant swing begins, the pole node is still
+clamped by $D_2$, so $\vf(0)=0$.
+The auxiliary current has been ramped up to $\ir(0)=\IL+i_\text{boost}$.
+Therefore:
+\begin{equation}
+    u_0 = \vf(0) - \frac{\Vdc}{2} = -\frac{\Vdc}{2}, \qquad
+    j_0 = \ir(0) - \IL = i_\text{boost}
+    \label{eq:swing_ic}
+\end{equation}
+Substituting into~\eqref{eq:circle}:
+\begin{equation}
+    R = \sqrt{\left(\frac{\Vdc}{2}\right)^{\!2} + (i_\text{boost}\,\Zr)^2}
+    \label{eq:radius}
+\end{equation}
+The three trajectories in \figref{fig:phase_plane_3ICs} illustrate
+how $R$ grows with $i_\text{boost}$.
 \end{eqnbox}
+
+\figentry{fig:phase_plane_3ICs}{arcp_phase_plane_3ICs.png}
+    {Phase-plane trajectories for three initial condition vectors
+     ($j_0 = 0,\;10,\;20$\,A), all starting at $\vf=0$.
+     Each trajectory is a circular arc with radius given by
+     \eqref{eq:radius}. Solid circles mark the start; squares mark
+     where $D_1$ clamps ($\vf = \Vdc$). The dashed arcs show the
+     full circles of which only the solid portions execute physically.}{0.78}
 
 \begin{physbox}
 \textbf{ZVS condition:} $\vf$ must reach $\Vdc$ (or 0 for the reverse
