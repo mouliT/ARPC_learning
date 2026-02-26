@@ -1518,9 +1518,107 @@ ZVS is satisfied when $i_\text{boost} \geq 0$.
 through $D_1$ — this is why the auxiliary circuit is lossless in the ideal case.
 
 \textbf{State (g)} is the new idle state. The sequence (a)$\to$(g) is the
-complete low-to-high transition; the symmetric high-to-low uses $A_2$ instead
-of $A_1$ and is the mirror image.
+complete low-to-high ($D_2 \to S_1$) transition using $A_2$; the symmetric
+high-to-low ($S_1 \to D_2$) transition uses $A_1$ instead and is covered
+next in Fig.\,8.
 \end{physbox}
+
+% ============================================================
+\section{Commutation from Switch --- Low Current (P1 Fig.\,8)}
+\label{sec:P1Fig8}
+% ============================================================
+
+\subsection*{Big picture --- what Fig.\,8 is about}
+
+Fig.\,7 showed the ARCP pole leg commutating \emph{upward} --- from the
+lower freewheeling diode $D_2$ (pole node at $\vf = 0$) to the upper main
+switch $S_1$ (pole node at $\vf = \Vdc$), using $A_2$ as the auxiliary
+switch.
+
+Fig.\,8 is the \emph{mirror-image} commutation: the pole leg switching
+\emph{downward} --- from the upper main switch $S_1$ (conducting at
+$\vf = \Vdc$) to the lower freewheeling diode $D_2$ (at $\vf = 0$),
+using $A_1$ (the upper auxiliary switch).
+
+This scenario arises when the load current $\IL$ is below the natural
+commutation threshold $I_\text{th}$.
+Below this threshold, $\IL$ alone is insufficient to discharge the snubber
+capacitors quickly enough for ZVS; the auxiliary circuit must pre-load
+$\Lr$ with boost energy to assist.
+
+\medskip
+\textbf{Three structural differences from Fig.\,7.}
+
+\begin{enumerate}
+    \item \textbf{Starting device is a switch, not a diode.}
+          In Fig.\,7, $D_2$ was conducting passively --- no gate signal,
+          just forward-biased by the load current, and it turned off
+          \emph{naturally} when $\ir$ displaced its current.
+          Here, $S_1$ is actively gated on and must be \emph{forced} off
+          by the control at the right moment.
+
+    \item \textbf{Direction reversed: $\vf$ falls from $\Vdc$ to $0$.}
+          In Fig.\,7, $\vf$ rose from $0$ to $\Vdc$ and $D_1$ clamped
+          the pole to the positive rail.
+          Here, $\vf$ falls from $\Vdc$ to $0$ and $D_2$ clamps the pole
+          to the negative rail.
+
+    \item \textbf{Auxiliary current $\ir$ flows in the opposite direction.}
+          In Fig.\,7, $\ir$ went positive: DC midpoint $\to$ $A_2$ $\to$
+          $\Lr$ $\to$ pole node, building energy to push $\vf$ upward.
+          Here, $\ir$ goes negative: pole node $\to$ $\Lr$ $\to$ $A_1$
+          $\to$ DC midpoint, building energy to pull $\vf$ downward.
+          On the waveform of \figref{fig:P1Fig8a}, this appears as a
+          downward dip in $\ir$ rather than an upward peak.
+\end{enumerate}
+
+\medskip
+\textbf{No ramp phases --- a shorter sequence.}
+
+De~Doncker states explicitly that this sequence \textit{``is similar to
+that described above except there are no ramp phases.''}
+In Fig.\,7, two separate linear-ramp steps (states b and c) were needed
+before the resonant swing because $D_2$ had to be naturally commutated
+before $S_2$ could take over.
+Here, $S_1$ is simply gated off at the right moment --- no intermediate
+device handoff.
+The sequence is therefore \textbf{five states (b)--(f)} instead of seven.
+
+\medskip
+\textbf{Reading the waveform strips in \figref{fig:P1Fig8a}.}
+
+\figref{fig:P1Fig8a} has two time-domain panels:
+\begin{itemize}
+    \item \textbf{Top ($\ir$ vs.\ $t$):} starts at zero (auxiliary idle),
+          dips downward (negative auxiliary current during boost and
+          resonant phases), then returns to zero.
+          The label $I_\text{boost}$ marks the peak depth of the dip.
+    \item \textbf{Bottom ($\vf$ vs.\ $t$):} starts flat at $\Vdc$, then
+          traces a smooth S-curve downward to $0$, and flattens there.
+\end{itemize}
+
+Five dashed vertical lines divide the waveform into strips:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{ll}
+\toprule
+\textbf{Strip} & \textbf{What is happening} \\
+\midrule
+\textit{S1}    & Idle: $S_1$ on, $\ir = 0$, $\vf = \Vdc$ \\
+\textit{S1/A1} & Boost: $A_1$ fires, $\ir$ ramps negative, $S_1$ still on \\
+\textit{Cr/A1} & Resonant swing: $S_1$ off, $\vf$ falls $\Vdc \to 0$, $A_1$ on \\
+\textit{D2/A1} & Clamp + ramp-down: $D_2$ clamps, $A_1$ on, $\ir \to 0$ \\
+\textit{D2}    & Steady: $D_2$ on, $\ir = 0$, $\vf = 0$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+States (b)--(f) in this document correspond one-to-one with these five
+strips.
+We now walk through each state using the same Feynman approach as Fig.\,7.
+
+% ── State (b) explanation ─────────────────────────────────────────────────────
 
 % ============================================================
 \section{Master Figure Reference Table}
