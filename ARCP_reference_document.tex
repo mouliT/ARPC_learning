@@ -911,13 +911,46 @@ Everything is in balance and $\vf = 0$.
 An open switch carries zero current.
 The $i_\text{boost}$ that was flowing through $S_2$ \emph{must go somewhere}
 --- current in an inductor cannot disappear instantaneously.
-The only path available at the pole node (with $S_2$ open and $D_2$ already
-off) is through the two snubber capacitors: the $\Cr/2$ across $S_1$ and
-the $\Cr/2$ across $S_2$, which together form the combined $\Cr$ seen from
-the pole node.
+With $S_2$ open and $D_2$ already off, the only paths left at the pole node
+are the load ($\IL$) and the two snubber capacitors.
 
-So the current $i_\text{boost}$ flows into $\Cr$ and begins charging it.
-Using the capacitor equation $i = C\,dv/dt$:
+\medskip
+\textit{Why the effective capacitance at the pole node is the full $\Cr$,
+not $\Cr/2$.}
+
+When $S_2$ opens, the pole node is connected to two capacitors:
+\begin{itemize}
+    \item $\Cr/2$ between the pole node and the \textbf{0\,V rail}
+          (the snubber across $S_2$)
+    \item $\Cr/2$ between the pole node and the \textbf{$\Vdc$ rail}
+          (the snubber across $S_1$)
+\end{itemize}
+Both rails --- 0\,V and $\Vdc$ --- are held at \emph{fixed voltages} by
+the large $2C_{dc}$ bus capacitors.
+No matter what happens at the pole node, these rails do not move.
+In circuit terms, both rails are \textbf{AC grounds}.
+
+From the pole node's point of view, therefore, both $\Cr/2$ capacitors
+are connected between the pole node and a fixed reference.
+This makes them \textbf{effectively in parallel}:
+\begin{equation*}
+    C_\text{eff} = \frac{\Cr}{2} + \frac{\Cr}{2} = \Cr
+\end{equation*}
+When $\vf$ rises, the pole node must supply current to \emph{both}
+capacitors simultaneously --- one charges toward $\Vdc$, the other
+discharges toward 0\,V --- but both demand current from the same pole node.
+The KCL at the pole node is therefore:
+\begin{equation}
+    \ir \;=\; \IL
+        + \underbrace{\frac{\Cr}{2}\frac{d\vf}{dt}}_{\text{into }
+              \Cr/2\text{ across }S_2}
+        + \underbrace{\frac{\Cr}{2}\frac{d\vf}{dt}}_{\text{into }
+              \Cr/2\text{ across }S_1}
+    \;=\; \IL + \Cr\frac{d\vf}{dt}
+    \label{eq:kcl_pole}
+\end{equation}
+Rearranging and evaluating at $t = 0^+$, where $\ir$ is still
+$\IL + i_\text{boost}$ (inductor current cannot jump instantaneously):
 \begin{equation}
     \Cr\,\frac{d\vf}{dt}\bigg|_{t=0^+}
         = \ir - \IL = i_\text{boost}
@@ -926,7 +959,7 @@ Using the capacitor equation $i = C\,dv/dt$:
     \label{eq:vf_initial_slope}
 \end{equation}
 $\vf$ immediately starts rising from 0 at a rate set by $i_\text{boost}$
-and $\Cr$.
+and the \emph{total} pole capacitance $\Cr$.
 This is the first instant of the resonant LC swing --- state~(d) has begun.
 
 \medskip
