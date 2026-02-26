@@ -301,8 +301,8 @@ how $R$ grows with $i_\text{boost}$.
      full circles of which only the solid portions execute physically.}{0.78}
 
 \begin{physbox}
-% ── 1. What is ZVS and why does it matter ────────────────────────────────────
-\textbf{1.\ What is zero-voltage switching (ZVS) and why does it matter?}
+% ── 1. Why ZVS eliminates switching loss ─────────────────────────────────────
+\textbf{1.\ Why ZVS eliminates switching loss}
 
 Consider closing any switch (here an IGBT $S_1$) in a circuit.
 The switch transitions from fully off to fully on in a short but finite time
@@ -341,8 +341,8 @@ Once $\vf$ reaches $\Vdc$, the diode $D_1$ clamps it there, $S_1$ sees
 zero voltage, and it can be gated on with no switching loss.
 
 \medskip
-% ── 2. Geometric condition R ≥ Vdc/2 ─────────────────────────────────────────
-\textbf{2.\ Why must $R \geq \Vdc/2$? — a geometric argument.}
+% ── 2. Why R >= Vdc/2 is the ZVS geometric condition ─────────────────────────
+\textbf{2.\ Why $R \geq \Vdc/2$ is the ZVS geometric condition}
 
 We proved that the resonant swing traces a circle in the
 $(\vf,\,j\Zr)$ plane with:
@@ -384,8 +384,8 @@ Figure~\ref{fig:phase_plane_3ICs}: the trajectory starts horizontally
 (neither rising nor falling), which is the marginal case.
 
 \medskip
-% ── 3. Role of the boost phase ───────────────────────────────────────────────
-\textbf{3.\ Why is a boost phase needed?}
+% ── 3. Why a boost phase is needed ───────────────────────────────────────────
+\textbf{3.\ Why a boost phase is needed}
 
 At light load the current $\IL$ is small.
 When $S_2$ is turned off, the only current available to charge $\Cr$ and
@@ -410,8 +410,8 @@ current alone is sufficient ($j_0 = 0$ is the marginal case) and no
 boost is needed — this is called \emph{natural commutation}.
 
 \medskip
-% ── 4. Why Cr must be small ──────────────────────────────────────────────────
-\textbf{4.\ Why must $\Cr$ be kept small? — a design trade-off.}
+% ── 4. Cr design trade-off: commutation energy vs turn-off stress ────────────
+\textbf{4.\ $\Cr$ design trade-off: commutation energy vs.\ turn-off $dv/dt$ stress}
 
 \textit{Reason to make $\Cr$ small — reduce commutation energy:}
 Each time the pole commutates, $\Cr$ must be fully charged from 0 to
