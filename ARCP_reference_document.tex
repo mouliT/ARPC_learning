@@ -193,7 +193,8 @@ commutation}. At steady state $\ir = 0$.
 \textbf{Symbol} & \textbf{Quantity} & \textbf{Role} \\
 \midrule
 $\vf$      & Pole-node voltage           & Primary state variable; swings 0 to $\Vdc$ during commutation \\
-$\ir$      & Auxiliary inductor current  & Secondary state variable; drives the $\Cr$ swing \\
+$\ir$      & Auxiliary inductor current  & Secondary state variable; drives the $\Cr$ swing.
+\newline\textbf{Sign convention:} $\ir>0$ when current flows \emph{into} the pole node from the auxiliary branch (upward commutation, $A_2$ fires); $\ir<0$ when current flows \emph{out of} the pole node toward the auxiliary branch (downward commutation, $A_1$ fires) \\
 $\IL$      & Load current (quasi-static) & Treated as constant disturbance during commutation. Note: labeled $I_F$ in Fig.\,5 but written $I_L$ in paper text — same quantity \\
 $\Vdc$     & DC bus voltage              & Forcing potential across the pole \\
 $\Lr$      & Auxiliary inductance        & Sets boost ramp rate and resonant frequency \\
@@ -995,8 +996,13 @@ commutates smoothly into $\Cr$, which absorbs it without a spike.
 $\vf$ rises at the finite rate $i_\text{boost}/\Cr$ rather than jumping
 discontinuously.
 This is why the turn-off of $S_2$ is described as
-\emph{near-zero-current switching} (near-ZCS): the current being interrupted
-is small and the voltage transition is smooth.
+\emph{near-zero-current switching} (near-ZCS).
+Just as ZVS means the voltage across a switch is zero when it turns on,
+ZCS means the current through a switch is zero when it turns off ---
+so neither energy ($\frac{1}{2}LI^2$ stress) nor diode reverse-recovery
+charge is generated at the switching instant.
+Here the current is not exactly zero but close to it (a small fraction of
+$\IL$), which is why the label says \emph{near}-ZCS.
 
 % ── State (d) explanation ─────────────────────────────────────────────────────
 \subsection*{State (d) — the resonant LC swing: $\vf$ rises from 0 to $\Vdc$}
@@ -1076,14 +1082,6 @@ is what allows the swing to reach $\vf = \Vdc$ on the far side.
 If $A_2$ were somehow removed while maintaining a current path (hypothetically),
 the forcing term would vanish, the oscillation would centre around $\vf = 0$,
 and $\vf$ would never reach $\Vdc$.
-
-With $A_2$ on, the DC midpoint ($\Vdc/2$) remains connected to $\Lr$
-throughout the swing.
-This shifts the equilibrium of the oscillation to $\vf = \Vdc/2$ (the
-forcing point), so the swing is centred at the midpoint of the bus and
-can reach $\Vdc$ on the far side.
-This is precisely the \emph{forced harmonic oscillator} we derived in the
-green box of Section~\ref{sec:P1Fig5}.
 
 \medskip
 \textbf{The governing equations --- already derived in Section~\ref{sec:P1Fig5}.}
@@ -1461,7 +1459,7 @@ Symbol & Meaning & Value at key instants \\
 $\vf$            & Pole-node voltage      & $0$ (states a--c) $\to \Vdc$ (states e--g) \\
 $\ir$            & Auxiliary current      & $0 \to I_\text{peak} \to 0$ \\
 $i_\text{boost}$ & Boost increment        & Control parameter; set by outer loop \\
-$I_\text{peak}$  & Peak auxiliary current & Occurs at end of state (d) \\
+$I_\text{peak}$  & Peak auxiliary current & Occurs near mid-state (d), when $\vf \approx \Vdc/2$ \\
 $T_\text{boost}$ & Boost phase duration   & States (b)--(c) \\
 $T_\text{res}$   & Resonant swing duration & State (d) only \\
 \bottomrule
@@ -1493,15 +1491,19 @@ Solution with initial conditions $\vf(0)=0$, $\ir(0)=\IL+i_\text{boost}$:
     \label{eq:ir_swing}
 \end{align}
 
-\textbf{Peak current} (at end of state d, when $\vf = \Vdc$):
+\textbf{Approximate peak current} (maximum of $\ir$ occurs near $\vf = \Vdc/2$,
+mid-state d; exact value $= \IL + \sqrt{i_\text{boost}^2 + (\Vdc/2\Zr)^2}$;
+the expression below is the conservative design upper bound used in the paper):
 \begin{equation}
     I_\text{peak} = \IL + i_\text{boost} + \frac{\Vdc}{2\Zr}
     \label{eq:Ipeak_diode}
 \end{equation}
 
-\textbf{Resonant half-swing duration} (state d):
+\textbf{Resonant half-swing duration} (state d, exact when $i_\text{boost}=0$;
+for $i_\text{boost}>0$ the arc is shorter than a semicircle so
+$T_\text{res} < \pi/\omegar$):
 \begin{equation}
-    T_\text{res} = \frac{\pi}{\omegar} = \pi\sqrt{\Lr\Cr}
+    T_\text{res} \approx \frac{\pi}{\omegar} = \pi\sqrt{\Lr\Cr}
     \label{eq:T_res}
 \end{equation}
 
@@ -1527,8 +1529,11 @@ $\vf = \Vdc$ for ZVS.  Circle radius:
 $R = \sqrt{i_\text{boost}^2 + (\Vdc/2\Zr)^2}$.
 ZVS is satisfied when $i_\text{boost} \geq 0$.
 
-\textbf{State (f)} recovers residual energy from $\Lr$ back into the DC bus
-through $D_1$ — this is why the auxiliary circuit is lossless in the ideal case.
+\textbf{State (f)} recovers residual energy from $\Lr$ back into the positive
+DC rail through $S_1$ (which is already conducting) while $A_2$ remains on.
+$D_1$ turned off at the state~(e)/(f) boundary when $\ir$ fell to $\IL$ ---
+the ramp-down in state~(f) proceeds through $S_1$, not $D_1$.
+This is why the auxiliary circuit is lossless in the ideal case.
 
 \textbf{State (g)} is the new idle state. The sequence (a)$\to$(g) is the
 complete low-to-high ($D_2 \to S_1$) transition using $A_2$; the symmetric
@@ -1831,7 +1836,16 @@ No device-handoff ramp is needed.
 $\Lr$ is pre-charged during a single boost stage (state~(b), $S_1$
 still on), and then $S_1$ is simply gated off.
 The two-stage pre-resonant structure collapses into one stage, reducing
-the total sequence from \textbf{seven states to five}:
+the total sequence from \textbf{seven states to five}.
+
+\smallskip
+\textit{Note on state labels before reading the table below:}
+the paper numbers the Fig.\,8 states (b)--(f) because in De~Doncker's
+original figure, state~(a) is the full waveform panel, which in this
+document is placed separately as \figref{fig:P1Fig8a}.
+This document re-labels them (a)--(e) so that, as in Fig.\,7, state~(a) is
+always the initial resting state.
+The table uses the \textbf{document labels}:
 
 \begin{center}
 \renewcommand{\arraystretch}{1.25}
@@ -1846,13 +1860,6 @@ Total states             & 7 & 5 \\
 \bottomrule
 \end{tabular}
 \end{center}
-
-\smallskip
-\textit{Note on state labels:} the paper numbers these states (b)--(f) because
-the paper's state~(a) is the full waveform panel, which in this document is
-placed separately as \figref{fig:P1Fig8a}.
-In this document we re-label them (a)--(e) so that, as in Fig.\,7, state~(a)
-is always the initial resting state.
 
 \medskip
 \textbf{Reading the waveform strips in \figref{fig:P1Fig8a}.}
@@ -3374,26 +3381,148 @@ achieved ZVS: $\vf$ was at its respective rail before the incoming switch
 was gated on.
 
 % ============================================================
-\section{Master Figure Reference Table}
+\section{Paper 1 Summary --- De~Doncker \& Lyons, IEEE IAS 1990}
+\label{sec:P1summary}
 % ============================================================
 
-\begin{longtable}{p{5.8cm} p{1.0cm} p{1.5cm} p{5.0cm}}
+\subsection*{What problem does this paper solve?}
+
+Every switching device (IGBT, MOSFET) dissipates energy when it turns on
+or off under voltage and current simultaneously.
+In a hard-switched inverter this loss occurs at every switching event and
+scales with switching frequency --- making high-frequency, high-power
+converters thermally limited.
+The fundamental question De~Doncker and Lyons answer is:
+\textbf{can every switch in a three-phase inverter be made to switch at
+exactly zero volts, without adding lossy snubbers or reducing switching
+frequency?}
+
+\subsection*{The answer: the Auxiliary Resonant Commutated Pole (ARCP)}
+
+The paper introduces the ARCP topology.
+One ARCP \emph{pole leg} replaces a conventional two-switch inverter leg.
+The pole leg adds:
+\begin{itemize}
+    \item Two small snubber capacitors $C_r$ (one across each main switch)
+          that prevent $dv/dt$ spikes during turn-off.
+    \item One resonant inductor $L_r$ in an auxiliary branch.
+    \item Two auxiliary bidirectional switches $A_1$ and $A_2$ that fire
+          only during commutation and are idle otherwise.
+\end{itemize}
+Before each main-switch turn-on, the auxiliary branch energises $L_r$
+and lets $L_r$–$C_r$ resonate the pole voltage to the target rail.
+The main switch then turns on at exactly zero volts (\emph{zero-voltage
+switching}, ZVS).
+The result: turn-on loss in the main devices is eliminated.
+The auxiliary devices themselves switch at near-zero current
+(\emph{near-ZCS}), so their loss is also negligible.
+
+\subsection*{The four commutation cases}
+
+The paper identifies four distinct circuit sequences depending on
+direction and load current magnitude.
+This document covers all four:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{p{1.5cm} p{3.5cm} p{3.5cm} p{4.3cm}}
 \toprule
-\textbf{Filename (omit \texttt{.png})} & \textbf{Pg} & \textbf{Section} & \textbf{Key Equation(s)} \\
+\textbf{Case} & \textbf{Direction} & \textbf{Condition} & \textbf{What makes it distinctive} \\
 \midrule
-\endhead
-\texttt{P1\_Fig5\_ARCP\_pole\_leg}              & 3    & \ref{sec:P1Fig5}  & \eqref{eq:dvf_dt}--\eqref{eq:shifted_states} \\
+Paper Fig.\,7
+(\figref{fig:P1Fig7a})
+& Upward\newline($0 \to \Vdc$)
+& $\IL < \Ith$\newline(low current, from $D_2$)
+& Two pre-resonant ramp stages needed: first ramp displaces $D_2$'s current
+  (diode has no gate); second ramp adds boost above $\IL$. Seven states total. \\
 \midrule
-\texttt{P1\_Fig7a\_state1\_D2\_conducting}      & 4    & \ref{sec:P1Fig7}  & — \\
-\texttt{P1\_Fig7b\_state2\_A1\_boost\_start}    & 4    & \ref{sec:P1Fig7}  & \eqref{eq:T_boost} \\
-\texttt{P1\_Fig7c\_state3\_boost\_complete}     & 4    & \ref{sec:P1Fig7}  & \eqref{eq:T_boost} \\
-\texttt{P1\_Fig7d\_state4\_resonant\_swing}     & 4--5 & \ref{sec:P1Fig7}  & \eqref{eq:swing_ode}--\eqref{eq:ir_swing} \\
-\texttt{P1\_Fig7e\_state5\_upper\_diode\_clamp} & 5    & \ref{sec:P1Fig7}  & \eqref{eq:Ipeak_diode} \\
-\texttt{P1\_Fig7f\_state6\_ir\_ramps\_down}     & 5    & \ref{sec:P1Fig7}  & \eqref{eq:T_comm_diode} \\
-\texttt{P1\_Fig7g\_state7\_S1\_steady}          & 5    & \ref{sec:P1Fig7}  & — \\
+Paper Fig.\,8
+(\figref{fig:P1Fig8a})
+& Downward\newline($\Vdc \to 0$)
+& $\IL < \Ith$\newline(low current, from $S_1$)
+& One pre-resonant ramp stage: $S_1$ is a gated switch and can be turned off
+  immediately after the boost. Five states total. \\
+\midrule
+Paper Fig.\,9
+(\figref{fig:P1Fig9a})
+& Downward\newline($\Vdc \to 0$)
+& $\IL \geq \Ith$\newline(high current)
+& No auxiliary involvement: $\IL$ alone discharges $C_r$ in a straight linear
+  ramp. $\ir = 0$ throughout. Three states total. \\
+\midrule
+Upward high-current
+& Upward\newline($0 \to \Vdc$)
+& $\IL \geq \Ith$
+& Same as Fig.\,7 (diode start always requires auxiliary); confirmed
+  indirectly by the upward arc in Figs.\,10--11. \\
 \bottomrule
-\caption{Currently available figures (8 PNGs). Add rows as new figures are extracted.}
-\label{tab:master_index}
-\end{longtable}
+\end{tabular}
+\end{center}
+
+\subsection*{The central physics in one sentence}
+
+The resonant branch shifts the \emph{equilibrium} of the $L_r$--$C_r$
+oscillator to $V_{dc}/2$, so a circular trajectory in the
+$(v_f,\; i_r - I_L)$ phase plane can reach either DC rail from the other,
+and the swing always arrives at zero voltage --- ZVS is a \emph{geometric
+guarantee}, not a timing coincidence.
+
+\subsection*{The threshold current $\Ith$}
+
+\begin{equation}
+    \Ith = \frac{\Vdc\,C_r}{T_\text{max}}
+    \label{eq:Ith_summary}
+\end{equation}
+where $T_\text{max}$ is the maximum time the commutation is allowed to
+take (set by the PWM deadband).
+If $\IL \geq \Ith$: the load current alone discharges $C_r$ fast enough,
+no auxiliary boost is needed, and the commutation is a straight ramp
+in $v_f$.
+If $\IL < \Ith$: the auxiliary branch must pre-charge $L_r$ to supply the
+shortfall in discharge current, and the commutation is a resonant S-curve
+in $v_f$.
+
+\subsection*{Key design equations}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{p{4.5cm} p{4.5cm} p{4.3cm}}
+\toprule
+\textbf{Quantity} & \textbf{Formula} & \textbf{What it controls} \\
+\midrule
+Resonant frequency & $\omegar = 1/\sqrt{\Lr\Cr}$ & Commutation speed \\
+Characteristic impedance & $\Zr = \sqrt{\Lr/\Cr}$ & Peak resonant current \\
+Boost ramp duration & $T_\text{boost} = 2\Lr\,i_\text{boost}/\Vdc$ & How long $A_1$/$A_2$ pre-fires \\
+Approx.\ peak aux.\ current & $I_\text{peak} \approx \IL + i_\text{boost} + \Vdc/(2\Zr)$ & Rating of $L_r$, $A_1$, $A_2$ \\
+Natural discharge time & $T_\text{swing} = \Vdc\Cr/\IL$ & Minimum $\IL$ vs.\ deadband \\
+Commutation energy loss & $\approx 0$ (ideal ZVS) & Main result of the paper \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection*{What the simulations confirm (Figs.\,10 and 11)}
+
+\figref{fig:P1Fig10a}/\figref{fig:P1Fig10b} (low current) show
+\textbf{S-shaped arcs} in $v_f$ and \textbf{large $|\ir|$ peaks}
+($\gg I_L$) --- both signatures of the LC resonance actively doing the work.
+
+\figref{fig:P1Fig11a}/\figref{fig:P1Fig11b} (high current) show a
+\textbf{straight-line ramp} for the downward transition and
+\textbf{$\ir = 0$} during that same interval --- confirming that
+$I_L \geq \Ith$ and the auxiliary branch sat idle for one of the two
+transitions.
+
+The two simulation pairs are the experimental fingerprints of the threshold:
+below $\Ith$, resonance is visible; at or above $\Ith$, the downward
+commutation becomes a simple capacitive discharge.
+
+\subsection*{Practical significance}
+
+De~Doncker and Lyons demonstrate the ARCP at 100\,kW, 1000\,V bus,
+achieving switching frequencies that would be thermally impossible with
+hard switching.
+The topology later influenced motor-drive inverters, EV traction inverters,
+and grid-tied converters where high switching frequency reduces filter size
+while ZVS controls device temperature.
 
 \end{document}
