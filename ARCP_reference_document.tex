@@ -2684,6 +2684,110 @@ With $S_1$ conducting and $\vf = \Vdc$:
 These are the same capacitor initial conditions as Fig.\,8 state~(a).
 
 % ── State (b) explanation ─────────────────────────────────────────────────────
+\subsection*{State (b) --- natural discharge: $\IL$ alone pulls $\vf$ from
+$\Vdc$ to $0$}
+
+\figentry{fig:P1Fig9c}{P1_Fig9c_state2_natural_swing}
+    {P1 Fig.\,9(b) [our state~(b)] --- natural capacitive discharge.
+     All main switches and diodes are open.
+     The auxiliary branch carries no current ($\ir = 0$, $\Lr$ idle).
+     The only active current path is the bold arrow through $L_F$:
+     load current $\IL$ flowing out of the pole node to the right.
+     Both $C_r/2$ snubbers discharge as $\vf$ falls from $\Vdc$ toward $0$.
+     Source: De~Doncker \& Lyons, IEEE IAS 1990, p.\,6.}{0.50}
+
+\textbf{What the paper figure shows.}
+
+The circuit diagram in \figref{fig:P1Fig9c} contains only one bold
+current arrow: $\IL$ pointing rightward through $L_F$ out of the pole
+node.
+Every switching device --- $S_1$, $S_2$, $D_1$, $D_2$, $A_1$, $A_2$
+--- is shown open.
+The resonant inductor $\Lr$ carries no current.
+The two $C_r/2$ snubber capacitors are the only elements connected
+between the pole node and the DC rails.
+
+This tells us three things directly from the figure:
+\begin{enumerate}
+    \item $\ir = 0$ --- the auxiliary branch is completely idle.
+    \item $\IL$ is the sole current flowing at the pole node.
+    \item The snubber capacitors ($C_r/2$ upper and lower) must be
+          supplying $\IL$, because there is no other source.
+\end{enumerate}
+
+\medskip
+\textbf{Why the snubber caps are the only current source.}
+
+The instant $S_1$ is gated off, the pole node is disconnected from
+both DC rails.
+The load filter inductor $L_F$ cannot change $\IL$ abruptly --- it
+forces $\IL$ to keep flowing out of the pole node.
+With no switch or diode to supply this current from a rail, the two
+$C_r/2$ snubber capacitors are the only path: they discharge, losing
+charge, and the pole-node voltage $\vf$ falls.
+
+\medskip
+\textbf{The governing equation.}
+
+With $\ir = 0$, the shifted-state equation simplifies to:
+\begin{equation}
+    \frac{d\vf}{dt} = \frac{\ir - \IL}{C_r} = -\frac{\IL}{C_r}
+    \label{eq:natural_discharge_b9}
+\end{equation}
+The right-hand side is constant ($\IL$ barely changes over the short
+commutation window because $L_F \gg \Lr$), so $\vf$ falls as a
+\textbf{straight line}:
+\begin{equation}
+    \vf(t) = \Vdc - \frac{\IL}{C_r}\,t
+    \label{eq:vf_ramp9}
+\end{equation}
+
+\medskip
+\textbf{Duration of state~(b).}
+
+State~(b) ends when $\vf$ reaches $0$ and $D_2$ forward-biases.
+Setting $\vf = 0$ in equation~\eqref{eq:vf_ramp9}:
+\begin{equation}
+    T_\text{swing} = \frac{\Vdc\,C_r}{\IL}
+    \label{eq:Tswing_b9}
+\end{equation}
+For ZVS to be achieved, this must complete before the deadtime window
+closes: $T_\text{swing} \leq T_\text{max}$, which is guaranteed by the
+condition $\IL \geq \Ith = \Vdc\,C_r/T_\text{max}$.
+
+\medskip
+\textbf{Comparison with Fig.\,8 state~(c) (the resonant swing).}
+
+Both state~(b) here and state~(c) of \figref{fig:P1Fig8a} are the
+interval during which $\vf$ falls from $\Vdc$ to $0$.
+The contrast shows the full effect of the auxiliary circuit:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{lll}
+\toprule
+\textbf{Quantity}
+    & \textbf{Fig.\,8 state~(c) --- LC swing}
+    & \textbf{Fig.\,9 state~(b) --- natural discharge} \\
+\midrule
+$\ir$ during swing & Negative peak, then rises &
+                     Zero throughout \\
+Shape of $\vf(t)$ & Sinusoidal arc (S-curve) &
+                    Straight line \\
+Governing equation & $\ddot{\vf}+\omegar^2\vf = \omegar^2\Vdc/2$ &
+                     $d\vf/dt = -\IL/C_r$ \\
+Duration           & $\pi/\omegar$ (half LC period) &
+                     $\Vdc\,C_r/\IL$ \\
+What ends it        & $D_2$ clamps when LC arc reaches $\vf=0$ &
+                      $D_2$ clamps when straight ramp reaches $\vf=0$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The endpoint is the same in both cases --- $D_2$ clamping --- but the
+path taken is fundamentally different: curved vs.\ straight.
+
+% ── State (c) explanation ─────────────────────────────────────────────────────
 
 % ============================================================
 \section{Master Figure Reference Table}
