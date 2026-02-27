@@ -30,6 +30,17 @@
 
 % ---- hyperlinks ----
 \usepackage[colorlinks=true, linkcolor=blue!60!black, citecolor=blue!50!black]{hyperref}
+\usepackage{bookmark}  % resolves titlesec/hyperref kern warnings
+% Suppress residual hyperref bookmark warnings from titlesec decoration
+\makeatletter
+\pdfstringdefDisableCommands{%
+    \def\vspace#1{}%
+    \def\rule#1#2{}%
+    \def\color#1{}%
+    \let\leavevmode@ifvmode\relax%
+    \def\,{ }%  % \, expands to \kern .16667em; use space in PDF bookmarks
+}
+\makeatother
 
 % ---- styled boxes ----
 \usepackage{tcolorbox}
@@ -112,6 +123,7 @@
        \large Paper 1 — Circuit Diagrams, State Variables,\\
        \large Governing Equations, and Physical Interpretations\\[4pt]
        \normalsize De Doncker \& Lyons, IEEE IAS 1990}
+\author{Vignesh}
 \date{\today}
 % ============================================================
 
