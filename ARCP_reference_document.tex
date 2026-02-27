@@ -610,7 +610,7 @@ fire the upper device.  That sounds simple, but during the brief transition
 the switch carries both a large voltage \emph{and} a large current
 simultaneously, dissipating energy as heat on every single switching cycle.
 
-Fig.\,7 answers the question: \emph{how does the ARCP solve this, step by
+\figref{fig:P1Fig7a} answers the question: \emph{how does the ARCP solve this, step by
 step, starting from the moment $D_2$ is conducting?}
 
 The word ``from diode'' describes the \emph{starting condition}: the load
@@ -618,13 +618,13 @@ current $\IL$ is flowing upward through the pole node into the load, and the
 only path available for this current on the lower side is the anti-parallel
 diode $D_2$.  The converter must now move $\vf$ from 0 all the way up to
 $\Vdc$ so that the upper switch $S_1$ can be turned on at zero voltage
-(ZVS).  Fig.\,7 shows the exact sequence of seven circuit states ---
+(ZVS).  \figref{fig:P1Fig7a} shows the exact sequence of seven circuit states ---
 (a)\,through\,(g) --- that accomplish this safely.
 
 \medskip
 \noindent
 \textbf{How each state is drawn.}
-Every sub-figure in Fig.\,7 is a pair of two panels:
+Every sub-figure in \figref{fig:P1Fig7a} is a pair of two panels:
 \begin{itemize}
     \item \textbf{Top panel --- the waveform strip.}
           This shows $\ir(t)$ and $\vf(t)$ on a shared time axis covering
@@ -1419,7 +1419,7 @@ conditions for a future downward commutation ($S_1 \to D_2$).
 Nothing ends it from within the circuit.
 State~(g) persists until the \emph{outer} PWM control loop decides
 it is time to switch the pole node back to the lower rail --- at which
-point the downward commutation sequence (Fig.\,8 of De~Doncker's paper)
+point the downward commutation sequence (\figref{fig:P1Fig8a}, paper Fig.\,8)
 begins, using $A_1$ (the upper auxiliary switch) in the mirror-image
 role that $A_2$ played here.
 
@@ -1520,7 +1520,7 @@ through $D_1$ — this is why the auxiliary circuit is lossless in the ideal cas
 \textbf{State (g)} is the new idle state. The sequence (a)$\to$(g) is the
 complete low-to-high ($D_2 \to S_1$) transition using $A_2$; the symmetric
 high-to-low ($S_1 \to D_2$) transition uses $A_1$ instead and is covered
-next in Fig.\,8.
+next in \figref{fig:P1Fig8a}.
 \end{physbox}
 
 % ============================================================
@@ -1824,7 +1824,7 @@ the total sequence from \textbf{seven states to five}:
 \renewcommand{\arraystretch}{1.25}
 \begin{tabular}{lll}
 \toprule
- & \textbf{Fig.\,7 — from diode} & \textbf{Fig.\,8 — from switch} \\
+ & \textbf{paper Fig.\,7 (\figref{fig:P1Fig7a}) — from diode} & \textbf{paper Fig.\,8 (\figref{fig:P1Fig8a}) — from switch} \\
 \midrule
 Pre-resonant ramp stages & Two (states b + c) & One (state b only) \\
 Why two were needed      & $D_2$ must be naturally commutated & Not applicable --- $S_1$ is gated \\
@@ -1872,7 +1872,7 @@ Five dashed vertical lines divide the waveform into strips:
 
 States (a)--(e) in this document correspond one-to-one with these five
 strips.
-We now walk through each state using the same Feynman approach as Fig.\,7.
+We now walk through each state using the same Feynman approach as \figref{fig:P1Fig7a} (paper Fig.\,7).
 
 % ── State (a) explanation ─────────────────────────────────────────────────────
 \subsection*{State (a) --- $S_1$ conducting: the resting state before downward
@@ -1936,7 +1936,7 @@ State~(a) here is the exact mirror image of state~(a) in
 \renewcommand{\arraystretch}{1.25}
 \begin{tabular}{lll}
 \toprule
-\textbf{Quantity} & \textbf{State (a) — Fig.\,7} & \textbf{State (a) — Fig.\,8} \\
+\textbf{Quantity} & \textbf{\figref{fig:P1Fig7a} state~(a)} & \textbf{\figref{fig:P1Fig8a} state~(a)} \\
 \midrule
 Conducting device    & $D_2$ (passive diode)        & $S_1$ (gated switch) \\
 Pole voltage $\vf$   & $0$\,V (lower rail)          & $\Vdc$ (upper rail) \\
@@ -2220,8 +2220,8 @@ Comparing with the upward commutation in \figref{fig:P1Fig7a}:
 \renewcommand{\arraystretch}{1.3}
 \begin{tabular}{lll}
 \toprule
-\textbf{Property} & \textbf{Fig.\,7 state (d) --- upward}
-                  & \textbf{Fig.\,8 state (c) --- downward} \\
+\textbf{Property} & \textbf{\figref{fig:P1Fig7d} --- upward}
+                  & \textbf{\figref{fig:P1Fig8d} --- downward} \\
 \midrule
 Start point $(u,\;j\Zr)$
     & $(-\Vdc/2,\;i_\text{boost}\Zr)$ --- bottom right
@@ -2364,7 +2364,7 @@ less until it settles at exactly $\IL$ when $\ir = 0$.
 \renewcommand{\arraystretch}{1.3}
 \begin{tabular}{lll}
 \toprule
-\textbf{Property} & \textbf{Fig.\,7 state (e)} & \textbf{Fig.\,8 state (d)} \\
+\textbf{Property} & \textbf{\figref{fig:P1Fig7e}} & \textbf{\figref{fig:P1Fig8e}} \\
 \midrule
 Clamping diode        & $D_1$ at $\vf = \Vdc$ & $D_2$ at $\vf = 0$ \\
 ZVS device fired      & $S_1$ (upper switch)   & $S_2$ (lower switch) \\
@@ -2388,7 +2388,7 @@ When $\ir = 0$:
     \item $A_1$ is gated off --- De~Doncker notes it is turned off
           \textit{``in anticipation of the current zero in order to
           minimise reverse recovery losses.''} (same phrasing as for
-          $A_2$ in Fig.\,7.)
+          $A_2$ in \figref{fig:P1Fig7a}, paper Fig.\,7.)
     \item $D_2$ (if still on) turns off naturally as $S_2$ now carries
           the full $\IL$.
 \end{itemize}
@@ -2432,7 +2432,7 @@ $S_2$ conducts in the same role).
 \textbf{Bottom panel (circuit snapshot) --- only $S_2$ conducting.}
 
 Compare \figref{fig:P1Fig8f} with \figref{fig:P1Fig8b} (our state~a).
-They are the \emph{exact mirror images} of each other within Fig.\,8:
+They are the \emph{exact mirror images} of each other within \figref{fig:P1Fig8a}:
 state~(a) had only $S_1$ bold; state~(e) has only $S_2$ bold.
 Everything else --- $A_1$, $\Lr$, $D_1$, $D_2$, $S_1$ --- is off and
 carries no current.
@@ -2574,7 +2574,7 @@ $C_r$ simply integrates a constant current $\IL$:
     \vf(t) = \Vdc - \frac{\IL}{C_r}\,t \quad \text{(straight line)}
 \]
 This is exactly the simplified ``$\Lr$-absent'' model from Step~3 of
-the Fig.\,8 Big picture --- but now that model is the \emph{actual}
+the \figref{fig:P1Fig8a} Big picture --- but now that model is the \emph{actual}
 circuit behaviour, because the auxiliary branch truly is idle.
 
 \medskip
@@ -2588,7 +2588,7 @@ $S_2$ is then gated on while $D_2$ is conducting:
 \]
 $S_2$ turns on at zero volts --- ZVS, with no switching loss.
 This is the same clamping mechanism as in \figref{fig:P1Fig8a}
-(Fig.\,8, state~(d)), but without the prior resonant arc bringing
+(\figref{fig:P1Fig8e}, Fig.\,8 state~(d)), but without the prior resonant arc bringing
 $\vf$ to zero: here $\IL$ alone carries $\vf$ all the way.
 
 \medskip
@@ -2617,8 +2617,8 @@ $\vf$ to zero: here $\IL$ alone carries $\vf$ all the way.
 \renewcommand{\arraystretch}{1.3}
 \begin{tabular}{p{3.2cm} p{4.8cm} p{4.8cm}}
 \toprule
- & \textbf{Fig.\,8 --- from $S_1$, low $\IL < \Ith$}
- & \textbf{Fig.\,9 --- from $S_1$, high $\IL \geq \Ith$} \\
+ & \textbf{\figref{fig:P1Fig8a} --- from $S_1$, low $\IL < \Ith$}
+ & \textbf{\figref{fig:P1Fig9a} --- from $S_1$, high $\IL \geq \Ith$} \\
 \midrule
 Auxiliary boost & Required: $A_1$ fires; $\ir$ dips negative &
                   Not needed: $A_1$ never fires \\
@@ -2665,10 +2665,10 @@ $S_1$ on, $\vf = \Vdc$, $\ir = 0$.
 The two sequences diverge only after the commutation trigger arrives,
 based on the comparison of $\IL$ against $\Ith$:
 \begin{itemize}
-    \item $\IL < \Ith$: control fires $A_1$ $\Rightarrow$ Fig.\,8 sequence
+    \item $\IL < \Ith$: control fires $A_1$ $\Rightarrow$ \figref{fig:P1Fig8a} sequence
           (boost $+$ LC swing).
     \item $\IL \geq \Ith$: control gates $S_1$ off directly $\Rightarrow$
-          Fig.\,9 sequence (natural discharge).
+          \figref{fig:P1Fig9a} sequence (natural discharge).
 \end{itemize}
 
 \medskip
@@ -2681,7 +2681,7 @@ With $S_1$ conducting and $\vf = \Vdc$:
     \item The snubber cap across $S_2$ has the full bus voltage across
           it ($\vf = \Vdc$, negative rail $= 0$) --- charged to $\Vdc$.
 \end{itemize}
-These are the same capacitor initial conditions as Fig.\,8 state~(a).
+These are the same capacitor initial conditions as \figref{fig:P1Fig8b} (Fig.\,8 state~(a)).
 
 % ── State (b) explanation ─────────────────────────────────────────────────────
 \subsection*{State (b) --- natural discharge: $\IL$ alone pulls $\vf$ from
@@ -2756,7 +2756,7 @@ closes: $T_\text{swing} \leq T_\text{max}$, which is guaranteed by the
 condition $\IL \geq \Ith = \Vdc\,C_r/T_\text{max}$.
 
 \medskip
-\textbf{Comparison with Fig.\,8 state~(c) (the resonant swing).}
+\textbf{Comparison with \figref{fig:P1Fig8d} (Fig.\,8 state~(c)) (the resonant swing).}
 
 Both state~(b) here and state~(c) of \figref{fig:P1Fig8a} are the
 interval during which $\vf$ falls from $\Vdc$ to $0$.
@@ -2767,8 +2767,8 @@ The contrast shows the full effect of the auxiliary circuit:
 \begin{tabular}{lll}
 \toprule
 \textbf{Quantity}
-    & \textbf{Fig.\,8 state~(c) --- LC swing}
-    & \textbf{Fig.\,9 state~(b) --- natural discharge} \\
+    & \textbf{\figref{fig:P1Fig8d} --- LC swing}
+    & \textbf{\figref{fig:P1Fig9c} --- natural discharge} \\
 \midrule
 $\ir$ during swing & Negative peak, then rises &
                      Zero throughout \\
@@ -2834,7 +2834,7 @@ $S_2$ is gated on while $D_2$ is conducting.
 It turns on at exactly zero volts --- ZVS, with no switching loss.
 
 \medskip
-\textbf{Why no ramp-down is needed here (contrast with Fig.\,8 state~(d)).}
+\textbf{Why no ramp-down is needed here (contrast with \figref{fig:P1Fig8e}, Fig.\,8 state~(d)).}
 
 In \figref{fig:P1Fig8e} (Fig.\,8 state~(d)), $D_2$ had clamped while
 $A_1$ was still conducting a negative $\ir$, which had to ramp back
@@ -2846,7 +2846,7 @@ The auxiliary branch never activated.
 When $D_2$ clamps, there is no residual $\ir$ to dispose of:
 the clamp instant is simultaneously the ZVS condition and the final
 steady state.
-This collapses what was four active intervals in Fig.\,8 into just
+This collapses what was four active intervals in \figref{fig:P1Fig8a} into just
 two (states~(b) and~(c) here).
 
 \medskip
