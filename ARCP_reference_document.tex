@@ -2900,6 +2900,194 @@ upward commutation event.
 \end{circuitbox}
 
 % ============================================================
+\section{Simulated Waveforms --- Low-Current Commutation (P1 Fig.\,10)}
+\label{sec:P1Fig10}
+% ============================================================
+
+\subsection*{Big picture --- what Fig.\,10 shows}
+
+\figentry{fig:P1Fig10a}{P1_Fig10a_vf_low_current}
+    {P1 Fig.\,10a --- Simulated pole-node voltage $\vf(t)$ for one complete
+     low-current PWM half-cycle.
+     Left transition: downward commutation ($S_1 \to D_2/S_2$, paper Fig.\,8 type).
+     Right transition: upward commutation ($D_2/S_2 \to S_1$, paper Fig.\,7 type).
+     Both transitions are smooth S-curves (sinusoidal LC arcs),
+     not linear ramps.}{0.65}
+
+\figentry{fig:P1Fig10b}{P1_Fig10b_ir_low_current}
+    {P1 Fig.\,10b --- Simulated current traces for the same interval.
+     Three labelled traces: $IS_1$ (upper main switch), $IS_2$ (lower main
+     switch), and $I_r$ (auxiliary resonant inductor).
+     $I_r$ swings to a large negative peak during the downward commutation
+     and a large positive peak during the upward commutation; it is zero
+     during both flat conduction intervals.}{0.65}
+
+\figref{fig:P1Fig10a} and \figref{fig:P1Fig10b} show a \textbf{complete
+simulated PWM switching cycle} that contains \emph{both} commutation
+directions back-to-back.
+The simulation uses a \textbf{low load current} ($\IL < \Ith$), so the
+auxiliary boost stage is needed for both transitions.
+Reading these two panels together lets you verify every equation derived
+in the \figref{fig:P1Fig7a} (upward) and \figref{fig:P1Fig8a} (downward)
+state-by-state analyses against actual time-domain behaviour.
+
+\medskip
+\textbf{Why ``low current''?}
+
+The peak auxiliary current $|I_r|$ in \figref{fig:P1Fig10b} reaches roughly
+$250$--$350$\,A while the main switch currents IS1 and IS2 are only of
+order $100$\,A.
+The resonant peak far exceeds $\IL$, which is the signature of the low-current
+regime: because $\IL < \Ith$, a boost phase is required to pre-charge $\Lr$
+before the LC swing, and the extra boost energy shows up as an enlarged
+$|I_r|$ peak.
+If $\IL \geq \Ith$ (the high-current case, paper Fig.\,9), $I_r$ would remain
+zero throughout and only $\vf$ would change --- as a straight ramp, not an
+S-curve.
+
+% ── Top panel ────────────────────────────────────────────────────────────────
+\subsection*{Top panel (\figref{fig:P1Fig10a}) --- reading $\vf(t)$}
+
+The simulation covers approximately $0$ to $1.5 \times 10^{-5}$\,s.
+$\vf(t)$ has three distinct regions:
+
+\begin{enumerate}
+
+\item \textbf{Initial flat region ($\vf = \Vdc$).}
+$S_1$ is on; $\vf$ is held at the upper rail.
+This is the state~(a) of \figref{fig:P1Fig8a}: $\ir = 0$, $\IL$ flows
+entirely through $S_1$.
+
+\item \textbf{First (downward) transition.}
+At $t \approx 1\,\mu\text{s}$, $\vf$ falls from $\Vdc$ to $0$ following a
+smooth S-shaped arc.
+This is the resonant swing of \figref{fig:P1Fig8d} (state~(c) of the
+downward commutation sequence): $\vf$ follows
+\begin{equation}
+    \vf(t) = \frac{\Vdc}{2} + R_\downarrow \cos(\omegar t + \phi_\downarrow)
+    \label{eq:vf_down_sim}
+\end{equation}
+where the radius $R_\downarrow$ depends on the boost current and the
+characteristic impedance $Z_r$.
+The arc is sinusoidal (curved), \emph{not} a straight line --- direct
+evidence that $\Lr$ and $\Cr$ are resonating, not that $\IL$ alone is
+discharging $\Cr$.
+
+\item \textbf{Flat region at $\vf = 0$.}
+$D_2$ has clamped the pole node; $S_2$ has fired at ZVS.
+$\vf$ stays at $0$ while $S_2$ carries the load current, corresponding to
+state~(f) of \figref{fig:P1Fig8a}.
+
+\item \textbf{Second (upward) transition.}
+At $t \approx 1.2 \times 10^{-5}$\,s, $\vf$ rises from $0$ to $\Vdc$
+again as a smooth S-curve.
+This is the resonant swing of \figref{fig:P1Fig7d} (state~(d) of the
+upward commutation sequence):
+\begin{equation}
+    \vf(t) = \frac{\Vdc}{2} - \frac{\Vdc}{2}\cos(\omegar t)
+              + i_\text{boost}\,\Zr\,\sin(\omegar t)
+    \label{eq:vf_up_sim}
+\end{equation}
+where $i_\text{boost}$ is the current increment added during the boost
+phase before the swing.
+
+\item \textbf{Final flat region ($\vf = \Vdc$).}
+$D_1$ has clamped the pole node at $\Vdc$; $S_1$ has re-fired at ZVS.
+The cycle is complete.
+
+\end{enumerate}
+
+\medskip
+\textbf{What the S-curve shape tells you.}
+
+Both transitions in \figref{fig:P1Fig10a} are sinusoidal arcs, not straight
+lines.
+A straight line would mean pure capacitive discharge ($d\vf/dt = \text{const}$,
+only $\IL$ involved), which is the high-current Fig.\,9 case.
+The S-curve means the second-order ODE is governing:
+\begin{equation}
+    \ddot{\vf} + \omegar^2\,\vf = \omegar^2\,\frac{\Vdc}{2},
+    \qquad \omegar = \frac{1}{\sqrt{\Lr\Cr}}
+    \label{eq:swing_ODE_Fig10}
+\end{equation}
+The inflection point (steepest slope) of each S-curve occurs at
+$\vf = \Vdc/2$, which in the phase-plane analysis is exactly where
+$|j| = |\ir - \IL|$ reaches its maximum --- that is, where $|\ir|$ peaks.
+
+% ── Bottom panel ─────────────────────────────────────────────────────────────
+\subsection*{Bottom panel (\figref{fig:P1Fig10b}) --- reading the current traces}
+
+Three traces are visible and labelled in \figref{fig:P1Fig10b}:
+
+\medskip
+\textbf{IS1 --- upper main switch current.}
+
+IS1 is positive at the start of the simulation (approximately $+100$\,A),
+representing $\IL$ flowing through $S_1$ while $\vf = \Vdc$.
+When $S_1$ is gated off at the start of the downward commutation,
+IS1 drops to zero and remains zero throughout the $\vf = 0$ interval.
+IS1 returns to approximately $+100$\,A after the upward commutation
+restores $\vf = \Vdc$ and $S_1$ fires at ZVS.
+
+\medskip
+\textbf{IS2 --- lower main switch current.}
+
+IS2 is zero while $S_1$ conducts.
+After the downward commutation clamps $\vf = 0$ and $S_2$ fires at ZVS,
+IS2 becomes negative (approximately $-100$\,A) and remains flat throughout
+the $\vf = 0$ conduction interval.
+The negative sign reflects the current convention: $S_2$ carries $\IL$ from
+pole node to the lower rail, which is opposite to the positive IS1 direction.
+IS2 returns to zero when the upward commutation begins.
+
+\medskip
+\textbf{$I_r$ --- auxiliary resonant inductor current.}
+
+$\ir$ is the most information-rich trace.
+It is \textbf{zero during both flat conduction intervals} --- confirming that
+the auxiliary branch is fully off between commutation events, carrying no
+continuous circulating current.
+
+During the first (downward) commutation, $\ir$ swings to a large
+\textbf{negative} peak of approximately $-250$\,A.
+The sign convention is: positive $\ir$ drives current \emph{into} the pole
+node (upward direction); negative $\ir$ pulls current \emph{out of} the
+pole node (downward direction).
+For the downward swing $A_1$ fires, and $\Lr$ draws current from the pole
+node toward the upper rail, so $\ir$ goes negative.
+
+During the second (upward) commutation, $\ir$ swings to a large
+\textbf{positive} peak of approximately $+350$\,A.
+For the upward swing $A_2$ fires, and $\Lr$ pushes current into the pole
+node from the lower rail, so $\ir$ goes positive.
+The positive peak is slightly larger than the negative one because the boost
+amount can differ between the two directions depending on $\IL$ and the
+control target.
+
+In both cases $|\ir|_\text{peak} \gg \IL$, confirming
+\begin{equation}
+    I_\text{peak} = \IL + i_\text{boost} + \frac{\Vdc}{2\Zr}
+    \label{eq:Ipeak_Fig10}
+\end{equation}
+where the $\Vdc/(2\Zr)$ term (the amplitude of the LC oscillation from the
+centre $\Vdc/2$) adds substantially when $\IL$ is small.
+
+\medskip
+\textbf{Cross-check: $I_r$ returns to zero before the next flat interval begins.}
+
+In \figref{fig:P1Fig10b}, after each resonant peak, $\ir$ ramps linearly
+back to zero before the next flat conduction region starts.
+This is the ramp-down state of \figref{fig:P1Fig7f} (upward) and
+\figref{fig:P1Fig8e} (downward):
+\begin{equation}
+    \frac{d\ir}{dt} = \mp\frac{\Vdc}{2\Lr}
+    \label{eq:ir_ramp_down_Fig10}
+\end{equation}
+(negative for the downward sequence, positive for the upward sequence).
+The auxiliary switch is gated off only after $\ir$ reaches zero,
+ensuring no hard-switched current interruption in the auxiliary branch.
+
+% ============================================================
 \section{Master Figure Reference Table}
 % ============================================================
 
