@@ -3806,4 +3806,466 @@ The topology later influenced motor-drive inverters, EV traction inverters,
 and grid-tied converters where high switching frequency reduces filter size
 while ZVS controls device temperature.
 
+%══════════════════════════════════════════════════════════════════════════════
+\appendix
+%══════════════════════════════════════════════════════════════════════════════
+
+\section{Phase-Plane Analysis of ARCP Commutation}
+\label{sec:phase_plane}
+
+\noindent\textit{``The same equations have the same solutions.''}
+\hfill --- Richard Feynman, \emph{Lectures on Physics}
+
+\bigskip\noindent
+Every variable in the ARCP circuit changes with time.
+If you try to follow $v_f(t)$ and $\ir(t)$ separately you get two squiggly
+curves and a notebook full of algebra.
+The phase plane gives you a better deal: both variables at once, on a
+single picture that shows the \emph{whole story} from start to finish ---
+no time axis needed.
+Here is how it works, and what it reveals about this particular circuit.
+
+%──────────────────────────────────────────────────────────────────────────────
+\subsection{What a point in the phase plane means}
+\label{ssec:pp_what_point}
+
+At any instant, the resonant circuit is completely described by two numbers:
+$v_f$ (the pole-node voltage) and $\ir$ (the auxiliary inductor current).
+Plot one on the horizontal axis and the other on the vertical axis.
+That single dot \emph{is} the circuit at that moment --- its full electrical
+state, no other information required.
+
+As the circuit evolves, the dot moves.
+The \textbf{phase portrait} is the path the dot traces.
+Instead of two separate time traces you get one curve, and its shape
+immediately reveals the physics:
+\begin{itemize}
+    \item A \textbf{straight line} means one variable is frozen while the
+          other changes at a constant rate.
+    \item A \textbf{circular arc} means both variables oscillate
+          sinusoidally with the same frequency and a $90°$ phase shift ---
+          the fingerprint of a lossless LC circuit.
+    \item A \textbf{stationary dot} means the circuit sits in an idle state.
+\end{itemize}
+
+%──────────────────────────────────────────────────────────────────────────────
+\subsection{Choosing the right coordinates}
+\label{ssec:pp_coords}
+
+We could use the raw pair $(v_f, \ir)$, but a small coordinate shift makes
+the geometry clean.
+
+\subsubsection*{Why subtract $I_L$?}
+
+The load current $I_L$ flows into the pole node regardless of what the
+auxiliary branch does.
+Define the \textbf{excess current}
+\[
+    j \;=\; \ir - \IL.
+\]
+It is $j$, not $\ir$, that actually charges or discharges $C_r$:
+\[
+    \frac{dv_f}{dt} = \frac{\ir - \IL}{C_r} = \frac{j}{C_r}.
+\]
+When $j = 0$ the capacitor voltage does not change; when $j \neq 0$ the
+dot is moving.
+Using $j$ removes the static offset and centres the interesting dynamics
+around zero.
+
+\subsubsection*{Why multiply $j$ by $Z_r$?}
+
+$Z_r = \sqrt{L_r/C_r}$ has units of ohms, so $j Z_r$ has units of volts ---
+the same as $v_f$.
+Plotting $(v_f,\; j Z_r)$ on equal axes produces a picture where distances
+are geometrically meaningful: a circle in this plane is a \emph{real} circle,
+not a distorted ellipse.
+
+\subsubsection*{The shifted voltage $u$}
+
+Define
+\[
+    u \;=\; v_f - \frac{\Vdc}{2}.
+\]
+This recentres the voltage axis so that the midpoint of the DC bus becomes
+the origin.
+In terms of $u$ and $j$, the governing ODEs during the resonant interval are
+exactly
+\[
+    \dot{u} = \frac{j}{C_r}, \qquad
+    \dot{j} = -\frac{u}{L_r}.
+\]
+Compare with a frictionless mass on a spring:
+$\dot{x} = p/m$, $\dot{p} = -kx$.
+The ARCP resonant tank \emph{is} that spring-mass system, with $u$ as
+position and $j$ as momentum (scaled).
+Every geometric fact about the spring-mass phase portrait applies here too.
+
+%──────────────────────────────────────────────────────────────────────────────
+\subsection{Why the resonant swing is a circle: energy conservation}
+\label{ssec:pp_circle}
+
+\begin{physbox}[The Conserved Quantity --- Why Circles Appear]
+Multiply the ODE for $u$ by $u$, and the ODE for $j$ by $(j Z_r^2)$:
+\[
+    u\dot{u} = \frac{uj}{C_r},
+    \qquad
+    j Z_r^2\,\dot{j} = -\frac{u\,j\,Z_r^2}{L_r} = -\frac{uj}{C_r}.
+\]
+Add:
+\[
+    u\dot{u} + j Z_r^2\,\dot{j} = 0
+    \;\Longrightarrow\;
+    \frac{d}{dt}\!\left[\frac{u^2 + (jZ_r)^2}{2}\right] = 0.
+\]
+Therefore
+\[
+    \boxed{\mathcal{E} \;=\; u^2 + (j Z_r)^2 \;=\; R^2 \;=\; \text{constant}.}
+\]
+This is the equation of a \textbf{circle of radius $R$} centred at
+$(u, jZ_r) = (0,0)$, i.e.\ at $(v_f, jZ_r) = (\Vdc/2,\; 0)$.
+No loss means no energy leaves the tank, so the dot is forever
+pinned to this circle.
+\end{physbox}
+
+\noindent
+$\mathcal{E}$ is proportional to the total stored resonant-tank energy:
+\[
+    E_\text{tank}
+    = \frac{1}{2}L_r j^2 + \frac{1}{2}C_r u^2
+    = \frac{1}{2C_r}\bigl[(jZ_r)^2 + u^2\bigr]
+    = \frac{R^2}{2C_r}.
+\]
+The radius of the circle in the phase plane \emph{is} the square root of
+twice the tank energy (per unit capacitance).
+Bigger radius $\Leftrightarrow$ more stored energy $\Leftrightarrow$
+more ``fuel'' available to swing $v_f$ from one rail to the other.
+
+The radius is set entirely by the initial conditions at the start of the
+resonant interval:
+\[
+    R = \sqrt{\!\left(v_{f0} - \frac{\Vdc}{2}\right)^{\!2}
+              + \bigl((i_{r0}-\IL)\,Z_r\bigr)^2}.
+\]
+A larger boost current $i_{boost} = i_{r0} - \IL$ increases $R$.
+
+%──────────────────────────────────────────────────────────────────────────────
+\subsection{Three elementary motions}
+\label{ssec:pp_three_motions}
+
+Every interval of ARCP commutation is one of exactly three types.
+Identifying which type is occurring tells you immediately what the
+phase-plane trajectory looks like.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.6}
+\begin{tabular}{p{3.1cm} p{4.8cm} p{4.8cm}}
+\toprule
+\textbf{Interval} & \textbf{What is frozen / what moves}
+                  & \textbf{Phase-plane shape} \\
+\midrule
+Boost / ramp-down
+    & $v_f$ clamped by diode or conducting switch; $\ir$ ramps linearly
+    & \textbf{Vertical line} at $v_f = \text{const}$ \\
+Natural discharge
+    & $\ir = 0$ (auxiliary off); $v_f$ falls at constant rate $\IL/C_r$
+    & \textbf{Horizontal line} at $jZ_r = -\IL Z_r$ \\
+LC resonant swing
+    & $\mathcal{E}$ conserved (lossless LC)
+    & \textbf{Circular arc} centred at $(\Vdc/2,\; 0)$, radius $R$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent
+A complete commutation event is a \emph{concatenation} of these three
+elementary motions.
+The time axis is implicit in the speed at which the dot travels along each
+segment, but the \emph{shape} of the path tells you which physics dominates.
+
+%──────────────────────────────────────────────────────────────────────────────
+\subsection{Upward commutation from diode (Fig.\,7)}
+\label{ssec:pp_fig7}
+
+$D_2$ is conducting; $v_f = 0$; $\ir = 0$, so $j = -\IL$.
+Starting point:
+\[
+    \mathbf{P_0} = \bigl(0,\; -\IL Z_r\bigr).
+\]
+
+\paragraph{State (b): boost ramp.}
+$A_1$ fires.
+$D_2$ keeps $v_f = 0$; $\ir$ ramps up at $\Vdc/(2L_r)$.
+In the phase plane: \textbf{vertical line upward} from $\mathbf{P_0}$.
+The ramp stops when $\ir = i_{boost}$, i.e.\ $j = i_{boost}$:
+\[
+    \mathbf{P_1} = \bigl(0,\; i_{boost}\,Z_r\bigr).
+\]
+This is the \emph{only job} of the boost: push the starting point above the
+$jZ_r = 0$ axis so the resonant circle is large enough.
+
+\paragraph{States (c)–(d): resonant swing.}
+$D_2$ stops conducting; the LC circuit takes over.
+The dot moves \textbf{counter-clockwise} on the circle of radius
+\[
+    R = \sqrt{(\Vdc/2)^2 + (i_{boost}\,Z_r)^2}
+\]
+from $\mathbf{P_1}$ toward the right rail $v_f = \Vdc$.
+During this arc $v_f$ climbs from 0 to $\Vdc$ in an S-shaped curve.
+
+\paragraph{State (e): upper clamp.}
+$D_1$ clamps $v_f = \Vdc$.
+The circle equation at $u = +\Vdc/2$ gives:
+\[
+    jZ_r\big|_{\text{clamp}} = \sqrt{R^2 - (\Vdc/2)^2} = i_{boost}\,Z_r.
+\]
+So the dot lands at $\mathbf{P_2} = (\Vdc,\; i_{boost}\,Z_r)$.
+The auxiliary current at this instant is $\IL + i_{boost}$ --- positive, so
+$A_1$ can be turned off with near-zero current (the inductor current transfers
+into $D_1$ without a hard switch-off).
+
+\paragraph{State (f): ramp down, ZVS of $S_1$.}
+$v_f = \Vdc$ is locked by $D_1$; $\ir$ ramps back to zero.
+\textbf{Vertical line downward} from $\mathbf{P_2}$ to
+$(\Vdc, -\IL Z_r)$.
+$S_1$ may be gated on \emph{anywhere} during this ramp --- it sees
+$v_{DS} = 0$ throughout because $D_1$ holds $v_f = \Vdc$.
+That is ZVS.
+
+%──────────────────────────────────────────────────────────────────────────────
+\subsection{Downward commutation, low current (Fig.\,8)}
+\label{ssec:pp_fig8}
+
+By symmetry this is the mirror of Fig.\,7.
+$S_1$ is conducting; $v_f = \Vdc$; $\ir = 0$, so $j = -\IL$.
+\[
+    \mathbf{P_0} = (\Vdc,\; -\IL Z_r).
+\]
+
+\paragraph{Boost ramp.}
+$A_1$ fires in the negative direction; $\ir$ ramps toward $-(I_L + i_{boost})$.
+\textbf{Vertical line downward} from $\mathbf{P_0}$ to
+\[
+    \mathbf{P_1} = (\Vdc,\; -(I_L+i_{boost})\,Z_r).
+\]
+$S_1$ is gated off when $\ir = -i_{boost}$ (just at $j = -(I_L+i_{boost})$).
+
+\paragraph{Resonant swing.}
+Now $u_0 = \Vdc - \Vdc/2 = \Vdc/2$ and
+$j_0 = -(I_L + i_{boost})$, so
+$R = \sqrt{(\Vdc/2)^2 + ((I_L+i_{boost})Z_r)^2}$.
+The dot moves \textbf{clockwise} from $\mathbf{P_1}$ to
+the left rail $v_f = 0$.
+
+\paragraph{Lower clamp and ZVS of $S_2$.}
+$D_2$ clamps at $v_f = 0$; $S_2$ is gated on at ZVS.
+The ramp-down returns $\ir$ to zero.
+
+\medskip\noindent
+\textbf{Key asymmetry between Fig.\,7 and Fig.\,8.}
+In Fig.\,7 the upper diode $D_1$ is a passive device; it clamps whenever
+$v_f$ reaches $\Vdc$ regardless of gating.
+In Fig.\,8 the upper \emph{switch} $S_1$ must be \emph{actively gated off};
+the circuit relies on the resonant swing to take $v_f$ away from $\Vdc$
+after $S_1$ turns off.
+This is why Fig.\,8 has 5 states while Fig.\,7 has 7: a diode and a switch
+respond differently to the same LC trajectory.
+
+%──────────────────────────────────────────────────────────────────────────────
+\subsection{Downward commutation, high current (Fig.\,9)}
+\label{ssec:pp_fig9}
+
+When $\IL \geq \Ith$ no auxiliary firing is needed.
+The phase-plane picture is dramatically simpler.
+
+\begin{itemize}
+    \item $\ir = 0$ throughout $\Rightarrow$ $j = -\IL = \text{const}$.
+    \item The dot moves \textbf{horizontally} from $(\Vdc,\; -\IL Z_r)$
+          to $(0,\; -\IL Z_r)$ as $v_f$ falls at the constant rate
+          $\IL/C_r$.
+\end{itemize}
+
+No circles, no oscillation --- just a straight horizontal line below the
+$jZ_r = 0$ axis.
+
+\begin{physbox}[Why the Phase Plane Reveals the Threshold Immediately]
+In the $(v_f, jZ_r)$ plane, the high-current commutation is a horizontal
+line at height $jZ_r = -\IL Z_r$.
+The transit time for this line to cross from $\Vdc$ to $0$ is
+$T = \Vdc C_r / \IL$.
+Setting $T \leq T_\text{max}$ (the maximum allowed dead time) gives
+\[
+    \IL \geq \frac{\Vdc\,C_r}{T_\text{max}} = \Ith.
+\]
+The threshold is the condition that the horizontal line crosses the
+full rail-to-rail width within the allotted time.
+Everything geometric, no differential equations required.
+\end{physbox}
+
+%──────────────────────────────────────────────────────────────────────────────
+\subsection{The ZVS guarantee as a geometric theorem}
+\label{ssec:pp_zvs}
+
+\begin{eqnbox}[ZVS as a Geometric Statement]
+\textbf{Claim.}
+A resonant circle centred at $(\Vdc/2,\; 0)$ with radius $R \geq \Vdc/2$
+\emph{necessarily} intersects both vertical rails $v_f = 0$ and
+$v_f = \Vdc$.
+
+\textbf{Proof.}
+The centre is at horizontal distance $\Vdc/2$ from each rail.
+If $R \geq \Vdc/2$, the circle reaches or crosses each rail. $\square$
+
+\textbf{Consequence.}
+$v_f$ touches 0 \emph{and} $\Vdc$ during the resonant swing.
+ZVS is therefore a guaranteed geometric outcome of having
+$R \geq \Vdc/2$, not a lucky coincidence of timing.
+
+\textbf{Minimum-energy condition.}
+The smallest circle that still guarantees ZVS has $R = \Vdc/2$.
+Setting $R = \Vdc/2$ and $v_{f0} = 0$ (upward case):
+\[
+    \sqrt{(\Vdc/2)^2 + (j_0 Z_r)^2} = \Vdc/2
+    \;\Rightarrow\; j_0 = 0.
+\]
+If $j_0 = 0$ already (meaning $\ir = \IL$ at the start of the swing),
+\emph{no boost at all} is needed.
+Any boost current adds margin: $j_0 > 0 \Rightarrow R > \Vdc/2$.
+\end{eqnbox}
+
+\noindent
+This theorem is why the ARCP is a fundamentally different design philosophy
+from a snubber: a snubber absorbs energy to limit $dv/dt$; the ARCP
+\emph{steers} the operating point onto a circle that is geometrically
+guaranteed to touch both rails.
+
+%──────────────────────────────────────────────────────────────────────────────
+\subsection{Energy interpretation alongside the phase portrait}
+\label{ssec:pp_energy}
+
+Because $\mathcal{E} = R^2 = 2 C_r E_\text{tank}$, a phase-plane picture
+carries embedded energy information:
+
+\begin{itemize}
+    \item \textbf{Boost interval:} the dot moves up a vertical line.
+          $u = v_{f0} - \Vdc/2$ is fixed; $jZ_r$ increases.
+          $\mathcal{E}$ grows from $u_0^2 + (\IL Z_r)^2$ to
+          $u_0^2 + (i_{boost} Z_r)^2$.
+          This increase is the energy stored in $L_r$ by the boost pulse.
+
+    \item \textbf{Resonant swing:} the dot orbits the circle at constant
+          radius. $\mathcal{E}$ is constant.
+          Energy sloshes between $L_r$ (proportional to $j^2$) and $C_r$
+          (proportional to $u^2$) but the total does not change.
+
+    \item \textbf{Ramp-down:} the dot moves down a vertical line.
+          $\mathcal{E}$ decreases back toward its pre-boost value.
+          The energy stored in $L_r$ is returned to the bus through the
+          clamping diode --- no loss, ideal round-trip.
+\end{itemize}
+
+The net energy cost of an ARCP commutation is therefore \emph{zero} in
+the ideal case: whatever energy the boost deposits into $L_r$ is
+recovered during ramp-down.
+This is the phase-plane proof of ZVS efficiency.
+
+%──────────────────────────────────────────────────────────────────────────────
+\subsection{All four cases on one conceptual portrait}
+\label{ssec:pp_all_four}
+
+\begin{physbox}[Reading the Unified Phase Portrait]
+Draw the $(v_f, jZ_r)$ plane.
+Mark vertical lines at $v_f \in \{0,\; \Vdc/2,\; \Vdc\}$ and a horizontal
+line at $jZ_r = 0$.
+The centre of every resonant circle sits at $(\Vdc/2,\; 0)$.
+
+\medskip
+\noindent\textbf{Case A --- upward, low $\IL$ (Fig.\,7):}\\
+\quad $(0,\;{-\IL Z_r})$
+$\xrightarrow{\text{boost}\uparrow}$
+$(0,\;{+i_{boost}Z_r})$
+$\xrightarrow{\text{CCW arc}}$
+$(\Vdc,\;{+i_{boost}Z_r})$
+$\xrightarrow{\text{ramp}\downarrow}$
+$(\Vdc,\;{-\IL Z_r})$.
+
+\medskip
+\noindent\textbf{Case B --- downward, low $\IL$ (Fig.\,8):}\\
+\quad $(\Vdc,\;{-\IL Z_r})$
+$\xrightarrow{\text{boost}\downarrow}$
+$(\Vdc,\;{-(I_L+i_{boost})Z_r})$
+$\xrightarrow{\text{CW arc}}$
+$(0,\;{-i_{boost}Z_r})$
+$\xrightarrow{\text{ramp}\uparrow}$
+$(0,\;{-\IL Z_r})$.
+
+\medskip
+\noindent\textbf{Case C --- downward, high $\IL \geq \Ith$ (Fig.\,9):}\\
+\quad $(\Vdc,\;{-\IL Z_r})$
+$\xrightarrow{\text{horizontal line}\leftarrow}$
+$(0,\;{-\IL Z_r})$.
+\quad No arc.
+
+\medskip
+\noindent\textbf{Case D --- upward, high $\IL \geq \Ith$:}\\
+\quad $(0,\;{-\IL Z_r})$
+$\xrightarrow{\text{horizontal line}\rightarrow}$
+$(\Vdc,\;{-\IL Z_r})$.
+\quad No arc.
+(Not shown in Paper~1 but symmetric to Case C.)
+
+\medskip
+All four cases start and end on the vertical rails.
+Cases A and B are arcs; Cases C and D are straight horizontal lines.
+The dividing line is whether $\IL \geq \Ith$.
+\end{physbox}
+
+%──────────────────────────────────────────────────────────────────────────────
+\subsection{What the phase plane tells you that time traces cannot}
+\label{ssec:pp_summary}
+
+\begin{enumerate}
+    \item \textbf{Geometry replaces timing.}
+          ZVS is not ``fire the switch at the right nanosecond''; it is
+          ``make the circle large enough to reach the rail.''
+          Success depends on the radius $R$ you set with the boost current,
+          not on how fast the controller reacts.
+
+    \item \textbf{Symmetry is visible instantly.}
+          Upward and downward commutations are the same circle traversed
+          counter-clockwise vs.\ clockwise.
+          The asymmetry between ``from diode'' and ``from switch'' is a
+          different start angle, not a different topology.
+
+    \item \textbf{The threshold $\Ith$ is geometric.}
+          Below $\Ith$: circular arc, auxiliary is active.
+          At $\Ith$: the arc degenerates to a semicircle of radius
+          exactly $\Vdc/2$ --- the just-touching case.
+          Above $\Ith$: horizontal straight line, auxiliary is idle.
+
+    \item \textbf{Design trade-offs become visual.}
+          A larger $Z_r$ (bigger $L_r/C_r$ ratio) stretches the $jZ_r$
+          axis: the same boost current gives a taller starting point and
+          a larger radius.
+          But a larger $Z_r$ also increases the peak current for a given
+          stored energy, stressing $A_1$, $A_2$, and $L_r$.
+          Both effects are visible as axis scaling in the same picture.
+
+    \item \textbf{Energy is encoded in the radius.}
+          $R^2 \propto E_\text{tank}$.
+          Minimum-energy commutation uses $R = \Vdc/2$.
+          Any margin above that is stored energy that must be recovered
+          during ramp-down --- free in ideal circuits, a small loss in real
+          ones.
+
+    \item \textbf{Control logic maps to geometry.}
+          The FPGA state machine in Paper~3 is, at its core, a recipe for
+          hitting a specific point $\mathbf{P_1}$ on the phase plane before
+          releasing the resonant swing.
+          FTOL (fixed-time open-loop) picks a fixed ramp duration;
+          FTCL (fixed-time closed-loop) adjusts the ramp to compensate for
+          measured deviations in $\IL$ or $\Vdc$.
+          Both strategies are just different ways of aiming at the same
+          target circle in the phase plane.
+\end{enumerate}
+
 \end{document}
