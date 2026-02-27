@@ -93,6 +93,7 @@
 \newcommand{\omegar}{\omega_r}
 \newcommand{\Zr}{Z_r}
 \newcommand{\Vc}{V_{C1}}
+\newcommand{\Ith}{I_{th}}
 \newcommand{\figref}[1]{Figure~\ref{#1}}
 
 % ---- figure entry macro ----
@@ -569,7 +570,7 @@ Each time the pole commutates, $\Cr$ must be fully charged from 0 to
 $\Vdc$ (or discharged from $\Vdc$ to 0).
 The energy moved in and out of $\Cr$ every commutation is
 \begin{equation*}
-    E_\Cr = \tfrac{1}{2}\Cr\Vdc^2
+    E_{\Cr} = \tfrac{1}{2}\Cr\Vdc^2
 \end{equation*}
 This energy is supplied by the auxiliary inductor $\Lr$ (via the boost
 and resonant swing) and ultimately comes from the DC bus.
@@ -589,7 +590,7 @@ blocking voltage can rise ($dv/dt$ rating).
 Exceeding it causes extra losses, gate-ringing, or device failure.
 
 \textit{Summary — the design trade-off:}
-Choose $\Cr$ small enough that $E_\Cr = \frac{1}{2}\Cr\Vdc^2$ is
+Choose $\Cr$ small enough that $E_{\Cr} = \frac{1}{2}\Cr\Vdc^2$ is
 acceptably small, yet large enough that the turn-off $dv/dt$ stays
 within the switch's rating.
 \end{physbox}
@@ -2149,7 +2150,7 @@ The two reasons are identical to those for $A_2$ in state~(d) of
 be open-circuited.}
 
 At the moment $S_1$ opens, $\Lr$ is already carrying the boost
-current $\ir = -|\ir_0|$.
+current $\ir = -|i_{r,0}|$.
 If $A_1$ were turned off simultaneously, the circuit through $\Lr$
 would be broken.
 $\Lr$ cannot let $\ir$ change instantaneously; it would generate a
