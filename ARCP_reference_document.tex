@@ -2504,102 +2504,92 @@ role that $A_1$ played here.
 \subsection*{Big picture}
 
 \figentry{fig:P1Fig9a}{P1_Fig9a_waveform_switch_high_current}
-    {P1 Fig.\,9 --- Full commutation waveform for the upward transition
-     ($S_2 \to S_1$, high load current, $\IL \geq \Ith$).
+    {P1 Fig.\,9 --- Full commutation waveform for the downward transition
+     ($S_1 \to D_2/S_2$, high load current, $\IL \geq \Ith$).
+     The paper figure shows $S_1$ conducting in the initial circuit
+     snapshot, confirming this is a downward commutation.
      Top trace: auxiliary inductor current $\ir(t)$ --- stays at zero
      throughout; the auxiliary circuit is never activated.
-     Bottom trace: pole-node voltage $\vf(t)$ --- rises linearly from
-     $0$ to $\Vdc$ driven by the load current alone.
+     Bottom trace: pole-node voltage $\vf(t)$ --- falls from $\Vdc$
+     to $0$ driven by the load current alone.
      Source: De~Doncker \& Lyons, IEEE IAS 1990, p.\,6.}{0.75}
 
-Figures~\ref{fig:P1Fig7a} and~\ref{fig:P1Fig8a} both dealt with the
-\emph{low-current} case, where the load current $\IL$ was \emph{below}
-the natural commutation threshold $\Ith$.
-The auxiliary boost stage was essential in both sequences: without it,
-$\IL$ alone could not swing $\vf$ all the way to the target rail before
-the deadtime window expired.
+Figure~\ref{fig:P1Fig8a} (paper Fig.\,8) showed the
+\emph{low-current} downward commutation ($S_1 \to D_2/S_2$), where
+$\IL < \Ith$.
+The auxiliary boost was essential: $A_1$ was fired to pre-charge $\ir$,
+providing the extra discharge current needed to pull $\vf$ from $\Vdc$
+down to $0$ within the deadtime window.
 
-Figure~\ref{fig:P1Fig9a} now shows the complementary case: the load
-current is \emph{above} $\Ith$.
-This changes everything.
+Figure~\ref{fig:P1Fig9a} (paper Fig.\,9) is the
+\textbf{high-current counterpart} of the same downward commutation.
+The starting device is again $S_1$ ($\vf = \Vdc$), and the destination
+is again $D_2/S_2$ ($\vf = 0$).
+The only difference is that now $\IL \geq \Ith$, so no auxiliary boost
+is required.
 
 \medskip
-\textbf{Step 1 --- what does ``high current'' mean?}
+\textbf{Step 1 --- the threshold $\Ith$ revisited.}
 
-In the Big picture of \figref{fig:P1Fig8a} (Fig.\,8) we derived the
-natural commutation threshold:
+In the Big picture of \figref{fig:P1Fig8a} we derived:
 \begin{equation}
     \Ith = \frac{\Vdc\,C_r}{T_\text{max}}
-    \label{eq:Ith_recap}
+    \label{eq:Ith_recap9}
 \end{equation}
-This is the minimum load current that can fully swing $\vf$ across the
-entire bus in one direction within the allowed deadtime $T_\text{max}$.
-
-When $\IL \geq \Ith$, the straight-ramp swing time satisfies:
+This is the minimum $\IL$ for which the snubber capacitor $C_r$
+discharges from $\Vdc$ to $0$ within the allowed deadtime $T_\text{max}$,
+using load current alone (no auxiliary):
 \begin{equation}
     T_\text{swing} = \frac{\Vdc\,C_r}{\IL} \;\leq\; T_\text{max}
-    \label{eq:Tswing_high}
+    \qquad \text{when } \IL \geq \Ith
+    \label{eq:Tswing9}
 \end{equation}
-The pole node finishes its voltage swing \emph{before} the deadtime
-window closes --- no auxiliary boost is needed at all.
+When this condition is met, the control skips the boost phase entirely.
 
 \medskip
 \textbf{Step 2 --- the auxiliary circuit sits completely idle.}
 
-Because $\IL$ alone is sufficient, the control never fires $A_2$.
+Because $\IL$ alone is sufficient, the control never fires $A_1$.
 $\ir$ stays at zero for the entire commutation.
 No energy is stored in $\Lr$; no LC oscillation occurs.
 
-This means the governing equation reduces from the coupled ODE of
-Figs.\,7 and~8 back to the simple single-capacitor equation:
+With $\ir = 0$, the shifted state $j = \ir - \IL = -\IL$ (constant),
+and the capacitor equation gives:
 \begin{equation}
-    \frac{d\vf}{dt} = \frac{\IL}{2\,C_r} = \text{constant}
-    \qquad \Rightarrow \qquad
-    \vf(t) = \frac{\IL}{2\,C_r}\,t
-    \label{eq:natural_ramp}
+    \frac{d\vf}{dt} = \frac{\ir - \IL}{C_r} = -\frac{\IL}{C_r}
+    = \text{constant}
+    \label{eq:natural_discharge9}
 \end{equation}
-starting from $\vf = 0$ the instant $S_2$ turns off.
-The right-hand side is constant because $\IL$ barely changes during the
-commutation window ($L_F \gg \Lr$, so the load filter inductor holds
-$\IL$ approximately steady).
+$C_r$ discharges at a constant rate, so $\vf$ falls as a
+\textbf{straight line} from $\Vdc$ to $0$.
 
 \medskip
 \textbf{Step 3 --- why is the waveform a straight line, not a sinusoid?}
 
-Recall from the Fig.\,8 Big picture that $\Lr$ was responsible for two
-things simultaneously:
-\begin{enumerate}
-    \item Adding $\ir$ as a second discharge (or charge) current to
-          help $\IL$.
-    \item Converting the straight ramp into a sinusoidal arc via LC
-          feedback.
-\end{enumerate}
-Here, $\Lr$ does \emph{neither}.
-Since $\ir = 0$ throughout, there is no coupled LC loop and no feedback
-between $\vf$ and $\ir$.
-$C_r$ simply integrates a constant current $\IL$, producing the
-\textbf{straight-line ramp} in $\vf$ that equation~\eqref{eq:natural_ramp}
-predicts and that \figref{fig:P1Fig9a} shows.
+In \figref{fig:P1Fig8a} (Fig.\,8), $\Lr$ bent the straight ramp into
+a sinusoid because it coupled with $C_r$ to form an LC oscillator.
+Here, $\ir = 0$ throughout, so $\Lr$ never enters the loop.
+$C_r$ simply integrates a constant current $\IL$:
+\[
+    \vf(t) = \Vdc - \frac{\IL}{C_r}\,t \quad \text{(straight line)}
+\]
+This is exactly the simplified ``$\Lr$-absent'' model from Step~3 of
+the Fig.\,8 Big picture --- but now that model is the \emph{actual}
+circuit behaviour, because the auxiliary branch truly is idle.
 
 \medskip
-\textbf{Step 4 --- ZVS is still achieved, by the same clamping mechanism.}
+\textbf{Step 4 --- ZVS is achieved by the same clamping mechanism.}
 
-Even though the commutation is purely capacitive, zero-voltage switching
-is still achieved for $S_1$:
-\begin{itemize}
-    \item When $\vf$ reaches $\Vdc$, diode $D_1$ forward-biases and
-          clamps the pole node to the positive rail.
-    \item $S_1$ is gated on \emph{while $D_1$ is conducting}, so:
-    \[
-        V_{S_1} = \Vdc - \vf = \Vdc - \Vdc = 0\,\text{V}
-    \]
-    \item $S_1$ turns on at exactly zero volts --- ZVS, with no
-          switching loss.
-\end{itemize}
-This is the identical clamping mechanism as in \figref{fig:P1Fig7a}
-(Fig.\,7).
-The only difference is that $D_1$ is now reached by load current alone,
-not by an LC resonant arc.
+When $\vf$ reaches $0$, diode $D_2$ forward-biases and clamps the
+pole node to the negative rail.
+$S_2$ is then gated on while $D_2$ is conducting:
+\[
+    V_{S_2} = \vf - 0\,\text{V} = 0 - 0 = 0\,\text{V}
+\]
+$S_2$ turns on at zero volts --- ZVS, with no switching loss.
+This is the same clamping mechanism as in \figref{fig:P1Fig8a}
+(Fig.\,8, state~(d)), but without the prior resonant arc bringing
+$\vf$ to zero: here $\IL$ alone carries $\vf$ all the way.
 
 \medskip
 \textbf{Three states at a glance.}
@@ -2608,149 +2598,90 @@ not by an LC resonant arc.
 \renewcommand{\arraystretch}{1.25}
 \begin{tabular}{lll}
 \toprule
-\textbf{Waveform strip} & \textbf{What is happening} & \textbf{$\vf$ shape} \\
+\textbf{State} & \textbf{What is happening} & \textbf{$\vf$ shape} \\
 \midrule
-\textit{S2} & Idle: $S_2$ on, $\ir=0$, $\vf=0$ & Flat at $0$ \\
-\textit{Cr} & Natural swing: $S_2$ off; $\IL$ alone
-              charges $C_r$ & Linear ramp: $0 \to \Vdc$ \\
-\textit{S1} & Steady: $D_1$ clamped; $S_1$ ZVS on; $\ir=0$ &
-              Flat at $\Vdc$ \\
+(a) & $S_1$ on, $\ir=0$, $\vf=\Vdc$; idle &
+      Flat at $\Vdc$ \\
+(b) & $S_1$ off; $\IL$ alone discharges $C_r$ &
+      Linear ramp: $\Vdc \to 0$ \\
+(c) & $D_2$ clamps; $S_2$ ZVS on; $\ir=0$; steady &
+      Flat at $0$ \\
 \bottomrule
 \end{tabular}
 \end{center}
 
-States (a)--(c) in this document correspond one-to-one with these three
-strips.
-We now walk through each state.
-
 \medskip
-\textbf{Comparison: Fig.\,7 vs.\ Fig.\,9 (same direction, different current regime).}
-
-Both \figref{fig:P1Fig7a} (paper Fig.\,7) and \figref{fig:P1Fig9a}
-(paper Fig.\,9) perform the same physical task --- swing $\vf$ upward
-from $0$ to $\Vdc$ and turn on $S_1$ at ZVS.
-The difference is entirely in how they accomplish it:
+\textbf{Comparison: Fig.\,8 vs.\ Fig.\,9 (same direction, different current regime).}
 
 \begin{center}
 \renewcommand{\arraystretch}{1.3}
 \begin{tabular}{p{3.2cm} p{4.8cm} p{4.8cm}}
 \toprule
- & \textbf{Fig.\,7 --- upward, low $\IL < \Ith$}
- & \textbf{Fig.\,9 --- upward, high $\IL \geq \Ith$} \\
+ & \textbf{Fig.\,8 --- from $S_1$, low $\IL < \Ith$}
+ & \textbf{Fig.\,9 --- from $S_1$, high $\IL \geq \Ith$} \\
 \midrule
-Auxiliary boost & Required: $A_2$ fires; $\ir$ builds above $\IL$ &
-                  Not needed: $A_2$ never fires \\
-No.\ of states  & 7 (two pre-resonant ramp stages
-                  $+$ LC swing $+$ ramp-down) &
-                  3 (idle, natural swing, steady) \\
+Auxiliary boost & Required: $A_1$ fires; $\ir$ dips negative &
+                  Not needed: $A_1$ never fires \\
+No.\ of states  & 5 (boost $+$ LC swing $+$ clamp $+$ ramp-up) &
+                  3 (idle, natural discharge, steady) \\
 $\vf$ trajectory & Sinusoidal arc (LC resonance) &
-                   Straight-line ramp at $\IL/(2C_r)$ \\
-$\ir$ profile   & Peaks above $\IL$, then ramps to zero &
+                   Straight-line ramp ($-\IL/C_r$) \\
+$\ir$ profile   & Dips negative, returns to zero &
                   Zero throughout \\
-ZVS mechanism   & $D_1$ clamped by LC arc reaching $\Vdc$ &
-                  $D_1$ clamped by $\IL$ charging $C_r$ to $\Vdc$ \\
-Energy cost     & $\Lr$ pre-charged; $\tfrac{1}{2}\Lr\ir^2$ returned
-                  to bus & Zero --- no auxiliary energy stored \\
+ZVS for $S_2$   & $D_2$ clamped by LC arc reaching $0$ &
+                  $D_2$ clamped by $\IL$ discharging $C_r$ to $0$ \\
 \bottomrule
 \end{tabular}
 \end{center}
 
-Fig.\,9 is the elegant limiting case: the resonant auxiliary branch
-achieves ZVS at \emph{zero extra energy cost} simply by doing nothing.
-
 % ── State (a) explanation ─────────────────────────────────────────────────────
-\subsection*{State (a) --- $S_2$ conducting: the resting state before upward
+\subsection*{State (a) --- $S_1$ conducting: the resting state before downward
 commutation}
 
-\figentry{fig:P1Fig9b}{P1_Fig9b_state1_S2_conducting}
-    {P1 Fig.\,9(a) [our state~(a)] --- $S_2$ conducting: initial resting state.
-     $\vf = 0$, $\ir = 0$, $\IL \geq \Ith$.
-     Top panel: full commutation waveform (\figref{fig:P1Fig9a}, paper
-     Fig.\,9) with the \textit{S2} strip highlighted.
-     Bottom panel: circuit snapshot showing $S_2$ as the only active path.
+\figentry{fig:P1Fig9b}{P1_Fig9b_state1_S1_conducting}
+    {P1 Fig.\,9(a) [our state~(a)] --- $S_1$ conducting: initial resting state.
+     $\vf = \Vdc$, $\ir = 0$, $\IL \geq \Ith$.
+     The paper figure shows $S_1$ as the only active current path,
+     confirming $\vf = \Vdc$ and the downward commutation direction.
      Source: De~Doncker \& Lyons, IEEE IAS 1990, p.\,6.}{0.50}
 
-\textbf{Top panel (waveform) --- what you see in the state\,(a) strip.}
+\textbf{What the paper figure shows.}
 
-State~(a) occupies the leftmost strip of the waveform in
-\figref{fig:P1Fig9a}, labelled \textit{S2}.
-Both traces are completely flat throughout this strip:
-\begin{itemize}
-    \item $\ir = 0$\,A --- no current flows in the resonant branch.
-          $\Lr$ carries no energy; $A_1$ and $A_2$ are both open.
-    \item $\vf = 0$\,V --- the pole node is pinned to the
-          \emph{negative} DC rail.
-\end{itemize}
-This strip has no fixed duration --- it lasts as long as the PWM
-lower-side conduction period.
-What it establishes is the pair of initial conditions for everything
-that follows:
+The circuit diagram in \figref{fig:P1Fig9b} shows $S_1$ conducting,
+with the bold current path running from the positive DC rail through
+$S_1$ to the pole node and onward through $L_F$ to the load.
+All other devices --- $S_2$, $D_1$, $D_2$, $A_1$, $A_2$ --- are open.
+
+This is the idle resting state with the pole node held at the positive
+rail by the conducting $S_1$.
+The initial conditions are:
 \begin{equation}
-    \vf(0^-) = 0\,\text{V}, \qquad \ir(0^-) = 0\,\text{A}
+    \vf(0^-) = \Vdc, \qquad \ir(0^-) = 0\,\text{A}
     \label{eq:stateA9_ic}
 \end{equation}
 
-The waveform also carries the annotation $\IL \geq \Ith$.
-This is De~Doncker's label flagging that the high-current condition is
-met at this operating point.
-If it were \emph{not} met, the control would instead fire $A_2$ and
-execute the full Fig.\,7 sequence.
-The label in the \textit{S2} strip is a reminder that the choice of
-sequence is made \emph{before} the commutation trigger arrives, based
-on a real-time comparison of $\IL$ against $\Ith$.
+This is the same resting state as \figref{fig:P1Fig8b} (Fig.\,8 state~(a)):
+$S_1$ on, $\vf = \Vdc$, $\ir = 0$.
+The two sequences diverge only after the commutation trigger arrives,
+based on the comparison of $\IL$ against $\Ith$:
+\begin{itemize}
+    \item $\IL < \Ith$: control fires $A_1$ $\Rightarrow$ Fig.\,8 sequence
+          (boost $+$ LC swing).
+    \item $\IL \geq \Ith$: control gates $S_1$ off directly $\Rightarrow$
+          Fig.\,9 sequence (natural discharge).
+\end{itemize}
 
 \medskip
-\textbf{Bottom panel (circuit snapshot) --- what is conducting and why.}
+\textbf{Snubber capacitor voltages.}
 
-Only $S_2$ appears with a bold current path; all other devices are open.
-$S_2$ is actively gated on.
-The load filter inductor $L_F$ forces load current $\IL$ to flow through
-the pole node:
-\[
-    \text{load} \;\longrightarrow\; L_F \;\longrightarrow\;
-    \text{pole node} \;\longrightarrow\; S_2 \;\longrightarrow\;
-    \text{negative DC rail}
-\]
-Note the direction: $\IL$ flows \emph{into} the pole node from the load
-side.
-This is the opposite of the Fig.\,8 convention, where $\IL$ flowed
-\emph{out of} the pole node toward the load.
-The direction of $\IL$ relative to the pole node is what determines
-which way $\vf$ naturally swings the moment $S_2$ turns off --- into
-the pole node means the snubber caps charge \emph{upward}.
-
-The snubber capacitors sit at fixed voltages: the one across $S_2$ is
-\emph{discharged} to 0\,V (short-circuited by conducting $S_2$); the
-one across $S_1$ is \emph{charged} to $\Vdc$ (full bus voltage sits
-across open $S_1$).
-$S_1$, $D_1$, $D_2$, $A_1$, and $A_2$ are all open.
-
-\medskip
-\textbf{Comparison with state~(a) of Figs.\,7 and~8.}
-
-\begin{center}
-\renewcommand{\arraystretch}{1.25}
-\begin{tabular}{llll}
-\toprule
-\textbf{Quantity} & \textbf{Fig.\,7 state (a)}
-                  & \textbf{Fig.\,8 state (a)}
-                  & \textbf{Fig.\,9 state (a)} \\
-\midrule
-Conducting device    & $D_2$ (diode)     & $S_1$ (switch)      & $S_2$ (switch) \\
-Pole voltage $\vf$   & $0$\,V            & $\Vdc$              & $0$\,V \\
-Aux.\ current $\ir$  & $0$\,A            & $0$\,A              & $0$\,A \\
-Direction to commute & Up ($0\to\Vdc$)   & Down ($\Vdc\to 0$)  & Up ($0\to\Vdc$) \\
-$\IL$ at pole node   & Out               & Out                 & \textbf{In} \\
-Boost required?      & Yes ($A_2$ fires) & Yes ($A_1$ fires)   & \textbf{No} \\
-\bottomrule
-\end{tabular}
-\end{center}
-
-All three state~(a)s share one property: $\ir = 0$, so $\Lr$ carries
-no residual energy into the next event.
-Fig.\,9 differs in two ways: $\IL$ flows \emph{into} the pole node
-(which naturally charges $C_r$ upward), and the threshold condition
-$\IL \geq \Ith$ means no pre-charging of $\Lr$ is necessary at all.
+With $S_1$ conducting and $\vf = \Vdc$:
+\begin{itemize}
+    \item The snubber cap across $S_1$ is short-circuited by the
+          conducting $S_1$ --- charged to $0$\,V.
+    \item The snubber cap across $S_2$ has the full bus voltage across
+          it ($\vf = \Vdc$, negative rail $= 0$) --- charged to $\Vdc$.
+\end{itemize}
+These are the same capacitor initial conditions as Fig.\,8 state~(a).
 
 % ── State (b) explanation ─────────────────────────────────────────────────────
 

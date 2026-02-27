@@ -30,9 +30,9 @@
 | `P1_Fig8e_state4_D2_clamp.png` | 5 | Commutation from Switch (Low $I$) — State (e): $D_2$ clamps $v_f=0$; $S_2$ gated on at ZVS; $A_1$ still on; $i_r$ ramps down | $\dot{i}_r = -V_{dc}/(2L_r)$ | Clamp + ramp-down; $A_1$ on until $i_r=0$ |
 | `P1_Fig8f_state5_S2_steady.png` | 5 | Commutation from Switch (Low $I$) — State (f): $S_2$ conducting, $i_r=0$, $A_1$ gated off | — | Commutation complete (mirror of Fig.\,7g) |
 | `P1_Fig9a_waveform_switch_high_current.png` | 6 | Commutation from Switch (High $I$) — Full waveform with all timing strips labelled | — | **Waveform only** (no circuit snapshot) |
-| `P1_Fig9b_state1_S2_conducting.png` | 6 | Commutation from Switch (High $I$) — State (a): $S_2$ on, $I_L \geq I_{th}$, no boost needed | $I_{th} = 2C_r V_{dc}/T_\text{max}$ | Natural commutation condition |
-| `P1_Fig9c_state2_natural_swing.png` | 6 | Commutation from Switch (High $I$) — State (b): $S_2$ off; load current alone charges $C_r$; $v_f$ swings $0 \to V_{dc}$ | $\dot{v}_f = I_L/(2C_r)$ | Load-driven cap charging |
-| `P1_Fig9d_state3_S1_ZVS_on.png` | 6 | Commutation from Switch (High $I$) — State (c): $D_1$ clamps at $v_f = V_{dc}$; $S_1$ fires at ZVS | ZVS achieved | Commutation complete |
+| `P1_Fig9b_state1_S1_conducting.png` | 6 | Commutation from Switch (High $I$) — State (a): $S_1$ on, $v_f = V_{dc}$, $I_L \geq I_{th}$, no boost needed | — | Initial idle state (downward commutation) |
+| `P1_Fig9c_state2_natural_swing.png` | 6 | Commutation from Switch (High $I$) — State (b): $S_1$ off; $I_L$ alone discharges $C_r$; $v_f$ falls $V_{dc} \to 0$ | $\dot{v}_f = -I_L/(2C_r)$ | Natural capacitive discharge |
+| `P1_Fig9d_state3_S2_ZVS_on.png` | 6 | Commutation from Switch (High $I$) — State (c): $D_2$ clamps at $v_f = 0$; $S_2$ fires at ZVS | ZVS achieved | Commutation complete |
 | `P1_Fig10a_vf_low_current.png` | 7 | ARCP Commutation at Low Current — top panel: $v_f(t)$ | — | Simulated $v_f(t)$ time trace |
 | `P1_Fig10b_ir_low_current.png` | 7 | ARCP Commutation at Low Current — bottom panel: $i_r(t)$ | — | Simulated $i_r(t)$ time trace |
 | `P1_Fig11a_vf_high_current.png` | 7 | ARCP Commutation at High Current — top panel: $v_f(t)$ | — | Simulated $v_f(t)$ time trace |
