@@ -3807,6 +3807,483 @@ and grid-tied converters where high switching frequency reduces filter size
 while ZVS controls device temperature.
 
 %══════════════════════════════════════════════════════════════════════════════
+\section{The ARCP from First Principles: A Complete Lecture}
+\label{sec:feynman_lecture}
+%══════════════════════════════════════════════════════════════════════════════
+
+\noindent\textit{``What I cannot create, I do not understand.''}
+\hfill --- Richard Feynman (blackboard inscription, 1988)
+
+\bigskip\noindent
+Let us build the ARCP from scratch.
+Not by presenting facts, but by asking questions the way an engineer would
+ask them, and following those questions wherever the physics leads.
+Every figure and equation in this document has a reason.
+By the end of this lecture, you will know what that reason is.
+
+%──────────────────────────────────────────────────────────────────────────────
+\subsection*{1.\ Why switches get hot}
+
+Here is something that bothers every power electronics engineer:
+when you switch a transistor faster, it gets hotter --- even when it conducts
+the same current and blocks the same voltage.
+Something is consuming power, but where?
+
+The answer is in the \emph{transition}.
+When a transistor turns on, the current through it rises from zero to $\IL$
+while the voltage across it is still at $\Vdc$.
+For the entire duration of that transition --- call it $t_r$ --- both voltage
+and current are simultaneously non-zero.
+Power is $P = V \cdot I$.
+When neither is zero, $P$ is not zero.
+The device dissipates a pulse of heat at every single switching event.
+
+At switching frequency $f_s$, the average loss is:
+\[
+    P_\text{sw} \approx \tfrac{1}{2}\,\Vdc\,\IL\,t_r\,f_s.
+\]
+At 600\,V, 30\,A, 100\,ns rise time, 100\,kHz: that is $\approx$\,9\,W per
+switch event --- per cycle.
+The transistor is not failing at its DC rating; it is failing at its
+\emph{switching} rating.
+Faster switching $\Rightarrow$ more cycles per second $\Rightarrow$ more heat.
+You cannot simply push frequency up and expect the device to survive.
+
+%──────────────────────────────────────────────────────────────────────────────
+\subsection*{2.\ The one idea that changes everything}
+
+There is only one way to make that loss term vanish:
+ensure the voltage across the switch is \emph{zero} at the moment it closes.
+Then $P = 0 \cdot \IL = 0$, regardless of $\IL$ and regardless of $t_r$.
+This is \textbf{zero-voltage switching} (ZVS).
+
+The question is now not ``how fast can the transistor switch?''
+It is ``how do we arrange for the transistor voltage to be exactly zero when
+we want to close it?''
+
+%──────────────────────────────────────────────────────────────────────────────
+\subsection*{3.\ The obstacle: the capacitor that will not cooperate}
+
+Every semiconductor switch has capacitance across its terminals
+(\figref{fig:P1Fig5} labels these $C_r/2$ on each device --- not an accident,
+but a deliberate design choice).
+Capacitor voltage cannot change instantaneously:
+\[
+    \frac{d\vf}{dt} = \frac{i_\text{pole}}{\Cr}.
+\]
+If the only current flowing into the pole node is the load current $\IL$,
+the rate of voltage change is $\IL/\Cr$.
+This is fast, but not instant.
+During the time $\vf$ ramps from $\Vdc$ to $0$, the switch you want to
+close still sees a non-zero voltage.
+Force current through it anyway and you are back to hard switching ---
+exactly the loss you were trying to avoid.
+
+The capacitance is the enemy.
+To defeat it, you need to \emph{discharge it completely before the switch
+closes}.
+
+%──────────────────────────────────────────────────────────────────────────────
+\subsection*{4.\ The ARCP idea: borrow energy from an inductor, then give it
+               back}
+
+An inductor can supply a large current independently of $\IL$.
+Connect an inductor briefly across the capacitor and the LC pair resonates:
+the voltage swings from one rail to the other in a smooth sinusoidal half-arc,
+arriving at 0 (or $\Vdc$) exactly half a resonant period later.
+Gate the switch on during that zero-voltage window.
+No overlap, no heat.
+And --- crucially --- no net energy loss: whatever energy the boost stored in
+$\Lr$ is returned to the bus during the ramp-down phase.
+This is the \textbf{Auxiliary Resonant Commutated Pole} (ARCP).
+
+Examine \figref{fig:P1Fig5} (see \S\ref{sec:P1Fig5}).
+The main phase leg carries $S_1$, $S_2$, anti-parallel diodes $D_1$, $D_2$,
+and snubber capacitors $C_r/2$ on each device.
+The pole node sits between $S_1$ and $S_2$; its voltage is $\vf$.
+The auxiliary branch --- bidirectional switches $A_1$ and $A_2$ linked by
+inductor $\Lr$ to the DC rails --- injects or extracts current at the pole
+node on demand.
+The load current $\IL$ flows through the pole node continuously; the auxiliary
+branch adds the extra current needed to complete the voltage swing when $\IL$
+alone falls short.
+
+%──────────────────────────────────────────────────────────────────────────────
+\subsection*{5.\ The governing physics in two equations}
+
+Apply Kirchhoff's current law at the pole node in \figref{fig:P1Fig5}:
+\begin{equation}
+    \frac{d\vf}{dt} = \frac{\ir - \IL}{\Cr}.
+    \tag{\ref{eq:dvf_dt}}
+\end{equation}
+$\vf$ changes only when $\ir \neq \IL$.
+If the auxiliary current exactly matches the load, the pole node is frozen.
+If $\ir > \IL$ the node charges upward; if $\ir < \IL$ it discharges
+downward.
+The sign of $(\ir - \IL)$ is what steers $\vf$.
+
+Apply KVL around the auxiliary loop through $A_1$ ($+\Vdc/2$ rail):
+\begin{equation}
+    \frac{d\ir}{dt} = \frac{\Vdc/2 - \vf}{\Lr}.
+    \tag{\ref{eq:dir_dt}}
+\end{equation}
+When $\vf < \Vdc/2$ the voltage across $\Lr$ is positive and $\ir$ grows.
+When $\vf > \Vdc/2$ the voltage reverses and $\ir$ decays.
+The two equations are \emph{coupled}: $\vf$ drives $\ir$, and $\ir$ drives
+$\vf$.
+This mutual feedback is what produces oscillation.
+
+Differentiate \eqref{eq:dvf_dt} and substitute \eqref{eq:dir_dt} to
+eliminate $\ir$:
+\begin{equation}
+    \ddot{\vf} + \omegar^2\,\vf = \omegar^2\,\frac{\Vdc}{2},
+    \qquad
+    \omegar = \frac{1}{\sqrt{\Lr\Cr}},\quad
+    \Zr = \sqrt{\frac{\Lr}{\Cr}}.
+    \tag{\ref{eq:oscillator}}
+\end{equation}
+A forced harmonic oscillator, attracted toward the equilibrium $\Vdc/2$.
+Left alone it oscillates there forever.
+The ARCP does not let it run free: it catches $\vf$ at one of the rails and
+clamps it, extracting the useful half-swing.
+
+%──────────────────────────────────────────────────────────────────────────────
+\subsection*{6.\ The central insight: a circle}
+
+Change variables.
+Let $j = \ir - \IL$ (excess auxiliary current above load demand) and
+$u = \vf - \Vdc/2$ (pole voltage measured from the bus midpoint).
+Equations \eqref{eq:dvf_dt}--\eqref{eq:dir_dt} become:
+\begin{equation}
+    \dot{u} = \frac{j}{\Cr},\qquad \dot{j} = -\frac{u}{\Lr}.
+    \tag{\ref{eq:shifted_states}}
+\end{equation}
+This is \emph{exactly} a frictionless mass on a spring: $u$ is displacement,
+$j$ is momentum (scaled).
+The spring-mass traces ellipses in phase space.
+Here, scaling $j$ by $\Zr$ to equalise the axes turns the ellipse into a
+true circle.
+
+Multiply the first equation by $u$ and the second by $j\Zr^2$, then add.
+The right-hand side cancels:
+\[
+    u\dot{u} + j\Zr^2\dot{j} = 0
+    \quad\Longrightarrow\quad
+    \frac{d}{dt}\!\left[u^2 + (j\Zr)^2\right] = 0.
+\]
+Therefore:
+\begin{equation}
+    u^2 + (j\Zr)^2 = u_0^2 + (j_0\Zr)^2 \;\equiv\; R^2
+    = \text{constant}.
+    \tag{\ref{eq:circle}}
+\end{equation}
+The operating point of the circuit moves on a circle of radius $R$ in the
+$(v_f,\, j Z_r)$ plane, centred at $(\Vdc/2,\; 0)$.
+The radius is set by the initial conditions at the start of each resonant
+interval (\eqref{eq:radius}):
+\[
+    R = \sqrt{\!\left(v_{f,0} - \tfrac{\Vdc}{2}\right)^{\!2}
+              + \bigl((i_{r,0} - \IL)\,\Zr\bigr)^2}.
+\]
+
+\begin{physbox}[Why This Equation Is the Most Important One in This Document]
+$R^2 = u^2 + (j\Zr)^2$ is proportional to the total stored energy in the
+resonant tank: $E_\text{tank} = R^2/(2C_r)$.
+No losses means the tank energy is constant, so the operating point is pinned
+to this circle.
+The circle either reaches the rail at $\vf = 0$ or $\vf = \Vdc$, or it does
+not.
+Since the centre is at distance $\Vdc/2$ from each rail, the circle reaches
+both rails whenever $R \geq \Vdc/2$.
+ZVS is then \emph{geometrically guaranteed} --- not a timing coincidence, but
+a topological certainty.
+(See the formal proof in \S\ref{ssec:pp_zvs}.)
+\end{physbox}
+
+%──────────────────────────────────────────────────────────────────────────────
+\subsection*{7.\ The four commutation stories}
+
+The ARCP handles four distinct scenarios depending on the direction of travel
+and the magnitude of $\IL$.
+Every scenario is a sequence of three elementary moves: a linear ramp (the
+boost or ramp-down, a vertical line in phase space), a resonant arc (the
+circle), and a clamp (the diode that catches $\vf$ at a rail).
+
+%
+\paragraph{Story 1: Upward from diode, low $\IL$ --- Figs.\,7a--g
+           (\S\ref{sec:P1Fig7}).}
+
+$D_2$ is conducting (\figref{fig:P1Fig7a}); $\vf = 0$, $\ir = 0$.
+We want $S_1$ to turn on at ZVS, which requires $\vf \to \Vdc$.
+
+\medskip\noindent
+\textit{Boost phase (\figref{fig:P1Fig7b}--\figref{fig:P1Fig7c}).}
+Fire auxiliary switch $A_2$.
+$D_2$ clamps $\vf = 0$, so the full $\Vdc/2$ appears across $\Lr$ and drives
+$\ir$ upward:
+\begin{equation}
+    \frac{d\ir}{dt} = \frac{\Vdc}{2\Lr},
+    \qquad
+    T_\text{boost} = \frac{2\Lr\,i_\text{boost}}{\Vdc}.
+    \tag{\ref{eq:T_boost}}
+\end{equation}
+We stop when $\ir = \IL + i_\text{boost}$, i.e.\ $j_0 = i_\text{boost} > 0$.
+This ``loaded'' initial condition gives the resonant circle its radius:
+\[
+    R = \sqrt{\!\left(\tfrac{\Vdc}{2}\right)^{\!2} + (i_\text{boost}\Zr)^2}
+    \;>\; \tfrac{\Vdc}{2}.
+\]
+Without the boost, $j_0 = 0$ and $R$ would equal exactly $\Vdc/2$ --- the
+minimum needed for ZVS, with no margin.
+The boost adds margin.
+
+\medskip\noindent
+\textit{Resonant swing (\figref{fig:P1Fig7d}).}
+$D_2$ stops conducting; the LC tank takes over.
+$\vf$ climbs in an S-curve from 0 toward $\Vdc$; $\ir$ peaks and then falls.
+The peak auxiliary current (which sets the rating of $A_2$, $D_1$, and $\Lr$)
+is:
+\begin{equation}
+    I_\text{peak} = \IL + i_\text{boost} + \frac{\Vdc}{2\Zr}.
+    \tag{\ref{eq:Ipeak_diode}}
+\end{equation}
+The first two terms are the boost contribution; $\Vdc/(2\Zr)$ is the
+additional resonant current the LC tank itself generates.
+
+\medskip\noindent
+\textit{Upper clamp and ZVS (\figref{fig:P1Fig7e}).}
+$\vf$ reaches $\Vdc$; $D_1$ forward-biases and clamps.
+$S_1$ now sees $V_{S_1} = \Vdc - \vf = 0$.
+Gate $S_1$ on at any point during this window: zero switching loss.
+
+\medskip\noindent
+\textit{Ramp-down (\figref{fig:P1Fig7f}--\figref{fig:P1Fig7g}).}
+$\ir$ ramps back to zero at $-\Vdc/(2\Lr)$ (\eqref{eq:ir_rampdown}).
+The energy stored in $\Lr$ is returned to the positive rail through $D_1$
+at zero voltage: no loss.
+$A_2$ extinguishes at near-zero current (near-ZCS).
+Total commutation time:
+\begin{equation}
+    T_c = T_\text{boost} + T_\text{res}
+        = \frac{2\Lr\,i_\text{boost}}{\Vdc} + \pi\sqrt{\Lr\Cr}.
+    \tag{\ref{eq:T_comm_diode}}
+\end{equation}
+
+%
+\paragraph{Story 2: Downward from switch, low $\IL$ --- Figs.\,8a--f
+           (\S\ref{sec:P1Fig8}).}
+
+$S_1$ is conducting (\figref{fig:P1Fig8b}); $\vf = \Vdc$, $\ir = 0$.
+We want $S_2$ to turn on at ZVS, which requires $\vf \to 0$.
+
+The sequence is the mirror image of Story~1:
+fire $A_1$ to ramp $\ir$ negative (\figref{fig:P1Fig8c});
+gate off $S_1$ when $\ir = -(I_L + i_\text{boost})$;
+the LC swing takes $\vf$ downward (\figref{fig:P1Fig8d});
+$D_2$ clamps at $\vf = 0$ (\figref{fig:P1Fig8e});
+$S_2$ fires at ZVS;
+$\ir$ ramps back to zero (\figref{fig:P1Fig8f}).
+
+The key difference from Story~1: the initial clamp in Story~1 was a passive
+diode ($D_2$); here the initial hold is a gated switch ($S_1$).
+A diode decides for itself when to stop conducting.
+A switch must be commanded.
+This is why Story~1 has 7 states and Story~2 has only 5: the gated switch
+compresses two states into one.
+But the underlying circle is the same radius, the same centre, and the same
+energy budget.
+
+%
+\paragraph{Story 3: Downward from switch, high $\IL \geq \Ith$ --- Figs.\,9a--d
+           (\S\ref{sec:P1Fig9}).}
+
+When $\IL$ is large enough, the auxiliary branch sits completely idle.
+
+Gate off $S_1$ (\figref{fig:P1Fig9b}).
+The load current $\IL$ flows into the pole node and discharges $C_r$ at a
+constant rate:
+\begin{equation}
+    \frac{d\vf}{dt} = -\frac{\IL}{\Cr} = \text{constant}.
+    \tag{\ref{eq:natural_discharge9}}
+\end{equation}
+This is not an oscillation --- it is a straight-line ramp (\figref{fig:P1Fig9c}).
+$\vf$ falls from $\Vdc$ to 0 in time $T_\text{swing} = \Vdc C_r / \IL$
+(\eqref{eq:Tswing}).
+$D_2$ clamps; $S_2$ fires at ZVS (\figref{fig:P1Fig9d}).
+$\ir = 0$ throughout.
+
+The condition for this shortcut to work is that the ramp completes within the
+allowed dead time $T_\text{max}$:
+\begin{equation}
+    \IL \;\geq\; \underbrace{\frac{\Vdc\,\Cr}{T_\text{max}}}_{\displaystyle\Ith}.
+    \tag{\ref{eq:Ith}}
+\end{equation}
+Above $\Ith$: natural capacitive discharge, two effective states, no auxiliary
+firing, no inductor stress.
+Below $\Ith$: auxiliary boost required, five states, inductor stores and
+returns energy.
+$\Ith$ is the boundary.
+
+\paragraph{What about upward commutation at high $\IL$?}
+
+It does not exist as a natural-discharge case, and this is an important
+asymmetry.
+The upward transition starts with $D_2$ conducting.
+$D_2$ is a diode: it cannot be commanded off.
+Even when $\IL$ is large, $D_2$ continues to clamp $\vf = 0$ until the
+auxiliary branch supplies enough current to forward-bias $D_1$ instead.
+Natural upward commutation is physically impossible.
+The ARCP auxiliary branch must always act on the upward transition.
+The straight line in \figref{fig:P1Fig11a} (downward transition at high $\IL$)
+and the S-curve in the same figure (upward transition) are the
+experimental signature of this asymmetry.
+
+%──────────────────────────────────────────────────────────────────────────────
+\subsection*{8.\ What the simulations confirm}
+
+\figref{fig:P1Fig10a}/\figref{fig:P1Fig10b} (low current, $\IL < \Ith$):
+\begin{itemize}
+    \item Both $\vf$ transitions are smooth S-shaped curves --- the waveform
+          signature of a resonant half-sine (\eqref{eq:oscillator}).
+    \item $\ir$ swings to peaks well above $\IL$ during each event,
+          confirming the LC resonance is active.
+    \item Between events, $\ir = 0$: auxiliary branch completely off.
+\end{itemize}
+
+\figref{fig:P1Fig11a}/\figref{fig:P1Fig11b} (high current, $\IL \geq \Ith$):
+\begin{itemize}
+    \item The \emph{downward} $\vf$ transition is a straight line
+          (\eqref{eq:natural_discharge9}) --- no resonance, constant slope.
+    \item The \emph{upward} $\vf$ transition is still an S-curve --- the
+          diode asymmetry forces the auxiliary branch to act.
+    \item $\ir = 0$ during the straight-line segment; resonant peak only
+          during the upward S-curve.
+\end{itemize}
+
+Two simulation pairs, two distinct waveform shapes: theory and simulation
+agree exactly.
+
+%──────────────────────────────────────────────────────────────────────────────
+\subsection*{9.\ The phase plane: seeing the whole story at once}
+
+Time-domain plots show each commutation one at a time.
+The phase plane (\S\ref{sec:phase_plane}) shows all four at once.
+
+Plot $\vf$ horizontally and $j\Zr$ vertically.
+The circuit's state at any instant is a single point.
+As the circuit evolves, the point traces one of three elementary paths:
+a \textbf{circle} (resonant swing, from \eqref{eq:circle}),
+a \textbf{vertical line} (boost or ramp-down, $\vf$ frozen), or
+a \textbf{horizontal line} (natural discharge, $j = -\IL$ frozen).
+
+ZVS becomes: does the circular arc reach the rail at $\vf = 0$ or $\vf = \Vdc$?
+The circle is centred at $(\Vdc/2,\; 0)$, which is at distance $\Vdc/2$ from
+each rail.
+If $R \geq \Vdc/2$, the answer is always yes --- proved in one sentence.
+(\S\ref{ssec:pp_zvs} gives the formal theorem.)
+
+\figref{fig:phase_plane_3ICs} plots three upward-commutation arcs for
+$i_\text{boost} = 0$, 10, 20\,A.
+All start at $\vf = 0$.
+All end when $D_1$ clamps at $\vf = \Vdc$.
+Larger $i_\text{boost}$ gives a larger starting height $j_0\Zr$, a larger
+radius $R$ (\eqref{eq:radius}), and more ZVS margin.
+
+%──────────────────────────────────────────────────────────────────────────────
+\subsection*{10.\ The designer's toolkit}
+
+Three component values determine everything.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.6}
+\begin{tabular}{p{3.6cm} p{5.0cm} p{4.1cm}}
+\toprule
+\textbf{Parameter} & \textbf{What it controls} & \textbf{Trade-off} \\
+\midrule
+$\omegar = 1/\sqrt{\Lr\Cr}$
+    & Speed of resonant swing; $T_\text{res} = \pi/\omegar$
+    & Higher $\omegar$ $\to$ shorter dead time, but higher $I_\text{peak}$ \\
+$\Zr = \sqrt{\Lr/\Cr}$
+    & Peak current: $I_\text{peak} = \IL + i_\text{boost} + \Vdc/(2\Zr)$
+    & Higher $\Zr$ lowers $I_\text{peak}$ but raises $\Ith$ \\
+$\Ith = \Vdc\Cr/T_\text{max}$
+    & Fraction of load range using natural discharge
+    & Smaller $\Cr$ $\to$ lower $\Ith$ but slower natural ramp \\
+$i_\text{boost}$
+    & ZVS margin $R - \Vdc/2$
+    & More boost $\to$ more margin, longer $T_\text{boost}$, higher $I_\text{peak}$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent
+The ideal design minimises $i_\text{boost}$ to reduce auxiliary device stress,
+while keeping $R \geq \Vdc/2$ for ZVS and $T_c \leq T_\text{max}$ to fit
+inside the dead band.
+The ARCP is a constrained geometry problem as much as an electrical one.
+
+%──────────────────────────────────────────────────────────────────────────────
+\subsection*{11.\ Everything in one box}
+
+\begin{physbox}[The Complete ARCP Picture --- What to Carry Forward]
+\textbf{The problem.}
+Hard switching dissipates $P_\text{sw} \approx \frac{1}{2}\Vdc\,\IL\,t_r\,f_s$
+every cycle.
+This kills efficiency at high frequency.
+
+\medskip\noindent
+\textbf{The solution.}
+Ensure $v_\text{switch} = 0$ before closing.
+Then $P = 0 \cdot \IL = 0$ regardless of $t_r$.
+This is ZVS.
+
+\medskip\noindent
+\textbf{The tool.}
+An LC resonant tank swings the pole-node voltage from one rail to the other
+in a lossless half-cycle.
+The auxiliary branch pre-charges $\Lr$ so the swing has enough energy.
+
+\medskip\noindent
+\textbf{The governing equation.}
+$u^2 + (j\Zr)^2 = R^2 = \text{const}$
+(\eqref{eq:circle}).
+One circle, centred at $(\Vdc/2, 0)$, governs every resonant interval.
+The radius $R$ is the stored energy; ZVS is guaranteed when $R \geq \Vdc/2$.
+
+\medskip\noindent
+\textbf{The threshold.}
+$\Ith = \Vdc\Cr/T_\text{max}$ (\eqref{eq:Ith}).
+Above it: load current alone commutates the pole (Fig.\,9 --- straight ramp,
+no auxiliary, 3 states).
+Below it: auxiliary boost + resonance required (Figs.\,7--8 --- S-curve,
+5--7 states).
+
+\medskip\noindent
+\textbf{The asymmetry.}
+Upward commutation always needs the auxiliary ($D_2$ is passive, cannot be
+commanded off).
+Downward commutation at $\IL \geq \Ith$ does not ($S_1$ can be gated off,
+$\IL$ discharges $C_r$ naturally).
+This is the origin of the mixed waveforms in Figs.\,10--11.
+
+\medskip\noindent
+\textbf{The geometry.}
+Draw the circle in the $(v_f, j\Zr)$ plane.
+All four commutation cases are arcs (or horizontal lines) on this picture.
+ZVS is a statement about the radius, not the timing.
+If the circle is large enough, the physics takes care of itself.
+\end{physbox}
+
+\noindent
+De~Doncker and Lyons published the ARCP in 1990.
+Thirty-five years later it appears in EV traction inverters, aircraft power
+systems, and high-frequency research converters wherever efficiency and
+switching speed must coexist.
+The reason it has lasted is not that it is complicated.
+It is that it is \emph{right}: clean physics, elegant geometry, and a
+penalty-free understanding.
+
+%══════════════════════════════════════════════════════════════════════════════
 \appendix
 %══════════════════════════════════════════════════════════════════════════════
 
