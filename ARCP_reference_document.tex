@@ -2517,6 +2517,107 @@ role that $A_1$ played here.
 \end{tabular}
 \end{circuitbox}
 
+\begin{eqnbox}[Governing Equations --- P1 Fig.\,8 (Downward, Low Current)]
+\textbf{State (b) --- boost ramp} ($A_1$ on, $S_1$ on, $\vf = \Vdc$ frozen):
+\begin{equation}
+    \frac{d\ir}{dt} = -\frac{\Vdc}{2\Lr},
+    \qquad
+    \ir(t) = -\frac{\Vdc}{2\Lr}\,t,
+    \qquad
+    T_\text{boost} = \frac{2\Lr\,|i_{r,0}|}{\Vdc}
+\end{equation}
+($\ir$ goes \emph{negative} --- auxiliary current flows from pole node upward
+through $\Lr$ and $A_1$ toward the DC midpoint; the waveform shows a downward
+dip.)
+
+\medskip
+\textbf{State (c) --- resonant swing} ($A_1$ on, $S_1$ off, LC oscillator active):
+\begin{equation}
+    \ddot{\vf} + \omegar^2\,\vf = \omegar^2\,\frac{\Vdc}{2},
+    \qquad
+    \omegar = \frac{1}{\sqrt{\Lr\Cr}},\quad \Zr = \sqrt{\frac{\Lr}{\Cr}}
+\end{equation}
+Phase-plane circle radius (same formula as upward case, mirror direction):
+\begin{equation}
+    R = \sqrt{\left(\frac{\Vdc}{2}\right)^{\!2} + (j_0\Zr)^2},
+    \qquad j_0 = \ir(0^+) - \IL < 0
+    \quad\Longrightarrow\quad R > \frac{\Vdc}{2}
+\end{equation}
+$\vf$ travels clockwise in the phase plane from $(+\Vdc/2,\; j_0\Zr)$
+to $(-\Vdc/2,\;\cdot)$, where $D_2$ clamps.
+
+\medskip
+\textbf{State (d) --- ramp-up} ($A_1$ on, $D_2$/$S_2$ clamp $\vf = 0$):
+\begin{equation}
+    \frac{d\ir}{dt} = +\frac{\Vdc}{2\Lr}
+    \quad\text{(same magnitude as boost ramp, opposite sign)}
+\end{equation}
+
+\medskip
+\textbf{Threshold current} (boundary between Fig.\,8 and Fig.\,9 regimes):
+\begin{equation}
+    \Ith = \frac{\Vdc\,\Cr}{T_\text{max}}
+    \qquad
+    \begin{cases}
+        \IL < \Ith & \Rightarrow \text{boost + LC resonance (this figure)} \\
+        \IL \geq \Ith & \Rightarrow \text{natural discharge, } \ir = 0 \text{ (Fig.\,9)}
+    \end{cases}
+\end{equation}
+
+\medskip
+\textbf{ZVS condition for $S_2$}:
+\begin{equation*}
+    V_{S_2} = \vf - 0\,\text{V} = 0
+    \quad\text{while } D_2 \text{ clamps}
+    \quad\Longrightarrow\quad
+    \text{gate } S_2 \text{ before } \ir \text{ returns to zero}
+\end{equation*}
+\end{eqnbox}
+
+\begin{physbox}[Physical Interpretation --- P1 Fig.\,8]
+\textbf{Why five states instead of seven.}
+
+The Fig.\,7 upward commutation needed \emph{two} pre-resonant ramp stages
+because $D_2$ is a passive diode: the first ramp displaced $D_2$'s current
+to zero (so $D_2$ would turn off naturally without a gate signal); only then
+could the second ramp add the additional boost above $\IL$.
+Switching a passive device requires the circuit to prepare a current-handoff
+that a gate could achieve instantly.
+
+Here the starting device $S_1$ is a \emph{gated switch}.
+The control can open $S_1$ at any instant, with no current-handoff step.
+So $\Lr$ is pre-charged in one uninterrupted ramp (state~b), and then $S_1$
+is simply gated off to start the resonant swing.
+The two-stage handoff collapses into one, reducing the sequence from seven
+states to five.
+
+\medskip
+\textbf{What $\Lr$ does in two sequential roles.}
+
+\begin{itemize}
+    \item \textbf{Boost stage (state~b, $S_1$ on):} $\Lr$ stores energy while
+          $C_r$ is frozen at $\Vdc$ by the closed $S_1$.
+          The full $\Vdc/2$ drives a constant current ramp into $\Lr$ ---
+          like winding a spring.
+    \item \textbf{Resonant stage (state~c, $S_1$ off):} $\Lr$ and $C_r$ lock
+          into LC resonance.
+          The stored energy bends what would be a straight-line capacitive
+          ramp into a sinusoidal S-arc, ensuring $\vf$ swings all the way
+          from $\Vdc$ to $0$ even when $\IL$ alone would be too slow.
+\end{itemize}
+
+\medskip
+\textbf{The ZVS window for $S_2$.}
+
+The window is the interval during which $D_2$ is clamping $\vf = 0$,
+i.e.\ while $\ir < 0$ (state~d).
+It opens when $D_2$ first clamps and closes when $\ir$ returns to zero.
+The width of this window equals the ramp-back time:
+$|i_{r,\text{min}}| / (\Vdc/(2\Lr))$.
+A deeper initial dip (more boost current) gives a wider ZVS window ---
+more time for the control to fire $S_2$ safely.
+\end{physbox}
+
 % ============================================================
 \section{Commutation from Switch --- High Current (P1 Fig.\,9)}
 \label{sec:P1Fig9}
@@ -2906,6 +3007,69 @@ upward commutation event.
 \end{tabular}
 \end{circuitbox}
 
+\begin{eqnbox}[Governing Equations --- P1 Fig.\,9 (Downward, High Current)]
+\textbf{State (b) --- natural capacitive discharge}
+($\ir = 0$ throughout; auxiliary branch never activated):
+\begin{equation}
+    \frac{d\vf}{dt} = \frac{\ir - \IL}{C_r} = -\frac{\IL}{C_r}
+    = \text{constant}
+\end{equation}
+Solution --- a \textbf{straight line} (compare with the S-curve of Fig.\,8):
+\begin{equation}
+    \vf(t) = \Vdc - \frac{\IL}{C_r}\,t
+\end{equation}
+
+\medskip
+\textbf{Discharge duration} (time for $\vf: \Vdc \to 0$):
+\begin{equation}
+    T_\text{swing} = \frac{\Vdc\,C_r}{\IL}
+\end{equation}
+ZVS is achieved whenever $T_\text{swing} \leq T_\text{max}$, i.e.\
+$\IL \geq \Ith = \Vdc C_r / T_\text{max}$ --- the natural commutation
+condition.
+
+\medskip
+\textbf{ZVS condition for $S_2$} (state~c, identical mechanism to Fig.\,8 state~d):
+\begin{equation*}
+    V_{S_2} = \vf - 0\,\text{V} = 0
+    \quad\text{(when } D_2 \text{ clamps)}
+    \quad\Longrightarrow\quad
+    S_2 \text{ fires at zero volts; no switching loss}
+\end{equation*}
+\end{eqnbox}
+
+\begin{physbox}[Physical Interpretation --- P1 Fig.\,9]
+\textbf{What the straight line tells you.}
+
+A sinusoidal arc in $\vf(t)$ is the signature of an LC oscillator: $\Lr$
+and $C_r$ exchange energy back and forth while $\vf$ swings.
+A straight line is the opposite: no oscillation, no energy exchange with
+$\Lr$, just a capacitor integrating a constant current $\IL$.
+The slope is $-\IL/C_r$ --- read the slope from the waveform, multiply
+by $C_r$, and you obtain the load current directly.
+
+\medskip
+\textbf{Why this case is safe without the auxiliary.}
+
+In the low-current case (Fig.\,8), $\IL$ alone was too slow to discharge
+$C_r$ within the deadtime window.
+The auxiliary branch had to supply extra current $|\ir|$ to help.
+Here $\IL \geq \Ith$, so $T_\text{swing} = \Vdc C_r / \IL \leq T_\text{max}$:
+the discharge finishes in time with current to spare.
+No pre-charge phase is needed, no energy is cycled through $\Lr$, and the
+ZVS window arrives with the simplest possible circuit --- only $C_r$ and $\IL$.
+
+\medskip
+\textbf{Design consequence of $\Ith$.}
+
+Choosing a smaller $C_r$ lowers $\Ith$, pushing more of the operating current
+range into the natural-discharge region and reducing auxiliary switching losses.
+Smaller $C_r$ also reduces the commutation energy $\frac{1}{2}C_r\Vdc^2$ per
+cycle.
+The trade-off: smaller $C_r$ means faster $dv/dt$ at turn-off --- the same
+sizing conflict introduced in Section~\ref{sec:P1Fig5}.
+\end{physbox}
+
 % ============================================================
 \section{Simulated Waveforms --- Low-Current Commutation (P1 Fig.\,10)}
 \label{sec:P1Fig10}
@@ -3151,6 +3315,43 @@ In the high-current case (\figref{fig:P1Fig9a}, paper Fig.\,9), none of
 this is needed: $\IL$ is large enough to discharge $C_r$ by itself,
 $\ir$ stays at zero throughout, and there is no resonant peak at all.
 
+\begin{physbox}[Physical Interpretation --- P1 Figs.\,10a/b (Low-Current Simulation)]
+\textbf{What the large $|\ir|$ peaks tell you about device ratings.}
+
+IS1 and IS2 plateau at $\pm 100$\,A --- that is $\IL$.
+Yet $|\ir|$ reaches $250$--$350$\,A, two to three times $\IL$.
+Why?
+
+In the low-current regime the boost phase must pre-charge $\Lr$ to a current
+\emph{above} $\IL$ just so the LC arc has enough energy to swing $\vf$ all
+the way across the bus.
+On top of that, the resonant oscillation adds its own fixed amplitude:
+\[
+    I_\text{peak} = \IL + i_\text{boost} + \frac{\Vdc}{2\Zr}
+\]
+The term $\Vdc/(2\Zr)$ is the half-amplitude of the LC oscillation.
+It is fixed by the circuit constants $\Lr$, $C_r$, $\Vdc$ and does not
+depend on $\IL$.
+At light load $\IL$ is small but $\Vdc/(2\Zr)$ is unchanged, so the ratio
+$|\ir|_\text{peak}/\IL$ is largest precisely when the load is lightest.
+
+\textbf{Design implication:} $\Lr$ and the auxiliary switches $A_1$ and $A_2$
+must be rated for current well above the rated load current.
+This is the hidden cost of the ARCP topology in the low-current regime.
+Choosing a larger $\Zr$ (larger $\Lr$ or smaller $C_r$) reduces
+$\Vdc/(2\Zr)$ and lowers the peak current stress, but increases the resonant
+frequency and tightens the commutation timing budget.
+
+\medskip
+\textbf{The two-commutation view confirms that the auxiliary is truly off between events.}
+
+\figref{fig:P1Fig10b} shows $\ir = 0$ during both flat-voltage intervals.
+The resonant branch fires briefly, completes one commutation, resets to zero,
+and sits idle until the next commutation.
+There is no circulating current between events, no continuous resonant loss.
+The ARCP is efficient at steady state for exactly this reason.
+\end{physbox}
+
 % ============================================================
 \section{Simulated Waveforms --- High-Current Commutation (P1 Fig.\,11)}
 \label{sec:P1Fig11}
@@ -3380,6 +3581,54 @@ Both transitions --- the straight-line downward and the curved upward ---
 achieved ZVS: $\vf$ was at its respective rail before the incoming switch
 was gated on.
 
+\begin{physbox}[Physical Interpretation --- P1 Figs.\,11a/b (High-Current Simulation)]
+\textbf{The fundamental asymmetry of the ARCP pole leg.}
+
+The most important lesson from Figs.\,11a/b is the asymmetry:
+\begin{itemize}
+    \item \textbf{Downward commutation} ($\vf: \Vdc \to 0$) has a natural
+          shortcut when $\IL \geq \Ith$: $\IL$ alone discharges $C_r$,
+          $\ir = 0$ throughout, three states.
+    \item \textbf{Upward commutation} ($\vf: 0 \to \Vdc$) has
+          \emph{no shortcut}, regardless of how large $\IL$ is.
+          The auxiliary branch always fires and $\ir$ always peaks.
+\end{itemize}
+
+\textbf{Why upward can never take the shortcut.}
+
+The device that starts the upward commutation is $D_2$ --- a passive diode
+with no gate.
+The only way to stop $D_2$ from conducting is to drive its current to zero.
+That requires $\ir$ to rise above $\IL$ so that the surplus
+$(\ir - \IL) > 0$ flows \emph{away} from $D_2$ and into the snubber
+capacitors.
+Once $D_2$'s current falls to zero it becomes reverse-biased and blocks
+naturally.
+But this forced current-handoff cannot happen without the auxiliary switch
+$A_2$ firing first to ramp $\ir$ above $\IL$.
+There is no passive way to initiate an upward commutation.
+
+In contrast, the downward starting device $S_1$ is a gated switch.
+The control can open $S_1$ at any time, instantly freeing the pole node
+for $\IL$ to discharge $C_r$ directly.
+No forced handoff is needed.
+
+\textbf{This asymmetry is permanent.} Any ARCP topology that uses $D_2$
+(or $D_1$) as a starting device will always require the auxiliary circuit
+for that commutation direction.
+The high-current shortcut only applies to the \emph{switch-started}
+downward direction.
+
+\medskip
+\textbf{What Figs.\,11a/b confirm.}
+
+\figref{fig:P1Fig11a}: straight line downward, curved S-arc upward. \\
+\figref{fig:P1Fig11b}: $\ir = 0$ during the straight drop, resonant peak
+during the curved rise. \\[3pt]
+These two visual signatures together confirm $\IL \geq \Ith$ and mixed-mode
+operation: natural discharge one way, resonance the other.
+\end{physbox}
+
 % ============================================================
 \section{Paper 1 Summary --- De~Doncker \& Lyons, IEEE IAS 1990}
 \label{sec:P1summary}
@@ -3461,11 +3710,32 @@ Upward high-current
 
 \subsection*{The central physics in one sentence}
 
+\begin{physbox}[Geometric ZVS Guarantee --- The Core Insight]
 The resonant branch shifts the \emph{equilibrium} of the $L_r$--$C_r$
 oscillator to $V_{dc}/2$, so a circular trajectory in the
 $(v_f,\; i_r - I_L)$ phase plane can reach either DC rail from the other,
-and the swing always arrives at zero voltage --- ZVS is a \emph{geometric
-guarantee}, not a timing coincidence.
+and the swing always arrives at zero voltage.
+
+\medskip
+\textbf{ZVS is a geometric guarantee, not a timing coincidence.}
+
+Every circle with centre at $(\Vdc/2,\;0)$ and radius $R \geq \Vdc/2$
+\emph{necessarily} passes through both rails ($\vf = 0$ and $\vf = \Vdc$)
+--- it is impossible for such a circle to miss.
+Ensuring $R \geq \Vdc/2$ is guaranteed by the initial condition
+$R = \sqrt{(\Vdc/2)^2 + (j_0\Zr)^2} \geq \Vdc/2$ for any $j_0$
+(the boost current term only makes $R$ larger, never smaller).
+
+This means: as long as the auxiliary switch fires (even with zero boost
+current, $i_\text{boost} = 0$, marginal case), the resonant arc will
+\emph{always} reach the target rail and $\vf$ will arrive at the correct
+value for ZVS.
+No precise timing is required for the arc to ``land'' --- it is the
+geometry of the circle, not the control precision, that guarantees landing
+at the right place.
+The control only needs to detect (or predict) when the diode clamps and
+then fire the main switch promptly.
+\end{physbox}
 
 \subsection*{The threshold current $\Ith$}
 
@@ -3484,21 +3754,32 @@ in $v_f$.
 
 \subsection*{Key design equations}
 
-\begin{center}
+\begin{eqnbox}[Key Design Equations --- Paper 1]
 \renewcommand{\arraystretch}{1.4}
-\begin{tabular}{p{4.5cm} p{4.5cm} p{4.3cm}}
+\begin{tabular}{p{4.4cm} p{4.5cm} p{4.2cm}}
 \toprule
 \textbf{Quantity} & \textbf{Formula} & \textbf{What it controls} \\
 \midrule
 Resonant frequency & $\omegar = 1/\sqrt{\Lr\Cr}$ & Commutation speed \\
 Characteristic impedance & $\Zr = \sqrt{\Lr/\Cr}$ & Peak resonant current \\
 Boost ramp duration & $T_\text{boost} = 2\Lr\,i_\text{boost}/\Vdc$ & How long $A_1$/$A_2$ pre-fires \\
-Approx.\ peak aux.\ current & $I_\text{peak} \approx \IL + i_\text{boost} + \Vdc/(2\Zr)$ & Rating of $L_r$, $A_1$, $A_2$ \\
+Approx.\ peak aux.\ current & $I_\text{peak} \approx \IL + i_\text{boost} + \Vdc/(2\Zr)$ & Rating of $\Lr$, $A_1$, $A_2$ \\
 Natural discharge time & $T_\text{swing} = \Vdc\Cr/\IL$ & Minimum $\IL$ vs.\ deadband \\
 Commutation energy loss & $\approx 0$ (ideal ZVS) & Main result of the paper \\
 \bottomrule
 \end{tabular}
-\end{center}
+
+\medskip
+\textbf{Threshold current} (boundary between natural and resonant commutation):
+\[
+    \Ith = \frac{\Vdc\,\Cr}{T_\text{max}}
+    \qquad
+    \begin{cases}
+        \IL \geq \Ith & \Rightarrow \text{natural downward discharge (Fig.\,9)} \\
+        \IL < \Ith    & \Rightarrow \text{auxiliary boost + LC resonance (Figs.\,7, 8)}
+    \end{cases}
+\]
+\end{eqnbox}
 
 \subsection*{What the simulations confirm (Figs.\,10 and 11)}
 
