@@ -3145,6 +3145,235 @@ this is needed: $\IL$ is large enough to discharge $C_r$ by itself,
 $\ir$ stays at zero throughout, and there is no resonant peak at all.
 
 % ============================================================
+\section{Simulated Waveforms --- High-Current Commutation (P1 Fig.\,11)}
+\label{sec:P1Fig11}
+% ============================================================
+
+\subsection*{Big picture --- the one question this figure answers}
+
+\figentry{fig:P1Fig11a}{P1_Fig11a_vf_high_current}
+    {P1 Fig.\,11a --- Simulated pole-node voltage $\vf(t)$ for one complete
+     high-current PWM cycle.
+     The downward transition ($\vf: \Vdc \to 0$) is a \textbf{straight line}.
+     The upward transition ($\vf: 0 \to \Vdc$) is still a curved arc.
+     Source: De~Doncker \& Lyons, IEEE IAS 1990, p.\,7.}{0.65}
+
+\figentry{fig:P1Fig11b}{P1_Fig11b_ir_high_current}
+    {P1 Fig.\,11b --- Simulated current traces for the same interval.
+     Three labelled traces: $IS_1$, $IS_2$, and $I_r$.
+     The flat levels of $IS_1$ and $IS_2$ are approximately $\pm 300$\,A
+     --- three times larger than in \figref{fig:P1Fig10b} --- confirming
+     a high load current.
+     $I_r$ is zero during the straight-line downward transition and shows
+     a resonant excursion only during the upward commutation.
+     Source: De~Doncker \& Lyons, IEEE IAS 1990, p.\,7.}{0.65}
+
+Before reading any numbers, do one thing: place \figref{fig:P1Fig11a}
+next to \figref{fig:P1Fig10a} and compare the shape of the
+\emph{downward} transition in each.
+
+In \figref{fig:P1Fig10a} (low current), the downward transition was a
+smooth S-curve --- slow at both ends, steepest in the middle.
+In \figref{fig:P1Fig11a} (high current), the downward transition is a
+\textbf{straight line} --- constant slope all the way from $\Vdc$ to $0$.
+
+That single visual difference is the whole message of this figure.
+Everything in \figref{fig:P1Fig11a} and \figref{fig:P1Fig11b} is an
+explanation of why that line is straight, and what follows from it.
+
+% ── Top panel ────────────────────────────────────────────────────────────────
+\subsection*{Top panel (\figref{fig:P1Fig11a}) --- why is the downward
+transition a straight line?}
+
+\textbf{Start from what a straight line means.}
+
+A straight line in $\vf(t)$ means the slope $d\vf/dt$ is constant.
+Something is changing $\vf$ at a fixed rate.
+Ask: what in the ARCP circuit can change $\vf$ at a fixed rate?
+
+The pole-node voltage changes whenever current flows into or out of the
+combined capacitance $C_r$ at the pole node.
+The rate is:
+\begin{equation}
+    \frac{d\vf}{dt} = \frac{i_\text{in} - i_\text{out}}{C_r}
+\end{equation}
+For this to be constant, the net current charging or discharging $C_r$
+must be constant.
+The only constant current available is the load current $\IL$, which is
+quasi-constant over a commutation interval.
+So a straight-line $\vf$ tells you: \textbf{$\IL$ alone is doing the work,
+and nothing else is involved}.
+
+This is exactly the condition derived in \figref{fig:P1Fig9b}
+(paper Fig.\,9 state~(b)):
+\begin{equation}
+    \frac{d\vf}{dt} = -\frac{\IL}{C_r} = \text{constant}
+    \label{eq:straight_ramp_Fig11}
+\end{equation}
+The minus sign is because $\IL$ is flowing downward through the pole node
+(from load back toward the lower rail), so it \emph{discharges} the
+capacitance: $\vf$ falls.
+
+\medskip
+\textbf{Why did this not happen in Fig.\,10?}
+
+In \figref{fig:P1Fig10a} (low current), $\IL \approx 100$\,A was below the
+threshold $\Ith$.
+$100$\,A through $C_r$ would discharge $\vf$ too slowly --- it could not
+complete the full $\Vdc \to 0$ transition within the maximum allowed
+commutation window $T_\text{max}$.
+So the auxiliary circuit had to fire, pre-charge $\Lr$, and let the LC pair
+resonate $\vf$ down.
+The resonance produced the S-curve.
+
+Here, $\IL \approx 300$\,A exceeds $\Ith$.
+$300$\,A discharges $C_r$ fast enough on its own.
+No auxiliary fires; $\Lr$ is never energised; and $\vf$ falls as a straight
+ramp.
+
+\medskip
+\textbf{Duration of the straight ramp.}
+
+Because the slope is constant at $-\IL/C_r$, the time for $\vf$ to fall
+from $\Vdc$ to $0$ is:
+\begin{equation}
+    T_\text{swing} = \frac{\Vdc\,C_r}{\IL}
+    \label{eq:Tswing_Fig11}
+\end{equation}
+A larger $\IL$ makes the ramp steeper and faster --- the straight line is
+more vertical.
+This is the inverse of the LC resonant case, where the half-period
+$\pi/\omegar$ is fixed entirely by $\Lr$ and $C_r$ and does not depend on
+$\IL$ at all.
+
+\medskip
+\textbf{The upward transition is still curved --- and that is not a
+contradiction.}
+
+Look at the right-hand transition in \figref{fig:P1Fig11a}: $\vf$ rises
+from $0$ to $\Vdc$ as a curved arc, not a straight line.
+
+Why is the upward direction different?
+At the start of the upward commutation, $D_2$ is conducting $\IL$ from the
+lower rail to the pole node.
+$D_2$ is a diode.
+A diode has no gate signal; it cannot be commanded to turn off.
+The only way to make $D_2$ stop conducting is to drive the current through
+it to zero, which requires $\ir$ to be raised above $\IL$ so that
+$D_2$ sees a reverse voltage and blocks naturally.
+To raise $\ir$ above $\IL$, the auxiliary switch $A_2$ must fire and
+pre-charge $\Lr$.
+
+This means the upward direction \emph{always} uses the auxiliary resonant
+circuit, regardless of how large $\IL$ is.
+There is no high-current shortcut for the upward direction.
+The result is the same S-shaped resonant arc you saw in \figref{fig:P1Fig10a}.
+
+\medskip
+\textbf{Two-line summary of the top panel.}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{p{3.5cm} p{4.7cm} p{4.7cm}}
+\toprule
+\textbf{Property}
+    & \textbf{Downward ($\Vdc \to 0$)}
+    & \textbf{Upward ($0 \to \Vdc$)} \\
+\midrule
+Shape in \figref{fig:P1Fig11a}
+    & Straight line
+    & Curved S-arc \\
+Auxiliary fires?
+    & No ($\IL \geq \Ith$)
+    & Yes (always needed for $D_2$) \\
+$\ir$ during swing
+    & Zero throughout
+    & Large resonant peak \\
+Governing law
+    & $d\vf/dt = -\IL/\Cr$
+    & $\ddot{\vf}+\omegar^2\vf = \omegar^2\Vdc/2$ \\
+Swing duration
+    & $\Vdc\Cr/\IL$ (shorter if $\IL$ larger)
+    & $\pi/\omegar$ (fixed by $\Lr, \Cr$) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+% ── Bottom panel ─────────────────────────────────────────────────────────────
+\subsection*{Bottom panel (\figref{fig:P1Fig11b}) --- three things to
+confirm from the current traces}
+
+\textbf{Confirm 1: $\IL$ is large --- this simulation is genuinely
+high-current.}
+
+The first thing to read in \figref{fig:P1Fig11b} is the flat plateau levels
+of IS1 and IS2: approximately $\pm 300$\,A.
+In \figref{fig:P1Fig10b} (low current), those levels were $\pm 100$\,A.
+The load current is three times larger here.
+This confirms that the simulation is in the high-current regime: $\IL \approx
+300$\,A $\gg \Ith$, so the natural discharge condition is satisfied.
+
+\medskip
+\textbf{Confirm 2: $\ir = 0$ during the straight-line downward transition.}
+
+This is the most important thing to find in \figref{fig:P1Fig11b}.
+Locate the time window of the downward $\vf$ ramp in \figref{fig:P1Fig11a}.
+Then look at the $\ir$ trace in \figref{fig:P1Fig11b} during that same
+window.
+
+$\ir$ does not move.
+It stays at zero throughout the entire straight-line drop.
+
+This is the current-trace proof that no auxiliary switch fired.
+$\Lr$ was never energised.
+$S_1$ turned off, $\IL$ discharged $C_r$, $D_2$ clamped at $\vf = 0$,
+$S_2$ fired at ZVS --- the complete downward commutation happened while the
+auxiliary branch sat completely idle.
+
+Now compare with \figref{fig:P1Fig10b}: during the low-current downward
+commutation, $\ir$ had a large excursion (approximately $-250$\,A peak).
+That excursion was the signature of the auxiliary boost and resonant swing.
+Here, the \emph{absence} of any excursion is the signature that no boost
+was needed.
+No excursion in $\ir$ $\Longleftrightarrow$ no resonance $\Longleftrightarrow$
+straight line in $\vf$.
+All three observations are the same physical fact seen from different
+angles.
+
+\medskip
+\textbf{Confirm 3: $\ir$ does peak during the upward commutation.}
+
+After the flat $\vf = 0$ interval, the upward commutation begins.
+In \figref{fig:P1Fig11b}, $\ir$ now shows a significant resonant excursion
+--- the boost-and-swing sequence of paper Fig.\,7 (\figref{fig:P1Fig7a})
+running at high load current.
+
+Even though $\IL$ is large, the upward commutation still requires the
+auxiliary to pre-charge $\ir$ above $\IL$ before $D_2$ turns off.
+The resonant peak in $\ir$ is large in absolute magnitude (driven by both
+the large $\IL$ term and the $\Vdc/(2\Zr)$ oscillation amplitude in the
+formula $I_\text{peak} = \IL + i_\text{boost} + \Vdc/(2\Zr)$), but
+$i_\text{boost}$ can be smaller than in the low-current case because the
+circuit only needs to charge $\ir$ to a level just above $\IL$ rather than
+far above it.
+
+After the upward arc completes, $\ir$ ramps linearly back to zero ---
+the same ramp-down from \figref{fig:P1Fig7f} --- and the auxiliary switch
+turns off at zero current.
+IS1 fires at ZVS; the cycle is complete.
+
+\medskip
+\textbf{The IS1/IS2 alternation confirms clean ZVS.}
+
+IS1 is at approximately $+300$\,A during the $\vf = \Vdc$ intervals;
+IS2 is at approximately $-300$\,A during the $\vf = 0$ interval.
+They never overlap.
+No shoot-through, no simultaneous conduction.
+Both transitions --- the straight-line downward and the curved upward ---
+achieved ZVS: $\vf$ was at its respective rail before the incoming switch
+was gated on.
+
+% ============================================================
 \section{Master Figure Reference Table}
 % ============================================================
 
