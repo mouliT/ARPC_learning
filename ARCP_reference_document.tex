@@ -2788,6 +2788,102 @@ The endpoint is the same in both cases --- $D_2$ clamping --- but the
 path taken is fundamentally different: curved vs.\ straight.
 
 % ── State (c) explanation ─────────────────────────────────────────────────────
+\subsection*{State (c) --- $D_2$ clamps: ZVS window opens for $S_2$,
+commutation complete}
+
+\figentry{fig:P1Fig9d}{P1_Fig9d_state3_S2_ZVS_on}
+    {P1 Fig.\,9(c) [our state~(c)] --- $D_2$ clamping: pole node at $0$\,V.
+     $D_2$ is shown bold and labelled; it is the only active current path.
+     Bold arrow: $\IL$ flows from the negative rail through $D_2$ to the
+     pole node, then rightward through $L_F$ to the load.
+     All other devices open; $\ir = 0$ throughout.
+     Source: De~Doncker \& Lyons, IEEE IAS 1990, p.\,6.}{0.50}
+
+\textbf{What the paper figure shows.}
+
+The circuit diagram in \figref{fig:P1Fig9d} shows $D_2$ as the only
+bold, active element, labelled explicitly.
+The bold current arrow runs from the negative DC rail upward through
+$D_2$ to the pole node, then rightward through $L_F$ to the load.
+Every other device --- $S_1$, $S_2$, $D_1$, $A_1$, $A_2$ --- is open.
+The resonant inductor $\Lr$ carries no current.
+
+\medskip
+\textbf{Why $D_2$ turns on.}
+
+At the end of state~(b), $\vf$ has fallen to $0$\,V.
+At that instant $D_2$'s bias condition changes:
+\begin{itemize}
+    \item $D_2$ anode $=$ negative rail $= 0$\,V
+    \item $D_2$ cathode $=$ pole node $= \vf \to 0$\,V
+\end{itemize}
+$D_2$ forward-biases and clamps the pole node to $0$\,V.
+$\IL$ now flows from the negative rail through $D_2$ to the pole node,
+supplying the load without further discharge of $C_r$.
+
+\medskip
+\textbf{The ZVS condition for $S_2$.}
+
+With the pole node clamped at $0$\,V by $D_2$, the voltage across
+$S_2$ is:
+\begin{equation}
+    V_{S_2} = \vf - 0\,\text{V} = 0 - 0 = 0\,\text{V}
+    \label{eq:ZVS_S2_fig9}
+\end{equation}
+$S_2$ is gated on while $D_2$ is conducting.
+It turns on at exactly zero volts --- ZVS, with no switching loss.
+
+\medskip
+\textbf{Why no ramp-down is needed here (contrast with Fig.\,8 state~(d)).}
+
+In \figref{fig:P1Fig8e} (Fig.\,8 state~(d)), $D_2$ had clamped while
+$A_1$ was still conducting a negative $\ir$, which had to ramp back
+to zero before $A_1$ could be gated off --- a separate waveform
+strip, state~(d), existed purely for this ramp-down.
+
+Here $\ir = 0$ throughout the entire sequence.
+The auxiliary branch never activated.
+When $D_2$ clamps, there is no residual $\ir$ to dispose of:
+the clamp instant is simultaneously the ZVS condition and the final
+steady state.
+This collapses what was four active intervals in Fig.\,8 into just
+two (states~(b) and~(c) here).
+
+\medskip
+\textbf{Final steady-state conditions.}
+
+\begin{equation}
+    \vf = 0\,\text{V}, \qquad \ir = 0\,\text{A}
+    \label{eq:stateC9_final}
+\end{equation}
+
+Once $S_2$ is gated on it takes over from $D_2$, which becomes
+reverse-biased.
+The snubber capacitors reset: the one across $S_2$ is discharged to
+$0$\,V (short-circuited by $S_2$); the one across $S_1$ is charged to
+$\Vdc$ (full bus voltage across open $S_1$), ready for the next
+upward commutation event.
+
+\begin{circuitbox}[State-by-State Circuit Description --- P1 Fig.\,9(a)--(c)]
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{p{0.5cm} p{2.8cm} p{3.2cm} p{5.5cm}}
+\toprule
+\textbf{St.} & \textbf{Active device(s)} & \textbf{$\vf$}
+             & \textbf{$\ir$ and key action} \\
+\midrule
+(a) & $S_1$ ON
+    & $\Vdc$ (held)
+    & $\ir = 0$; idle; $\IL \geq \Ith$ confirmed \\
+(b) & None --- all open
+    & Falls $\Vdc \to 0$ (straight line)
+    & $\ir = 0$; $\IL$ alone discharges $C_r$;
+      $d\vf/dt = -\IL/C_r$ \\
+(c) & $D_2$ clamps; $S_2$ ZVS on
+    & $0$ (clamped, steady)
+    & $\ir = 0$; $V_{S_2}=0$; ZVS; commutation complete \\
+\bottomrule
+\end{tabular}
+\end{circuitbox}
 
 % ============================================================
 \section{Master Figure Reference Table}
